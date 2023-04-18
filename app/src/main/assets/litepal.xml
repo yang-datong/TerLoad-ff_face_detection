@@ -3,6 +3,6 @@
     <dbname value = "person"></dbname>
     <version value = "1"></version>
     <list>
-        <mapping class = "com.example.myapplication.emp.Person"></mapping>
+        <mapping class = "com.rl.ff_face_detection_terload.emp.Person"></mapping>
     </list>
 </Litepal>

@@ -5,14 +5,14 @@
 
     <fragment
         android:id="@+id/conversationFragment"
-        android:name="com.example.myapplication.ui.fargment.ConversationFragment"
+        android:name="com.rl.ff_face_detection_terload.ui.fargment.ConversationFragment"
         android:label="消息" />
     <fragment
         android:id="@+id/contactFragment"
-        android:name="com.example.myapplication.ui.fargment.ContactFragment"
+        android:name="com.rl.ff_face_detection_terload.ui.fargment.ContactFragment"
         android:label="联系人" />
     <fragment
         android:id="@+id/dynamicFragment"
-        android:name="com.example.myapplication.ui.fargment.DynamicFragment"
+        android:name="com.rl.ff_face_detection_terload.ui.fargment.DynamicFragment"
         android:label="动态" />
 </navigation>
