@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/conversationFragment"
+        android:icon="@drawable/xiaoxi_log"
+        android:title="消息" />
+    <item
+        android:id="@+id/contactFragment"
+        android:icon="@drawable/lianxi_log"
+        android:title="联系人" />
+    <item
+        android:id="@+id/dynamicFragment"
+        android:icon="@drawable/dongtai_log"
+        android:title="动态" />
+</menu>

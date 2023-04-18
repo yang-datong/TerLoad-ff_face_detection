@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/mynavigation"
+    app:startDestination="@id/conversationFragment">
+
+    <fragment
+        android:id="@+id/conversationFragment"
+        android:name="com.example.myapplication.ui.fargment.ConversationFragment"
+        android:label="消息" />
+    <fragment
+        android:id="@+id/contactFragment"
+        android:name="com.example.myapplication.ui.fargment.ContactFragment"
+        android:label="联系人" />
+    <fragment
+        android:id="@+id/dynamicFragment"
+        android:name="com.example.myapplication.ui.fargment.DynamicFragment"
+        android:label="动态" />
+</navigation>
