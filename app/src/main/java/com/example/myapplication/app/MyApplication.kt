@@ -119,7 +119,7 @@ class MyApplication : Application() {
         emc.chatManager().addMessageListener(msgListener)
 
 //        Bmob.initialize(applicationContext, "c063550ad7c3587f4fae8ff7f68deef1");
-//        LitePal.initialize(applicationContext)
+        LitePal.initialize(applicationContext)
 
         registerActivityLifecycleCallbacks(mCallbacks)
         FaceRecognize.loadJNIFaceModel(this.applicationContext)
