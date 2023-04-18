@@ -8,6 +8,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Vibrator
 import android.util.Log
+import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import com.rl.ff_face_detection_terload.R
@@ -109,6 +111,11 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //夜间模式
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)//日间模式
+
+
+
         val isAuto = sp.getBoolean("isAuto", true)
         val emOptions = EMOptions()
         emOptions.autoLogin = isAuto

@@ -16,7 +16,7 @@ import org.jetbrains.anko.*
  * @description:
  * @date :2021/1/2 23:54
  */
-class ContactListAdapter(var context: Context, val contactListItems: MutableList<ContactEmp>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ContactListAdapter(var context: Context, private val contactListItems: MutableList<ContactEmp>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ContactListViewHolder(ContactListItemView(context))
     }
@@ -27,7 +27,7 @@ class ContactListAdapter(var context: Context, val contactListItems: MutableList
         val contactListItemView = holder.itemView as ContactListItemView
         if (contactListItems[position].isShowFirst){
             contactListItemView.firstLetter.visibility  = View.VISIBLE
-            contactListItemView.firstLetter.text  = contactListItems[position].firstLetter+""
+            contactListItemView.firstLetter.text  = "${contactListItems[position].firstLetter}"
         }else
             contactListItemView.firstLetter.visibility  = View.GONE
 

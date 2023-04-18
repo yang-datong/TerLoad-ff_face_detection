@@ -5,6 +5,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.adapter.ContactListAdapter
@@ -14,6 +15,7 @@ import com.rl.ff_face_detection_terload.presenter.ContactPresenter
 import com.rl.ff_face_detection_terload.widget.SlideBar
 import com.hyphenate.chat.EMClient
 import kotlinx.android.synthetic.main.fragment_contact.*
+import kotlinx.android.synthetic.main.title_bar.*
 import org.jetbrains.anko.toast
 
 /**
@@ -28,6 +30,8 @@ class ContactFragment : BaseFragment() ,ContactContract.View{
     val presenter by lazy { ContactPresenter(this) }
 
     override fun inits() {
+        tv_title.text = "联系人"
+        img_ret.isGone = true
         setHasOptionsMenu(true)
         recyclerview.apply {
             setHasFixedSize(true)  //当大小被固定的情况下使用 、可以减少重绘次数、减少资源损耗\

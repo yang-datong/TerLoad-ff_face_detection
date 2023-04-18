@@ -204,6 +204,8 @@ public class FaceRecognize {
             showToast("等待模型加载中，如果长时间未加载成功则模型错误");
             return;
         }
+        // 设置 TextureView 全屏模式
+        mTextureView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         mTextureView.setSurfaceTextureListener(surfaceTextureListener);
     }
 

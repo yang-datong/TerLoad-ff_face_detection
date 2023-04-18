@@ -1,5 +1,6 @@
 package com.rl.ff_face_detection_terload.ui.fargment
 
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,7 @@ import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMMessage
 import kotlinx.android.synthetic.main.fragment_contact.recyclerview
 import kotlinx.android.synthetic.main.fragment_conversation.*
+import kotlinx.android.synthetic.main.title_bar.*
 import org.jetbrains.anko.runOnUiThread
 import java.util.*
 
@@ -54,6 +56,8 @@ class ConversationFragment : BaseFragment() ,ConversationContract.View{
 
 
     override fun inits() {
+        tv_title.text = "聊天"
+        img_ret.isGone = true
         recyclerview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)

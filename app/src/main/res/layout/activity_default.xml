@@ -21,8 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:text="考勤"
-            android:textColor="@android:color/white"/>
+            android:text="考勤" />
 
         <Button
             android:id="@+id/bt_admin_login"
@@ -30,8 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:text="管理员登录"
-            android:textColor="@android:color/white"/>
+            android:text="管理员登录" />
     </LinearLayout>
 
     <RelativeLayout
@@ -44,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_centerInParent="true"
-            android:tint="@color/colorPrimaryDark"/>
+            android:tint="@color/black_alpha_128"/>
     </RelativeLayout>
 
 </RelativeLayout>

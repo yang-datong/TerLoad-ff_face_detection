@@ -12,13 +12,14 @@ import androidx.core.content.ContextCompat
 import com.rl.ff_face_detection_terload.MainActivity
 import com.rl.ff_face_detection_terload.R
 import com.hyphenate.chat.EMClient
+import com.rl.ff_face_detection_terload.faceRecognize.UploadFaceActivity
 import org.jetbrains.anko.startActivity
 
-class DefaultActivity : AppCompatActivity() {
+class DefaultActivity : BaseActivity() {
     private var permissionsPass = true
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_default)
+    override fun getLayoutResID() = R.layout.activity_default
+
+    override fun inits() {
         val bDetection = findViewById<Button>(R.id.bt_detection)
         val bAdminLogin = findViewById<Button>(R.id.bt_admin_login)
 
@@ -35,6 +36,7 @@ class DefaultActivity : AppCompatActivity() {
         }
         bDetection.setOnClickListener { v: View? ->
             if (permissionsPass)
+//                startActivity<UploadFaceActivity>()
                 startActivity<FaceRecognizeActivity>()
         }
         bAdminLogin.setOnClickListener { v: View? ->
@@ -52,12 +54,10 @@ class DefaultActivity : AppCompatActivity() {
 
     private fun onNotLoggedIn() {
         startActivity<LoginActivity>()
-        finish()
     }
 
     private fun onLoggedIn() {
         startActivity<MainActivity>()
-        finish()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

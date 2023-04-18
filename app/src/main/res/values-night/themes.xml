@@ -10,7 +10,12 @@
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">@color/black_alpha_128</item>
+
+        <!--        <item name="android:statusBarColor">@color/black</item>-->
+        <!--        <item name="android:windowNoTitle">true</item>-->
+        <!--        <item name="android:windowActionBar">true</item>-->
+        <!--        <item name="android:windowLightStatusBar">false</item>-->
         <!-- Customize your theme here. -->
     </style>
 </resources>

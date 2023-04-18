@@ -14,6 +14,7 @@ import com.rl.ff_face_detection_terload.widget.MicrophoneDialog
 import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMMessage
 import kotlinx.android.synthetic.main.activity_chat.*
+import kotlinx.android.synthetic.main.title_bar.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
@@ -24,7 +25,7 @@ import org.jetbrains.anko.yesButton
  * @description:
  * @date :2021/1/3 1:22
  */
-class ChatActivity : BaseActivity() ,ChatContract.View {
+class ChatActivity : BaseActivity(), ChatContract.View {
     override fun getLayoutResID() = R.layout.activity_chat
     override fun onSupportNavigateUp(): Boolean {
         finish()
@@ -32,22 +33,25 @@ class ChatActivity : BaseActivity() ,ChatContract.View {
     }
 
     val presenter by lazy { ChatPresenter(this) }
-    lateinit var username : String
+    lateinit var username: String
 
-     private val msgListener = object : MessageListenerAdapter() {
-         override fun onMessageReceived(messages: MutableList<EMMessage>?) {
-                presenter.addMessage(username,messages)
-                runOnUiThread {
-                    recycleview.adapter?.notifyDataSetChanged()
-                    scrollTOBottom()}
-         }
-     }
+    private val msgListener = object : MessageListenerAdapter() {
+        override fun onMessageReceived(messages: MutableList<EMMessage>?) {
+            presenter.addMessage(username, messages)
+            runOnUiThread {
+                recycleview.adapter?.notifyDataSetChanged()
+                scrollTOBottom()
+            }
+        }
+    }
 
-    val microphoneDialog by lazy { MicrophoneDialog(this) }
+    private val microphoneDialog by lazy { MicrophoneDialog(this) }
 
     override fun inits() {
         username = intent.getStringExtra("username").toString()
-        title = "$username"
+        title = username
+        tv_title.text = username
+        img_ret.setOnClickListener { finish() }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         recycleview.apply {
             setHasFixedSize(true)
@@ -96,11 +100,10 @@ class ChatActivity : BaseActivity() ,ChatContract.View {
             microphoneDialog.show()
             true
         }
-        microphoneDialog.onSendVoiceListener = object : MicrophoneDialog.OnSendVoiceListener{
+        microphoneDialog.onSendVoiceListener = object : MicrophoneDialog.OnSendVoiceListener {
             override fun sendVoice() {
             }
         }
-
 
 
     }
@@ -111,7 +114,7 @@ class ChatActivity : BaseActivity() ,ChatContract.View {
     }
 
     private fun send() {
-        presenter.sendMessage(username,input_message.text.toString())
+        presenter.sendMessage(username, input_message.text.toString())
     }
 
     override fun onStartSend() {
@@ -125,7 +128,7 @@ class ChatActivity : BaseActivity() ,ChatContract.View {
     }
 
     private fun scrollTOBottom() {
-        recycleview.scrollToPosition(presenter.messages.size-1)
+        recycleview.scrollToPosition(presenter.messages.size - 1)
     }
 
     override fun onSendFailed() {
@@ -136,13 +139,14 @@ class ChatActivity : BaseActivity() ,ChatContract.View {
 
     override fun onMoreMessageLoad(size: Int) {
         val linearLayoutManager = recycleview.layoutManager as LinearLayoutManager
-        linearLayoutManager.scrollToPositionWithOffset(size,0)
+        linearLayoutManager.scrollToPositionWithOffset(size, 0)
         recycleview.adapter?.notifyDataSetChanged()
     }
 
     override fun onErrorLogin() {
-        alert("","当前账号已在其他设备上登录!"){
-            yesButton { startActivity<LoginActivity>()
+        alert("", "当前账号已在其他设备上登录!") {
+            yesButton {
+                startActivity<LoginActivity>()
                 finish()
             }
         }

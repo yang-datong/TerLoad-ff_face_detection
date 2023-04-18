@@ -5,21 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleview"
+    <include
+        android:id="@+id/include"
+        layout="@layout/title_bar"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#f3f3f3"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:background="#e1e1e1"
+        android:background="#fafafa"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,6 +43,7 @@
             android:layout_height="35dp"
             android:layout_gravity="center"
             android:adjustViewBounds="true"
+            android:padding="5dp"
             android:scaleType="centerInside"
             android:visibility="visible"
             app:srcCompat="@drawable/yuying" />
@@ -44,6 +56,7 @@
             android:adjustViewBounds="true"
             android:scaleType="centerInside"
             android:visibility="gone"
+            android:padding="5dp"
             app:srcCompat="@drawable/xiaoxi_log" />
 
 
@@ -52,14 +65,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:layout_margin="5dp"
             android:layout_marginTop="3dp"
             android:layout_weight="1"
-            android:background="@android:drawable/edit_text"
+            android:background="@drawable/edit_view_style"
             android:ems="10"
             android:gravity="start|center_vertical"
             android:imeOptions="actionSend"
             android:inputType="textPersonName"
             android:visibility="visible" />
+        <!--        android:background="@android:drawable/edit_text"-->
+
 
         <LinearLayout
             android:id="@+id/long_voice_dialog"
@@ -73,6 +89,7 @@
                 android:layout_width="45dp"
                 android:layout_height="35dp"
                 android:layout_gravity="center"
+                android:padding="5dp"
                 app:srcCompat="@drawable/yuying" />
 
             <TextView
@@ -81,13 +98,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="长按发送语音消息"
-                android:textSize="18sp" />
+                android:textSize="15sp" />
         </LinearLayout>
 
         <Button
             android:id="@+id/sed_message"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:background="#f3f3f3"
             android:enabled="false"
             android:text="发送" />
     </LinearLayout>

@@ -10,23 +10,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.rl.ff_face_detection_terload.R;
 import com.rl.ff_face_detection_terload.faceRecognize.FaceRecognize;
 
-public class FaceRecognizeActivity extends AppCompatActivity {
+public class FaceRecognizeActivity extends BaseActivity {
 
     private static final String TAG = "FaceRecognizeActivity";
 
     private FaceRecognize faceRecognize;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // 隐藏状态栏和顶部菜单栏
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_face_recognize);
+    public int getLayoutResID() {
+        return R.layout.activity_face_recognize;
+    }
 
+    @Override
+    public void inits() {
         TextureView mTextureView = findViewById(R.id.texture_view);
-//        ImageView mImageView = findViewById(R.id.image_view);
-//        Button mButtonView = findViewById(R.id.button_capture);
         faceRecognize = new FaceRecognize();
         faceRecognize.onCreate(mTextureView, this);
     }

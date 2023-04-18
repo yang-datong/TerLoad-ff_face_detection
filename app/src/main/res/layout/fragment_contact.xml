@@ -5,43 +5,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<!--    <com.scwang.smart.refresh.layout.SmartRefreshLayout-->
-<!--        android:id="@+id/smartrefresh"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.5"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent">-->
+    <!--    <com.scwang.smart.refresh.layout.SmartRefreshLayout-->
+    <!--        android:id="@+id/smartrefresh"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintHorizontal_bias="0.5"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent">-->
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    <include
+        android:id="@+id/include"
+        layout="@layout/title_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-<!--        <com.scwang.smart.refresh.footer.BallPulseFooter-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content" />-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
 
-<!--    </com.scwang.smart.refresh.layout.SmartRefreshLayout>-->
+    <!--        <com.scwang.smart.refresh.footer.BallPulseFooter-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content" />-->
+
+    <!--    </com.scwang.smart.refresh.layout.SmartRefreshLayout>-->
 
     <com.rl.ff_face_detection_terload.widget.SlideBar
         android:id="@+id/slideBar_view"
         android:layout_width="20dp"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/include" />
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#8BC34A"
-        android:padding="20dp"
-        android:text="TextView"
+        android:layout_width="90dp"
+        android:layout_height="80dp"
+        android:alpha="0.6"
+        android:background="@drawable/show_number"
+        android:gravity="center"
+        android:text="A"
         android:textColor="#fff"
         android:textSize="36sp"
         android:visibility="gone"

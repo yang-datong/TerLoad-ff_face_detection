@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
     private fun init() {
         val findNavController = Navigation.findNavController(this, R.id.fragment)
         val build = AppBarConfiguration.Builder(bottomNavigationView.menu).build()      //建立构造者
-        NavigationUI.setupActionBarWithNavController(this, findNavController, build)//设置返回按钮
+//        NavigationUI.setupActionBarWithNavController(this, findNavController, build)//设置返回按钮
         NavigationUI.setupWithNavController(bottomNavigationView, findNavController) //设置联动
     }
 

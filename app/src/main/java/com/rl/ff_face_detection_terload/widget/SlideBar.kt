@@ -50,13 +50,13 @@ class SlideBar @JvmOverloads constructor(
                     val index = event.y / (height / letter.size)
                     if (index<letter.size && index > 0)
                         onSectionChangeListener?.onSectionChange(letter[index.toInt()])
-                    setBackgroundColor(Color.parseColor("#e1e1e1"))
+//                    setBackgroundColor(Color.parseColor("#e1e1e1"))
                 }
                 MotionEvent.ACTION_MOVE -> {
                     val index = event.y / (height / letter.size)
                     if (index<letter.size && index > 0)
                         onSectionChangeListener?.onSectionChange(letter[index.toInt()])
-                    setBackgroundColor(Color.parseColor("#e1e1e1"))
+//                    setBackgroundColor(Color.parseColor("#e1e1e1"))
                 }
                 MotionEvent.ACTION_UP -> {
                     setBackgroundColor(Color.TRANSPARENT)

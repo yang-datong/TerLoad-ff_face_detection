@@ -64,8 +64,7 @@
             android:name="com.rl.ff_face_detection_terload.ui.activity.RegisterActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name="com.rl.ff_face_detection_terload.ui.activity.DefaultActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:name="com.rl.ff_face_detection_terload.ui.activity.DefaultActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -80,6 +79,7 @@
             android:label="添加好友"
             android:launchMode="singleInstance" />
         <activity android:name="com.rl.ff_face_detection_terload.ui.activity.FaceRecognizeActivity" />
+        <activity android:name=".faceRecognize.UploadFaceActivity" />
     </application>
 
 </manifest>
