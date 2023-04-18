@@ -676,8 +676,7 @@ public class FaceRecognize {
         }
 
         // Create the file
-        File mediaFile = new File(mediaStorageDir.getPath() + File.separator + fileName);
-        return mediaFile;
+        return new File(mediaStorageDir.getPath() + File.separator + fileName);
     }
 
     private void showToast(final String text) {
@@ -692,7 +691,7 @@ public class FaceRecognize {
 
     public native void JNI_FaceDetection(long matAddressGray, long matAddressRgba);
 
-    public native void JNI_EyeDetection(long matAddressGray, long matAddressRgba);
+//    public native void JNI_EyeDetection(long matAddressGray, long matAddressRgba);
 
     public native int JNI_JustSaveFaceImage(String oldFaceImagePath);
 }

@@ -3,9 +3,9 @@
 FaceRecognizer *gFace;
 int gArithmetic = 2; // Default use LBPHFaceRecognizer
 cv::Size gNewSize = cv::Size(92, 112);
-std::string gDirectory = "";
-std::string gWorkPath = "";
-std::string gCascadeFile = "";
+std::string gDirectory;
+std::string gWorkPath;
+std::string gCascadeFile;
 
 FaceRecognizer::FaceRecognizer(string workPath, string folderPath,
                                cv::Size newSize, const string &cascadeFile,
@@ -180,7 +180,7 @@ int CheckFilePath() {
     return 0;
 }
 
-JNIEXPORT int JNICALL JNI_Initialization(JNIEnv *env, jclass thi,
+JNIEXPORT int JNICALL JNI_Initialization(JNIEnv *env, __unused jclass thi,
                                          jstring workPath,
                                          jstring dataDirectory,
                                          jstring cascadeFile,
@@ -202,7 +202,7 @@ JNIEXPORT int JNICALL JNI_Initialization(JNIEnv *env, jclass thi,
     return 0;
 }
 
-JNIEXPORT int JNICALL JNI_JustSaveFaceImage(JNIEnv *env, jobject thi,
+JNIEXPORT int JNICALL JNI_JustSaveFaceImage(JNIEnv *env, __unused jobject thi,
                                             jstring oldFaceImagePath) {
     // Load the cascade classifier
     cv::CascadeClassifier faceCascade;
@@ -234,9 +234,9 @@ JNIEXPORT int JNICALL JNI_JustSaveFaceImage(JNIEnv *env, jobject thi,
         resize(face_roi, face_roi, gNewSize);
         images.push_back(face_roi);
         labels.push_back(labelCount++); // addition index "0"
-        newLabelsName.push_back("识别成功!");
+        newLabelsName.emplace_back("识别成功!");
         // newLabelsName = "User-Just-Now-Add";
-        gFace->labelsName.push_back("识别成功!");
+        gFace->labelsName.emplace_back("识别成功!");
     }
 
     if (!face_roi.empty()) {
@@ -288,7 +288,7 @@ JNIEXPORT void JNICALL JNI_FaceDetection(JNIEnv *env, jobject thi,
 
     // Detect faces
     std::vector<cv::Rect> faces;
-    faceCascade.detectMultiScale(mGr, faces, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE,
+    faceCascade.detectMultiScale(mGr, faces, 1.1, 2, (unsigned int)0 | cv::CASCADE_SCALE_IMAGE,
                                  cv::Size(30, 30));
 
     // Draw rectangles around detected faces
@@ -327,16 +327,16 @@ JNIEXPORT void JNICALL JNI_FaceDetection(JNIEnv *env, jobject thi,
             // cv::rectangle(mRgb, face, cv::Scalar(0, 0, 255), 2);
             // cv::putText(mRgb, "unknown", cv::Point(face.x, face.y - 10),
             // cv::FONT_HERSHEY_SIMPLEX, 0.9, cv::Scalar(0, 0, 255), 2);
-            LOGD("Unkonw predict:%f , keys:%f", confidence, gFace->keys);
+            LOGD("Unknown predict:%f , keys:%f", confidence, gFace->keys);
         }
     }
 }
 
-JNIEXPORT void JNICALL JNI_EyeDetection(JNIEnv *env, jobject thi,
-                                        jlong matAddressGray,
-                                        jlong matAddressRgba) {
-    cv::Mat &mGr = *(cv::Mat *) matAddressGray;
-    cv::Mat &mRgb = *(cv::Mat *) matAddressRgba;
+//JNIEXPORT void JNICALL JNI_EyeDetection(JNIEnv *env, jobject thi,
+//                                        jlong matAddressGray,
+//                                        jlong matAddressRgba) {
+//    cv::Mat &mGr = *(cv::Mat *) matAddressGray;
+//    cv::Mat &mRgb = *(cv::Mat *) matAddressRgba;
     // Load the cascade classifier
     // cv::CascadeClassifier eyeCascade;
     // eyeCascade.load("/haarcascades/haarcascade_eye.xml");
@@ -350,9 +350,9 @@ JNIEXPORT void JNICALL JNI_EyeDetection(JNIEnv *env, jobject thi,
     // for (auto & eye : eyes) {
     //   rectangle(mRgb, eye, cv::Scalar(0, 255, 0), 2, cv::LINE_AA);
     // }
-}
+//}
 
-JNIEXPORT void JNICALL JNI_Close(JNIEnv *env, jclass thi) {
+JNIEXPORT void JNICALL JNI_Close(__unused JNIEnv *env,__unused jclass thi) {
     if (gFace) {
         delete gFace;
         LOGD("gFace Closed");
@@ -361,7 +361,7 @@ JNIEXPORT void JNICALL JNI_Close(JNIEnv *env, jclass thi) {
 
 static JNINativeMethod nativeMethods[] = {
         {"JNI_FaceDetection",     "(JJ)V", (void *) JNI_FaceDetection},
-        {"JNI_EyeDetection",      "(JJ)V", (void *) JNI_EyeDetection},
+//        {"JNI_EyeDetection",      "(JJ)V", (void *) JNI_EyeDetection},
         {"JNI_Initialization",
                                   "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)I",
                                            (void *) JNI_Initialization},
@@ -369,9 +369,9 @@ static JNINativeMethod nativeMethods[] = {
                                            (void *) JNI_JustSaveFaceImage},
         {"JNI_Close",             "()V",   (void *) JNI_Close}};
 
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, __unused void *reserved) {
     JNIEnv *env = nullptr;
-    jint result = -1;
+    jint result;
 
     if (vm->GetEnv((void **) &env, JNI_VERSION_1_6) != JNI_OK) {
         return -1;
