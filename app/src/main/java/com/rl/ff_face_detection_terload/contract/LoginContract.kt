@@ -5,6 +5,7 @@ import android.content.Context
 interface LoginContract {
     interface Presenter: BasePresenter{
         fun login(userName: String, passWord: String, context: Context)
+        fun getUserPasswordByUserName(userName: String, context: Context): String?
     }
 
     interface View{

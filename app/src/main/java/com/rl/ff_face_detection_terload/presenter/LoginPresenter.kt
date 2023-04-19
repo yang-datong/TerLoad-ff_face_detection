@@ -1,13 +1,20 @@
 package com.rl.ff_face_detection_terload.presenter
 
 import android.content.Context
+import android.util.Log
 import com.rl.ff_face_detection_terload.contract.LoginContract
 import com.rl.ff_face_detection_terload.extensions.isValidPassword
 import com.rl.ff_face_detection_terload.extensions.isValidUserName
 import com.hyphenate.EMCallBack
 import com.hyphenate.chat.EMClient
+import com.rl.ff_face_detection_terload.database.DB
+import com.rl.ff_face_detection_terload.database.User
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
+    private val TAG = "LoginPresenter"
     override fun login(userName: String, passWord: String, context: Context) {
         if (userName.isValidUserName() && passWord.isValidPassword()) {
             view.onStartLogin()
@@ -24,6 +31,7 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
                 EMClient.getInstance().groupManager().loadAllGroups()
                 EMClient.getInstance().chatManager().loadAllConversations()//这是子线程
 //                if (isAutoLogin)options.setAutoLogin(false)
+                saveIntoDataBase(userName, passWord, context)
                 //返回主线程控制UI
                 uiThread { view.onLoggedInSuccess() }
             }
@@ -43,8 +51,45 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
             }
         })
     }
+
+    override fun getUserPasswordByUserName(userName: String, context: Context): String? {
+        var password: String? = null;
+        runBlocking {
+            val job = GlobalScope.launch {
+                val userDao = DB.getInstance(context).userDao()
+                val user = userDao.getUserByUsername(userName)
+                Log.d(TAG, "getUserPasswordByUserName: ${user?.password}")
+                password = user?.password
+            }
+            job.join() // 等待协程执行完成
+        }
+        return password
+    }
+
+    private fun saveIntoDataBase(username: String, pswd: String, context: Context) {
+        GlobalScope.launch {
+            val userDao = DB.getInstance(context).userDao()
+            val user = userDao.getUserByUsername(username)
+            if (user == null) {
+                val ret = userDao.addUser(User(null, username, pswd))
+                if (ret > 0L) {
+                    Log.d(TAG, "用户账号已添加到数据库")
+                } else {
+                    Log.e(TAG, "用户账号添加到数据库错误，数据库添加:已${ret}个")
+                }
+            } else {
+                val ret = userDao.updateUser(User(null, username, pswd))
+                if (ret > 0) {
+                    Log.d(TAG, "用户账号已更新到数据库")
+                } else {
+                    Log.e(TAG, "用户账号不需要更新，数据库更新:已${ret}个")
+                }
+            }
+        }
+    }
+
     private fun logout() {
-        EMClient.getInstance().logout(true,object : EMCallBack {
+        EMClient.getInstance().logout(true, object : EMCallBack {
             override fun onSuccess() {
                 uiThread {
                     view.onLoggedInFailed("已在另一台设备中退出，尝试重新登陆")

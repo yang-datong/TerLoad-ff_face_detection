@@ -51,7 +51,7 @@ private:
   cv::CascadeClassifier _faceCascade;
 
   const double EIGEN_FACE_KEYS = 4500.0;
-  const double LBPH_FACE_KEYS = 85.0;
+  const double LBPH_FACE_KEYS = 83.0;
   const double FISHER_FACE_KEYS = 4500.0;
 };
 

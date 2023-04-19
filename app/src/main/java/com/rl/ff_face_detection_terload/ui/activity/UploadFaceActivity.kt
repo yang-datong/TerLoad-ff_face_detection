@@ -1,16 +1,16 @@
 package com.rl.ff_face_detection_terload.ui.activity
 
 import android.graphics.Color
-import android.os.Bundle
 import android.view.TextureView
 import android.view.View
-import android.view.Window
-import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.hyphenate.chat.EMClient
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.faceRecognize.FaceRecognize
+import org.jetbrains.anko.toast
+import java.io.File
 
 class UploadFaceActivity : BaseActivity() {
 
@@ -31,10 +31,28 @@ class UploadFaceActivity : BaseActivity() {
         val mImageView = findViewById<ImageView>(R.id.image_view)
         val mButtonView = findViewById<Button>(R.id.button_capture)
         faceRecognize = FaceRecognize()
-        faceRecognize?.onCreate(mTextureView, this)
+        faceRecognize?.onCreate(mTextureView, this) { _: Int, _: String -> }
         faceRecognize?.uploadFaceImage(mImageView)
-        mButtonView.setOnClickListener { v: View? -> faceRecognize!!.takePicture() }
+        mButtonView.setOnClickListener {
+            val takePictureTag = EMClient.getInstance().currentUser
+            val file = File(filesDir.absolutePath, "/$takePictureTag.jpg")
+            if (file.exists()) {
+                showBottomDialog("当前已有可用的人脸识别模型，是否继续上传？", "继续", object : OnClickListener {
+                    override fun onClick(v: View?) {
+                        faceRecognize?.takePicture(takePictureTag)
+//                        saveUserNameAndPassWord()
+                        dismissBottomDialog()
+                    }
+                })
+            } else {
+                faceRecognize?.takePicture(takePictureTag)
+            }
+        }
     }
+
+//    private fun saveUserNameAndPassWord() {
+//         TODO
+//    }
 
 
     override fun onResume() {

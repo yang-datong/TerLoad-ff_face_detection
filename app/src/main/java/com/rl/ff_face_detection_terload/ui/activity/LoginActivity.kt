@@ -1,9 +1,12 @@
 package com.rl.ff_face_detection_terload.ui.activity
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.util.Log
 import android.view.View
 import androidx.core.app.ActivityCompat
 import com.rl.ff_face_detection_terload.R
@@ -16,6 +19,19 @@ import org.jetbrains.anko.toast
 
 class LoginActivity : BaseActivity(), LoginContract.View {
 
+
+    private val TAG = "LoginActivity"
+    private val REQUEST_CODE = 0x111
+    private val REQUEST_FACE_RECOGNIZE_LOGIN = 0x222
+    private val REQUEST_NORMAL_LOGIN = 0x333
+    private val loginPresenter = LoginPresenter(this)
+    override fun getLayoutResID() = R.layout.activity_main_login
+    private var permissionType = REQUEST_FACE_RECOGNIZE_LOGIN
+
+    private val sp by lazy {
+        getSharedPreferences("isAutoLogin", Context.MODE_PRIVATE)
+    }
+
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus);
         window.apply {
@@ -24,18 +40,12 @@ class LoginActivity : BaseActivity(), LoginContract.View {
         }
     }
 
-    override fun getLayoutResID() = R.layout.activity_main_login
-
-    private val loginPresenter = LoginPresenter(this)
-
-    private val sp by lazy {
-        getSharedPreferences("isAutoLogin", Context.MODE_PRIVATE)
-    }
-
     override fun inits() {
+//        username.setText("qqq")
+//        password.setText("111")
         login.setOnClickListener {
             hideSoftKeyboard()//隐藏软键盘
-            if (hasWriteExternalStoragePermission())  //检查是否有权限
+            if (hasWriteExternalStoragePermission(REQUEST_NORMAL_LOGIN))  //检查是否有权限
                 loginPresenter.login(username.text.trim().toString(), password.text.trim().toString(), this)
             else
                 applyWriteExternalStoragePermission()   //弹出请求权限对话框
@@ -46,7 +56,11 @@ class LoginActivity : BaseActivity(), LoginContract.View {
             Snackbar.make(it, "忘记密码我也没办法啊...", Snackbar.LENGTH_LONG).setAction("行吧", null).show()
         }
         face_login.setOnClickListener {
-            startActivity<FaceRecognizeActivity>()
+            if (!hasWriteExternalStoragePermission(REQUEST_FACE_RECOGNIZE_LOGIN)) {  //检查是否有权限
+                applyWriteExternalStoragePermission()   //弹出请求权限对话框
+                return@setOnClickListener
+            }
+            startActivityForResult(Intent(this, FaceRecognizeActivity::class.java), REQUEST_CODE)
         }
     }
 
@@ -58,13 +72,18 @@ class LoginActivity : BaseActivity(), LoginContract.View {
     //重写请求回调方法进行监听
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            loginPresenter.login(username.text.trim().toString(), password.text.trim().toString(), this)
-        else
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (permissionType == REQUEST_FACE_RECOGNIZE_LOGIN)
+                startActivityForResult(Intent(this, FaceRecognizeActivity::class.java), REQUEST_CODE)
+            else
+                loginPresenter.login(username.text.trim().toString(), password.text.trim().toString(), this)
+
+        } else
             toast("没有权限，已被拒绝！")
     }
 
-    private fun hasWriteExternalStoragePermission(): Boolean {  //检查是否有权限
+    private fun hasWriteExternalStoragePermission(requestFaceRecognizeLogin: Int): Boolean {  //检查是否有权限
+        permissionType = requestFaceRecognizeLogin
         val checkSelfPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)//写入外部权限
         return checkSelfPermission == PackageManager.PERMISSION_GRANTED  //是否有自我许可证
     }
@@ -97,4 +116,23 @@ class LoginActivity : BaseActivity(), LoginContract.View {
         else
             toast(mes)
     }
+    //TODO 新安装App首次进入人脸识别必定奔溃   , 上传照片成功后自动退出上传界面
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                val faceRecognizeUserName = data?.getStringExtra("faceRecognizeUserName")
+                Log.d(TAG, "onActivityResult -> faceRecognizeUserName:${faceRecognizeUserName}")
+                val password = loginPresenter.getUserPasswordByUserName(faceRecognizeUserName!!, this)
+                if (password != null)
+                    loginPresenter.login(faceRecognizeUserName, password, this)
+                else
+                    Log.e(TAG, "人脸识别失败(password == null)")
+            } else {
+                Log.e(TAG, "人脸识别失败")
+            }
+        }
+    }
+
 }

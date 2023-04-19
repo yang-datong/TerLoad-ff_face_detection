@@ -34,6 +34,7 @@ import android.view.Gravity;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -96,6 +97,9 @@ public class FaceRecognize {
 
     private Dialog progressDialog = null;
     private boolean inUploadingFaceImage = false;
+
+    private String takePictureTag = null;
+    private String faceRecognizeUserName = null;
 
 
     public static void loadJNIFaceModel(Context application) {
@@ -196,10 +200,17 @@ public class FaceRecognize {
         JNI_Close();
     }
 
-    public void onCreate(TextureView textureView, Activity activity) {
+    public interface OnReturnListener {
+        void onReturn(int status, String faceRecognizeUserName);
+    }
+
+    private OnReturnListener onReturnListener;
+
+    public void onCreate(TextureView textureView, Activity activity, OnReturnListener onReturnListener) {
         if (textureView == null || activity == null) return;
         this.activity = activity;
-        mTextureView = textureView;
+        this.onReturnListener = onReturnListener;
+        this.mTextureView = textureView;
         if (jni_initialization_status != 0) {
             showToast("等待模型加载中，如果长时间未加载成功则模型错误");
             return;
@@ -216,7 +227,7 @@ public class FaceRecognize {
 
         @Override
         public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surfaceTexture, int i, int i1) {
-            Log.e(TAG, "onSurfaceTextureSizeChanged: ");
+            Log.d(TAG, "onSurfaceTextureSizeChanged: ");
         }
 
         @Override
@@ -429,7 +440,11 @@ public class FaceRecognize {
         this.showImageView = showImageView;
     }
 
-    public void takePicture() {
+    public void takePicture(String takePictureTag) {
+        if (takePictureTag == null || takePictureTag.equals("")) {
+            return;
+        }
+        this.takePictureTag = takePictureTag;
         if (jni_initialization_status != 0) {
             Log.e(TAG, "waiting jni initialization finnish ...");
             return;
@@ -446,7 +461,9 @@ public class FaceRecognize {
                 progressDialog.setContentView(R.layout.dialog_loading);
 
                 // 设置ProgressDialog的位置和大小
-                WindowManager.LayoutParams layoutParams = progressDialog.getWindow().getAttributes();
+                Window window = progressDialog.getWindow();
+                window.setBackgroundDrawableResource(R.drawable.bg_loading);
+                WindowManager.LayoutParams layoutParams = window.getAttributes();
                 layoutParams.gravity = Gravity.CENTER;
                 layoutParams.width = 500;
                 layoutParams.height = 500;
@@ -527,7 +544,15 @@ public class FaceRecognize {
                     }
 
 //                    Log.e(TAG, "onCaptureCompleted: ");
-                    JNI_FaceDetection(grayMat.getNativeObjAddr(), mat.getNativeObjAddr());
+                    int ret = JNI_FaceDetection(grayMat.getNativeObjAddr(), mat.getNativeObjAddr());
+                    if (ret == 0) {
+//                        showToast("识别成功");
+                        Log.d(TAG, "识别成功 userName : " + faceRecognizeUserName);
+                        onReturnListener.onReturn(0, faceRecognizeUserName);
+                    } else if (ret == -1) {
+                        Log.d(TAG, "识别失败");
+                        onReturnListener.onReturn(-1, null);
+                    }
                 }
 
                 @Override
@@ -578,7 +603,7 @@ public class FaceRecognize {
 //        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 //        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "IMG_" + timeStamp + ".jpg");
 //        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "IMG.jpg");
-        File file = new File(activity.getFilesDir().getAbsolutePath(), "/IMG.jpg");
+        File file = new File(activity.getFilesDir().getAbsolutePath(), "/" + takePictureTag + ".jpg");
         try {
             FileOutputStream outputStream = new FileOutputStream(file);
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
@@ -590,7 +615,7 @@ public class FaceRecognize {
             rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
             outputStream.write(data);
             outputStream.close();
-            Log.e(TAG, "Image saved to " + file.getAbsolutePath());
+            Log.d(TAG, "Image saved to " + file.getAbsolutePath());
 
             inUploadingFaceImage = false;
             if (progressDialog != null && progressDialog.isShowing())
@@ -682,14 +707,16 @@ public class FaceRecognize {
     private void showToast(final String text) {
 //        final Activity activity = activity;
         if (activity != null && !activity.isDestroyed() && !activity.isFinishing())
-            activity.runOnUiThread(() -> Toast.makeText(activity, text, Toast.LENGTH_SHORT).show());
+            activity.runOnUiThread(() ->
+                    Toast.makeText(activity, text, Toast.LENGTH_SHORT).show()
+            );
     }
 
     public static native int JNI_Initialization(String workPath, String dataDirectory, String cascadeFile, int arithmetic);
 
     public static native void JNI_Close();
 
-    public native void JNI_FaceDetection(long matAddressGray, long matAddressRgba);
+    public native int JNI_FaceDetection(long matAddressGray, long matAddressRgba);
 
 //    public native void JNI_EyeDetection(long matAddressGray, long matAddressRgba);
 

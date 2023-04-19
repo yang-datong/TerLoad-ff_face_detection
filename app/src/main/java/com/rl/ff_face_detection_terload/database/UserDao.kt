@@ -8,8 +8,11 @@ interface UserDao {
     suspend fun addUser(user: User):Long
 
     @Query("SELECT * FROM users WHERE username = :username")
-    fun getUserByUsername(username: String): User?
+    suspend fun getUserByUsername(username: String): User?
 
     @Delete
-    fun deleteUser(user: User)
+    suspend fun deleteUser(user: User)
+
+    @Update
+    suspend fun updateUser(user: User):Int
 }
