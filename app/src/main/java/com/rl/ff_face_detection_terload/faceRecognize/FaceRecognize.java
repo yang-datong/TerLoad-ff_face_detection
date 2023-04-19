@@ -79,7 +79,7 @@ public class FaceRecognize {
     private HandlerThread mBackgroundThread;
     private Handler mBackgroundHandler;
 
-    private static int jni_initialization_status = -1; //用子线程加载人脸识别模型
+    private static int jni_initialization_status[] = {-1, -1, -1}; //用子线程加载人脸识别模型
 
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
 
@@ -99,24 +99,24 @@ public class FaceRecognize {
     private boolean inUploadingFaceImage = false;
 
     private String takePictureTag = null;
-    private String faceRecognizeUserName = null;
+    private final String faceRecognizeUserName = null;
 
 
     public static void loadJNIFaceModel(Context application) {
         new Thread(() -> {
             String workPath = application.getFilesDir().getAbsolutePath();
             Log.d(TAG, "run: dynamicDeploymentCascadeClassifier");
-            jni_initialization_status = dynamicDeploymentCascadeClassifier(R.raw.haarcascade_frontalface, workPath, application);
-            Log.d(TAG, "initialization finish -> dynamicDeploymentCascadeClassifier:" + jni_initialization_status);
+            jni_initialization_status[0] = dynamicDeploymentCascadeClassifier(R.raw.haarcascade_frontalface, workPath, application);
+            Log.d(TAG, "initialization finish -> dynamicDeploymentCascadeClassifier:" + jni_initialization_status[0]);
 
             Log.d(TAG, "run: dynamicDeploymentTrainData");
-            jni_initialization_status = dynamicDeploymentTrainData("lfw.zip", workPath, application);
-            Log.d(TAG, "initialization finish -> dynamicDeploymentTrainData:" + jni_initialization_status);
+            jni_initialization_status[1] = dynamicDeploymentTrainData("lfw.zip", workPath, application);
+            Log.d(TAG, "initialization finish -> dynamicDeploymentTrainData:" + jni_initialization_status[1]);
 
 
             Log.d(TAG, "run: jni initialization");
-            jni_initialization_status = JNI_Initialization(workPath, "lfw", "haarcascades/haarcascade_frontalface.xml", 2);
-            Log.d(TAG, "initialization finish -> jni_initialization_status:" + jni_initialization_status);
+            jni_initialization_status[2] = JNI_Initialization(workPath, "lfw", "haarcascades/haarcascade_frontalface.xml", 2);
+            Log.d(TAG, "initialization finish -> jni_initialization_status:" + jni_initialization_status[2]);
         }).start();
     }
 
@@ -211,7 +211,7 @@ public class FaceRecognize {
         this.activity = activity;
         this.onReturnListener = onReturnListener;
         this.mTextureView = textureView;
-        if (jni_initialization_status != 0) {
+        if (jni_initialization_status[jni_initialization_status.length - 1] != 0) {
             showToast("等待模型加载中，如果长时间未加载成功则模型错误");
             return;
         }
@@ -445,7 +445,7 @@ public class FaceRecognize {
             return;
         }
         this.takePictureTag = takePictureTag;
-        if (jni_initialization_status != 0) {
+        if (jni_initialization_status[jni_initialization_status.length - 1] != 0) {
             Log.e(TAG, "waiting jni initialization finnish ...");
             return;
         }
@@ -538,7 +538,7 @@ public class FaceRecognize {
                     Mat grayMat = new Mat();
                     Imgproc.cvtColor(mat, grayMat, Imgproc.COLOR_RGB2GRAY);
 
-                    if (jni_initialization_status != 0) {
+                    if (jni_initialization_status[jni_initialization_status.length - 1] != 0) {
                         Log.e(TAG, "waiting jni initialization finnish ...");
                         return;
                     }
@@ -629,8 +629,10 @@ public class FaceRecognize {
 
             if (JNI_JustSaveFaceImage(file.getAbsolutePath()) == -1)
                 showToast("未识别到人脸，上传人脸失败!!!");
-            else
+            else{
                 showToast("上传人脸成功");
+                onReturnListener.onReturn(0, null);
+            }
 
             activity.runOnUiThread(() ->
                     showImageView.setVisibility(View.GONE)

@@ -9,6 +9,8 @@ import android.graphics.Color
 import android.util.Log
 import android.view.View
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isGone
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.contract.LoginContract
 import com.rl.ff_face_detection_terload.presenter.LoginPresenter
@@ -41,8 +43,6 @@ class LoginActivity : BaseActivity(), LoginContract.View {
     }
 
     override fun inits() {
-//        username.setText("qqq")
-//        password.setText("111")
         login.setOnClickListener {
             hideSoftKeyboard()//隐藏软键盘
             if (hasWriteExternalStoragePermission(REQUEST_NORMAL_LOGIN))  //检查是否有权限
@@ -56,6 +56,10 @@ class LoginActivity : BaseActivity(), LoginContract.View {
             Snackbar.make(it, "忘记密码我也没办法啊...", Snackbar.LENGTH_LONG).setAction("行吧", null).show()
         }
         face_login.setOnClickListener {
+//            BottomSheetDialog(this).apply {
+//                setContentView(R.layout.dialog_more_option_login)
+//            }.show()
+            ll_login_options.isGone = false
             if (!hasWriteExternalStoragePermission(REQUEST_FACE_RECOGNIZE_LOGIN)) {  //检查是否有权限
                 applyWriteExternalStoragePermission()   //弹出请求权限对话框
                 return@setOnClickListener
@@ -116,7 +120,6 @@ class LoginActivity : BaseActivity(), LoginContract.View {
         else
             toast(mes)
     }
-    //TODO 新安装App首次进入人脸识别必定奔溃   , 上传照片成功后自动退出上传界面
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

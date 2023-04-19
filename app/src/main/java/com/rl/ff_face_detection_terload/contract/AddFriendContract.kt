@@ -1,5 +1,7 @@
 package com.rl.ff_face_detection_terload.contract
 
+import android.content.Context
+
 /**
  * @author 杨景
  * @description:
@@ -7,7 +9,7 @@ package com.rl.ff_face_detection_terload.contract
  */
 interface AddFriendContract {
     interface Presenter : BasePresenter{
-        fun search(key: String)
+        fun search(key: String, context: Context)
     }
     interface View {
         fun onSearchSuccess()

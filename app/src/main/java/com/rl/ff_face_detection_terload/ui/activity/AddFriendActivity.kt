@@ -14,27 +14,22 @@ import org.jetbrains.anko.toast
  * @description:
  * @date :2021/1/4 16:34
  */
-class AddFriendActivity : BaseActivity() ,AddFriendContract.View{
-    override fun getLayoutResID()  = R.layout.activity_addfriend
-    override fun onSupportNavigateUp(): Boolean {
-        finish()
-        return super.onSupportNavigateUp()
-    }
+class AddFriendActivity : BaseActivity(), AddFriendContract.View {
+    override fun getLayoutResID() = R.layout.activity_addfriend
 
-    val presenter  by lazy { AddFriendPresenter(this) }
+    val presenter by lazy { AddFriendPresenter(this) }
 
     override fun inits() {
         recyclerview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
-            adapter = AddFriendListAdapter(context,presenter.addFriendItems)
+            adapter = AddFriendListAdapter(context, presenter.addFriendItems)
         }
-        presenter.search("")
+        presenter.search("",this)
         searchview.isSubmitButtonEnabled = true
-        searchview.setOnQueryTextListener(object : SearchView.OnQueryTextListener
-        {
+        searchview.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let { presenter.search(it) }
+                query?.let { presenter.search(it,this@AddFriendActivity) }
                 hideSoftKeyboard()
                 return true
             }
@@ -43,7 +38,6 @@ class AddFriendActivity : BaseActivity() ,AddFriendContract.View{
                 return false
             }
         })
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onSearchSuccess() {

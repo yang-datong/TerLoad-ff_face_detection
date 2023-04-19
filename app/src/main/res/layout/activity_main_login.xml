@@ -252,8 +252,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/lay_12"
                 android:gravity="center"
-                android:text="@string/login_other_hint"
-                android:textColor="@color/login_other_color"
+                android:text="人脸识别登录"
+                android:textColor="@color/black"
                 android:textSize="14sp" />
 
             <LinearLayout

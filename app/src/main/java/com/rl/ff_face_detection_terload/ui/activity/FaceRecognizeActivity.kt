@@ -25,7 +25,7 @@ class FaceRecognizeActivity : BaseActivity() {
     override fun inits() {
         val mTextureView = findViewById<TextureView>(R.id.texture_view)
         faceRecognize = FaceRecognize()
-        faceRecognize!!.onCreate(mTextureView, this) { status, faceRecognizeUserName ->
+        faceRecognize?.onCreate(mTextureView, this) { status, faceRecognizeUserName ->
             if (status == 0) {
                 val resultIntent = Intent()
                 if (!faceRecognizeUserName.isNullOrBlank()) {

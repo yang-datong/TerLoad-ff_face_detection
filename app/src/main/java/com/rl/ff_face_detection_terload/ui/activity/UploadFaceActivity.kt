@@ -1,5 +1,7 @@
 package com.rl.ff_face_detection_terload.ui.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.view.TextureView
 import android.view.View
@@ -31,7 +33,18 @@ class UploadFaceActivity : BaseActivity() {
         val mImageView = findViewById<ImageView>(R.id.image_view)
         val mButtonView = findViewById<Button>(R.id.button_capture)
         faceRecognize = FaceRecognize()
-        faceRecognize?.onCreate(mTextureView, this) { _: Int, _: String -> }
+        faceRecognize?.onCreate(mTextureView, this) { status, faceRecognizeUserName ->
+            if (status == 0) {
+//                val resultIntent = Intent()
+//                if (!faceRecognizeUserName.isNullOrBlank()) {
+//                    resultIntent.putExtra("faceRecognizeUserName", faceRecognizeUserName)
+//                    setResult(Activity.RESULT_OK, resultIntent)
+//                } else {
+//                    setResult(Activity.RESULT_CANCELED, resultIntent)
+//                }
+                finish()
+            }
+        }
         faceRecognize?.uploadFaceImage(mImageView)
         mButtonView.setOnClickListener {
             val takePictureTag = EMClient.getInstance().currentUser
@@ -40,7 +53,6 @@ class UploadFaceActivity : BaseActivity() {
                 showBottomDialog("当前已有可用的人脸识别模型，是否继续上传？", "继续", object : OnClickListener {
                     override fun onClick(v: View?) {
                         faceRecognize?.takePicture(takePictureTag)
-//                        saveUserNameAndPassWord()
                         dismissBottomDialog()
                     }
                 })
@@ -49,10 +61,6 @@ class UploadFaceActivity : BaseActivity() {
             }
         }
     }
-
-//    private fun saveUserNameAndPassWord() {
-//         TODO
-//    }
 
 
     override fun onResume() {

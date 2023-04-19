@@ -72,7 +72,6 @@ abstract class BaseActivity : AppCompatActivity() {
             }
             show()
         }
-
     }
 
     interface OnClickListener {

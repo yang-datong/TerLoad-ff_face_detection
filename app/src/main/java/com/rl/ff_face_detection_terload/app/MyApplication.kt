@@ -107,8 +107,6 @@ class MyApplication : Application() {
         super.onCreate()
 //        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //夜间模式
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)//日间模式
-
-
         val isAuto = sp.getBoolean("isAuto", true)
         val emOptions = EMOptions()
         emOptions.autoLogin = isAuto

@@ -14,8 +14,10 @@ import com.rl.ff_face_detection_terload.contract.ContactContract
 import com.rl.ff_face_detection_terload.presenter.ContactPresenter
 import com.rl.ff_face_detection_terload.widget.SlideBar
 import com.hyphenate.chat.EMClient
+import com.rl.ff_face_detection_terload.ui.activity.AddFriendActivity
 import kotlinx.android.synthetic.main.fragment_contact.*
 import kotlinx.android.synthetic.main.title_bar.*
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
 /**
@@ -24,7 +26,7 @@ import org.jetbrains.anko.toast
  * @date :2021/1/2 22:24
  */
 //联系人
-class ContactFragment : BaseFragment() ,ContactContract.View{
+class ContactFragment : BaseFragment(), ContactContract.View {
     override fun getLayoutResID() = R.layout.fragment_contact
 
     val presenter by lazy { ContactPresenter(this) }
@@ -32,17 +34,20 @@ class ContactFragment : BaseFragment() ,ContactContract.View{
     override fun inits() {
         tv_title.text = "联系人"
         img_ret.isGone = true
-        setHasOptionsMenu(true)
+        img_option.isGone = false
+        img_option.setOnClickListener {
+            context?.startActivity<AddFriendActivity>()
+        }
+//        setHasOptionsMenu(true)
         recyclerview.apply {
             setHasFixedSize(true)  //当大小被固定的情况下使用 、可以减少重绘次数、减少资源损耗\
             layoutManager = LinearLayoutManager(context)
-            adapter = ContactListAdapter(context,presenter.contactListItems)
+            adapter = ContactListAdapter(context, presenter.contactListItems)
         }
-            presenter.loadData()
+        presenter.loadData()
 
 
-
-        EMClient.getInstance().contactManager().setContactListener(object :EMContactListenerAdapter(){
+        EMClient.getInstance().contactManager().setContactListener(object : EMContactListenerAdapter() {
             override fun onContactDeleted(username: String?) {
                 super.onContactDeleted(username)
                 presenter.loadData()
@@ -54,14 +59,14 @@ class ContactFragment : BaseFragment() ,ContactContract.View{
             }
         })
 
-        slideBar_view.onSectionChangeListener = object : SlideBar.OnSectionChangeListener{
+        slideBar_view.onSectionChangeListener = object : SlideBar.OnSectionChangeListener {
             override fun onSectionChange(firstLetter: String) {
-                textView.text =  firstLetter
+                textView.text = firstLetter
                 textView.visibility = View.VISIBLE
                 val position = getPosition(firstLetter)
                 println(position)
-                if (position!=-1)
-                recyclerview.smoothScrollToPosition(position)
+                if (position != -1)
+                    recyclerview.smoothScrollToPosition(position)
             }
 
             override fun onFinishChange() {
@@ -72,25 +77,25 @@ class ContactFragment : BaseFragment() ,ContactContract.View{
     }
 
     private fun getPosition(firstLetter: String) =
-        presenter.contactListItems.binarySearch {
+            presenter.contactListItems.binarySearch {
 //            Log.i("TAGsss", "firstLetter:${it.firstLetter}")
 //            Log.i("TAGsss", "firstLetter[0]:${firstLetter[0]}")
 //            Log.i("TAGsss", "firstLetter.minus(firstLetter[0]):${it.firstLetter.minus(firstLetter[0])}")
-            it.firstLetter.minus(firstLetter[0])
-        }
+                it.firstLetter.minus(firstLetter[0])
+            }
 
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.addmenu, menu)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        inflater.inflate(R.menu.addmenu, menu)
+//    }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId==R.id.add) {
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        if (item.itemId == R.id.add) {
 //            context?.startActivity<AddFriendActivity>()
-            Toast.makeText(context, "暂不开放", Toast.LENGTH_SHORT).show()
-        }
-        return super.onOptionsItemSelected(item)
-    }
+////            Toast.makeText(context, "暂不开放", Toast.LENGTH_SHORT).show()
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
 
 
     override fun onLoadSuccess() {
