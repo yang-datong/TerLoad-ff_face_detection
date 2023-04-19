@@ -1,16 +1,15 @@
 package com.rl.ff_face_detection_terload.ui.activity
 
 import android.os.Handler
-import com.rl.ff_face_detection_terload.MainActivity
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.contract.SplashContract
 import com.rl.ff_face_detection_terload.presenter.SplashPresenter
 import org.jetbrains.anko.startActivity
 
-class SplashActivity : BaseActivity() ,SplashContract.View{
+class SplashActivity : BaseActivity(), SplashContract.View {
     override fun getLayoutResID() = R.layout.activity_splash
 
-    companion object{
+    companion object {
         const val DELAY = 2000L
     }
 
@@ -21,7 +20,7 @@ class SplashActivity : BaseActivity() ,SplashContract.View{
     }
 
     private val handler by lazy {
-         Handler()
+        Handler()
     }
 
     override fun onNotLoggedIn() {

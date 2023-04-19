@@ -30,32 +30,26 @@ class MyApplication : Application() {
 
     private val mCallbacks = object : ActivityLifecycleCallbacks {
         override fun onActivityPaused(activity: Activity) {
-            Log.i(TAG, "onActivityPaused: ")
             isBackground = true
         }
 
         override fun onActivityStarted(activity: Activity) {
-            Log.i(TAG, "onActivityStarted: ")
+
         }
 
         override fun onActivityDestroyed(activity: Activity) {
-            Log.i(TAG, "onActivityDestroyed: ")
         }
 
         override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-            Log.i(TAG, "onActivitySaveInstanceState: ")
         }
 
         override fun onActivityStopped(activity: Activity) {
-            Log.i(TAG, "onActivityStopped: ")
         }
 
         override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-            Log.i(TAG, "onActivityCreated: ")
         }
 
         override fun onActivityResumed(activity: Activity) {
-            Log.i(TAG, "onActivityResumed: ")
             isBackground = false
         }
     }
@@ -91,7 +85,7 @@ class MyApplication : Application() {
 
             val build = NotificationCompat.Builder(applicationContext, "id")
                     .setContentTitle(userName)
-                    .setContentText("$contentText")
+                    .setContentText(contentText)
                     .setContentIntent(pendingIntent)
                     .setSmallIcon(R.mipmap.ic_login_3party_wechat)
                     .setChannelId("id").build()
@@ -113,7 +107,6 @@ class MyApplication : Application() {
         super.onCreate()
 //        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //夜间模式
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)//日间模式
-
 
 
         val isAuto = sp.getBoolean("isAuto", true)

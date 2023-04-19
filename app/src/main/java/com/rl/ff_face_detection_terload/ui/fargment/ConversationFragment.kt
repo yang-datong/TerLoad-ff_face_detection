@@ -23,23 +23,23 @@ import java.util.*
  * @date :2021/1/2 22:24
  */
 //对话页面
-class ConversationFragment : BaseFragment() ,ConversationContract.View{
+class ConversationFragment : BaseFragment(), ConversationContract.View {
     override fun getLayoutResID() = R.layout.fragment_conversation
 
 
     val presenter by lazy { ConversationPresenter(this) }
 
-    private val msgListener  = object : MessageListenerAdapter() {
+    private val msgListener = object : MessageListenerAdapter() {
         override fun onMessageReceived(messages: MutableList<EMMessage>?) {
             presenter.onConversations()
             context?.runOnUiThread { onUpdate() }
         }
     }
 
-    private val callback  = object : ItemTouchHelper.Callback() {
+    private val callback = object : ItemTouchHelper.Callback() {
         override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-            val dragFlags = ItemTouchHelper.UP or  ItemTouchHelper.DOWN
-            return makeMovementFlags(dragFlags,0)//监听上下左右移动Item
+            val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
+            return makeMovementFlags(dragFlags, 0)//监听上下左右移动Item
         }
 
         override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
@@ -61,7 +61,7 @@ class ConversationFragment : BaseFragment() ,ConversationContract.View{
         recyclerview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
-            adapter = ConversationListAdapter(context,presenter.conversations)
+            adapter = ConversationListAdapter(context, presenter.conversations)
             ItemTouchHelper(callback).attachToRecyclerView(this)
         }
 
@@ -71,11 +71,18 @@ class ConversationFragment : BaseFragment() ,ConversationContract.View{
             onUpdate()
         }
         presenter.onConversations()
-        EMClient.getInstance().chatManager().addMessageListener(msgListener);
+        EMClient.getInstance().chatManager().addMessageListener(msgListener)
     }
 
 
     override fun onUpdate() {
+        if (presenter.conversations.size == 0) {
+            tv_mes_empt.isGone = false
+            recyclerview.isGone = true
+        } else {
+            tv_mes_empt.isGone = true
+            recyclerview.isGone = false
+        }
         recyclerview.adapter?.notifyDataSetChanged()
     }
 
@@ -83,6 +90,7 @@ class ConversationFragment : BaseFragment() ,ConversationContract.View{
         super.onResume()
         onUpdate()
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         EMClient.getInstance().chatManager().removeMessageListener(msgListener);

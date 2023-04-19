@@ -8,5 +8,6 @@ class SplashPresenter(var view: SplashContract.View) : SplashContract.Presenter 
         if (isLoggedIn()) view.onLoggedIn() else view.onNotLoggedIn()
     }
 
-    private fun isLoggedIn()  = EMClient.getInstance().isConnected && EMClient.getInstance().isLoggedInBefore
+    //    private fun isLoggedIn() = EMClient.getInstance().isConnected && EMClient.getInstance().isLoggedInBefore
+    private fun isLoggedIn() = EMClient.getInstance().isLoggedInBefore
 }

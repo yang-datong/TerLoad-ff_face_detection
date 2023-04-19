@@ -1,5 +1,7 @@
 package com.rl.ff_face_detection_terload.ui.activity
 
+import android.graphics.Color
+import android.view.View
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.contract.RegisterContract
 import com.rl.ff_face_detection_terload.presenter.RegisterPresenter
@@ -11,6 +13,13 @@ class RegisterActivity : BaseActivity(), RegisterContract.View {
     override fun getLayoutResID() = R.layout.activity_main_register_step_two
     val presenter = RegisterPresenter(this)
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus);
+        window.apply {
+            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            statusBarColor = Color.TRANSPARENT
+        }
+    }
     override fun inits() {
         ib_navigation_back.setOnClickListener { finish() }
         bt_register_submit.setOnClickListener {

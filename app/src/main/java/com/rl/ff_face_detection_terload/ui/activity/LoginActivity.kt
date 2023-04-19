@@ -3,9 +3,9 @@ package com.rl.ff_face_detection_terload.ui.activity
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.view.View
 import androidx.core.app.ActivityCompat
-import com.rl.ff_face_detection_terload.MainActivity
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.contract.LoginContract
 import com.rl.ff_face_detection_terload.presenter.LoginPresenter
@@ -18,12 +18,10 @@ class LoginActivity : BaseActivity(), LoginContract.View {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus);
-        val decorView = window.decorView
-        decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        window.apply {
+            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            statusBarColor = Color.TRANSPARENT
+        }
     }
 
     override fun getLayoutResID() = R.layout.activity_main_login
@@ -47,10 +45,13 @@ class LoginActivity : BaseActivity(), LoginContract.View {
         tv_login_forget_pwd.setOnClickListener {
             Snackbar.make(it, "忘记密码我也没办法啊...", Snackbar.LENGTH_LONG).setAction("行吧", null).show()
         }
+        face_login.setOnClickListener {
+            startActivity<FaceRecognizeActivity>()
+        }
     }
 
     private fun applyWriteExternalStoragePermission() { //弹出请求权限对话框
-        val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
         ActivityCompat.requestPermissions(this, permissions, 0)
     }
 

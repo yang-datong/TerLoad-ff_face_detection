@@ -4,6 +4,7 @@ import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.ui.activity.LoginActivity
 import com.hyphenate.EMCallBack
 import com.hyphenate.chat.EMClient
+import com.rl.ff_face_detection_terload.ui.activity.UploadFaceActivity
 import kotlinx.android.synthetic.main.fragment_dynamic.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
@@ -20,19 +21,22 @@ class DynamicFragment : BaseFragment() {
     override fun getLayoutResID() = R.layout.fragment_dynamic
 
     override fun inits() {
-        textView14.text = EMClient.getInstance().currentUser
-        button.setOnClickListener {
+        tv_user_nmae.text = EMClient.getInstance().currentUser
+        bt_logout.setOnClickListener {
             context?.alert("退出后将接受不到信息！") {
                 positiveButton("退出登录") {
                     logout()
                 }
-                noButton {  }
+                noButton { }
             }?.show()
+        }
+        bt_upload.setOnClickListener {
+            context?.startActivity<UploadFaceActivity>()
         }
     }
 
     private fun logout() {
-        EMClient.getInstance().logout(true,object : EMCallBack {
+        EMClient.getInstance().logout(true, object : EMCallBack {
             override fun onSuccess() {
                 context?.startActivity<LoginActivity>()
                 activity?.finish()

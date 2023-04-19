@@ -1,4 +1,4 @@
-package com.rl.ff_face_detection_terload
+package com.rl.ff_face_detection_terload.ui.activity
 
 import android.os.Bundle
 import android.util.Log
@@ -9,13 +9,13 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.rl.ff_face_detection_terload.R.layout.activity_main
 import com.rl.ff_face_detection_terload.adapter.MessageListenerAdapter
-import com.rl.ff_face_detection_terload.ui.activity.LoginActivity
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.hyphenate.EMConnectionListener
 import com.hyphenate.EMError
 import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMMessage
+import com.rl.ff_face_detection_terload.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.angle_numver.view.*
 import org.jetbrains.anko.alert
@@ -24,20 +24,21 @@ import org.jetbrains.anko.yesButton
 
 
 class MainActivity : AppCompatActivity() {
-    private val msgListener  = object : MessageListenerAdapter(){
+    private val msgListener = object : MessageListenerAdapter() {
         override fun onMessageReceived(messages: MutableList<EMMessage>?) {
             runOnUiThread { angleNumber() }
         }
     }
-    private val connectionListener = object : EMConnectionListener{
+    private val connectionListener = object : EMConnectionListener {
         override fun onConnected() {
             Log.i("TAG", "onConnected: 服务已连接")
         }
 
         override fun onDisconnected(errorCode: Int) { //当服务器状态断开连接时
             if (errorCode == EMError.USER_LOGIN_ANOTHER_DEVICE) {//当报错代码为 在另一台设备上登录导致被断开连接
-                alert("","当前账号已在其他设备上登录!"){
-                    yesButton { startActivity<LoginActivity>()
+                alert("", "当前账号已在其他设备上登录!") {
+                    yesButton {
+                        startActivity<LoginActivity>()
                         finish()
                     }
                 }
@@ -45,6 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(activity_main)

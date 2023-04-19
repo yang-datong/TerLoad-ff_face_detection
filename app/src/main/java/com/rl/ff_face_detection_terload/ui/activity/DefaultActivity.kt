@@ -2,22 +2,27 @@ package com.rl.ff_face_detection_terload.ui.activity
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.os.Bundle
+import android.graphics.Color
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.rl.ff_face_detection_terload.MainActivity
 import com.rl.ff_face_detection_terload.R
 import com.hyphenate.chat.EMClient
-import com.rl.ff_face_detection_terload.faceRecognize.UploadFaceActivity
 import org.jetbrains.anko.startActivity
 
 class DefaultActivity : BaseActivity() {
     private var permissionsPass = true
     override fun getLayoutResID() = R.layout.activity_default
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus);
+        window.apply {
+            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            statusBarColor = Color.TRANSPARENT
+        }
+    }
 
     override fun inits() {
         val bDetection = findViewById<Button>(R.id.bt_detection)
@@ -44,7 +49,7 @@ class DefaultActivity : BaseActivity() {
                 if (isLoggedIn()) onLoggedIn() else onNotLoggedIn()
             }
         }
-        //        bUpload.setOnClickListener(v -> {
+        //bUpload.setOnClickListener(v -> {
 //            if (permissionsPass)
 //                startActivity(new Intent(this, UploadFaceActivity.class));
 //        });

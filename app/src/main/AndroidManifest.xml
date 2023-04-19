@@ -63,23 +63,22 @@
         <activity
             android:name="com.rl.ff_face_detection_terload.ui.activity.RegisterActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity
-            android:name="com.rl.ff_face_detection_terload.ui.activity.DefaultActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name="com.rl.ff_face_detection_terload.MainActivity" />
+        <activity android:name="com.rl.ff_face_detection_terload.ui.activity.MainActivity" />
         <activity
             android:name="com.rl.ff_face_detection_terload.ui.activity.ChatActivity"
-            android:parentActivityName="com.rl.ff_face_detection_terload.MainActivity" />
+            android:parentActivityName="com.rl.ff_face_detection_terload.ui.activity.MainActivity" />
         <activity
             android:name="com.rl.ff_face_detection_terload.ui.activity.AddFriendActivity"
             android:label="添加好友"
             android:launchMode="singleInstance" />
         <activity android:name="com.rl.ff_face_detection_terload.ui.activity.FaceRecognizeActivity" />
-        <activity android:name=".faceRecognize.UploadFaceActivity" />
+        <activity android:name=".ui.activity.UploadFaceActivity" />
+        <activity android:name=".ui.activity.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

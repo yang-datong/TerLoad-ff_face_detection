@@ -29,10 +29,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_mes_empt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="当前没有会话"
+                android:textSize="30sp"
+                android:textStyle="bold|italic"
+                android:visibility="gone" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
