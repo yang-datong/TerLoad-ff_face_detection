@@ -2,6 +2,9 @@ package com.rl.ff_face_detection_terload.ui.fargment
 
 import android.app.Dialog
 import android.app.ProgressDialog
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -33,9 +36,17 @@ abstract class BaseFragment : Fragment() {
     }
 
     private val bottomDialog by lazy {
-        context?.let {
-            BottomSheetDialog(it).apply {
-                setContentView(R.layout.dialog_bottom)
+//        BottomSheetDialog(requireContext(), R.style.BottomSheetDialogStyle).apply {
+//            setContentView(R.layout.dialog_bottom)
+//            window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//        }
+        Dialog(requireContext()).apply {
+            setContentView(R.layout.dialog_bottom)
+            window!!.setBackgroundDrawableResource(R.drawable.bg_loading)
+            window!!.attributes.apply {
+                gravity = Gravity.BOTTOM
+                width = ViewGroup.LayoutParams.MATCH_PARENT
+                windowAnimations = R.style.BottomSheetDialogAnimation
             }
         }
     }
@@ -56,33 +67,30 @@ abstract class BaseFragment : Fragment() {
         dialog.show()
     }
 
-    open fun showBottomDialog(msg: String?, bt_tips: String?, onClickListener: OnClickListener) {
+    open fun showBottomDialog(msg: String?, bt_tips: String?, onConfirm: () -> Unit) {
         if (message == null || confirm == null) {
-            message = bottomDialog?.findViewById(R.id.tv_message)
-            confirm = bottomDialog?.findViewById(R.id.bt_confirm)
+            message = bottomDialog.findViewById(R.id.tv_message)
+            confirm = bottomDialog.findViewById(R.id.bt_confirm)
         }
-        bottomDialog?.apply {
+        bottomDialog.apply {
             if (!msg.isNullOrEmpty())
                 message!!.text = msg
             if (!bt_tips.isNullOrEmpty())
                 confirm!!.text = bt_tips
             confirm!!.setOnClickListener {
-                onClickListener.onClick(it)
+                onConfirm()
+                dismiss()
             }
             show()
         }
     }
 
-    interface OnClickListener {
-        fun onClick(v: View)
-    }
-
     open fun dismissBottomDialog() {
-        bottomDialog?.dismiss()
+        bottomDialog.dismiss()
     }
 
     open fun dismissProgress() {
-        dialog?.dismiss()
+        dialog.dismiss()
     }
 
     abstract fun getLayoutResID(): Int
