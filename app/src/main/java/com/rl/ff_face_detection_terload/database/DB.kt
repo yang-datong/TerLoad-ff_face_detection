@@ -11,7 +11,7 @@ object DB {
             instance ?: Room.databaseBuilder(
                     context.applicationContext,
                     UserDatabase::class.java,
-                    "user"
+                    "user.db"
             ).fallbackToDestructiveMigration()
                     .build().also { instance = it }
         }

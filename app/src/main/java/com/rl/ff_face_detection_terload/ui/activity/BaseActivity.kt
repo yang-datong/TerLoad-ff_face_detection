@@ -59,8 +59,8 @@ abstract class BaseActivity : AppCompatActivity() {
 
     open fun showBottomDialog(msg: String?, bt_tips: String?, onClickListener: OnClickListener) {
         if (message == null || confirm == null) {
-            message = bottomDialog.findViewById<TextView>(R.id.tv_message)
-            confirm = bottomDialog.findViewById<Button>(R.id.bt_confirm)
+            message = bottomDialog.findViewById(R.id.tv_message)
+            confirm = bottomDialog.findViewById(R.id.bt_confirm)
         }
         bottomDialog.apply {
             if (!msg.isNullOrEmpty())
