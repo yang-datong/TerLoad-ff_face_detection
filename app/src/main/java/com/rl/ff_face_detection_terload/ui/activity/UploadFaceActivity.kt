@@ -1,17 +1,14 @@
 package com.rl.ff_face_detection_terload.ui.activity
 
-import android.app.Activity
-import android.content.Intent
 import android.graphics.Color
 import android.view.TextureView
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.hyphenate.chat.EMClient
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.faceRecognize.FaceRecognize
-import org.jetbrains.anko.toast
+import kotlinx.android.synthetic.main.activity_upload_face.*
 import java.io.File
 
 class UploadFaceActivity : BaseActivity() {
@@ -29,24 +26,14 @@ class UploadFaceActivity : BaseActivity() {
 
     override fun inits() {
         // 隐藏状态栏和顶部菜单栏
-        val mTextureView = findViewById<TextureView>(R.id.texture_view)
-        val mImageView = findViewById<ImageView>(R.id.image_view)
-        val mButtonView = findViewById<Button>(R.id.button_capture)
         faceRecognize = FaceRecognize()
-        faceRecognize?.onCreate(mTextureView, this) { status, faceRecognizeUserName ->
+        faceRecognize?.onCreate(texture_view, this) { status, faceRecognizeUserName ->
             if (status == 0) {
-//                val resultIntent = Intent()
-//                if (!faceRecognizeUserName.isNullOrBlank()) {
-//                    resultIntent.putExtra("faceRecognizeUserName", faceRecognizeUserName)
-//                    setResult(Activity.RESULT_OK, resultIntent)
-//                } else {
-//                    setResult(Activity.RESULT_CANCELED, resultIntent)
-//                }
                 finish()
             }
         }
-        faceRecognize?.uploadFaceImage(mImageView)
-        mButtonView.setOnClickListener {
+        faceRecognize?.uploadFaceImage(image_view)
+        img_capture.setOnClickListener {
             val takePictureTag = EMClient.getInstance().currentUser
             val file = File(filesDir.absolutePath, "/$takePictureTag.jpg")
             if (file.exists()) {

@@ -2,13 +2,13 @@ package com.rl.ff_face_detection_terload.presenter
 
 import android.content.Context
 import android.util.Log
-import com.rl.ff_face_detection_terload.contract.LoginContract
-import com.rl.ff_face_detection_terload.extensions.isValidPassword
-import com.rl.ff_face_detection_terload.extensions.isValidUserName
 import com.hyphenate.EMCallBack
 import com.hyphenate.chat.EMClient
+import com.rl.ff_face_detection_terload.contract.LoginContract
 import com.rl.ff_face_detection_terload.database.DB
 import com.rl.ff_face_detection_terload.database.User
+import com.rl.ff_face_detection_terload.extensions.isValidPassword
+import com.rl.ff_face_detection_terload.extensions.isValidUserName
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -50,6 +50,19 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
                 }
             }
         })
+    }
+
+    override fun rootUserIsExist(context: Context): Boolean {
+        var ret = true
+        runBlocking {
+            val job = GlobalScope.launch {
+                val userDao = DB.getInstance(context).userDao()
+                val user = userDao.getUserByUsername("root")
+                if (user == null) ret = false
+            }
+            job.join() // 等待协程执行完成
+        }
+        return ret
     }
 
     override fun getUserPasswordByUserName(userName: String, context: Context): String? {

@@ -6,7 +6,7 @@ import androidx.room.*
 interface UserDao {
 
     @Query("SELECT * FROM users ORDER BY ID DESC")
-    fun getAllUser():MutableList<User>
+    suspend fun getAllUser():MutableList<User>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addUser(user: User):Long

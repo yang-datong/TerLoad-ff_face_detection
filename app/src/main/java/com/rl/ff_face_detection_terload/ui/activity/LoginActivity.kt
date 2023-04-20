@@ -3,6 +3,7 @@ package com.rl.ff_face_detection_terload.ui.activity
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -10,11 +11,11 @@ import android.util.Log
 import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isGone
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.contract.LoginContract
+import com.rl.ff_face_detection_terload.extensions.DynamicDeploymentData
 import com.rl.ff_face_detection_terload.presenter.LoginPresenter
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main_login.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
@@ -56,15 +57,19 @@ class LoginActivity : BaseActivity(), LoginContract.View {
             Snackbar.make(it, "忘记密码我也没办法啊...", Snackbar.LENGTH_LONG).setAction("行吧", null).show()
         }
         face_login.setOnClickListener {
-//            BottomSheetDialog(this).apply {
-//                setContentView(R.layout.dialog_more_option_login)
-//            }.show()
             ll_login_options.isGone = false
             if (!hasWriteExternalStoragePermission(REQUEST_FACE_RECOGNIZE_LOGIN)) {  //检查是否有权限
                 applyWriteExternalStoragePermission()   //弹出请求权限对话框
                 return@setOnClickListener
             }
             startActivityForResult(Intent(this, FaceRecognizeActivity::class.java), REQUEST_CODE)
+        }
+
+        val rootUserIsExist = loginPresenter.rootUserIsExist(this.applicationContext)
+        if (!rootUserIsExist) {
+            Log.d(TAG, "run : dynamicDeploymentDefaultUserDataBase")
+            val ret = DynamicDeploymentData.dynamicDeploymentTrainData("default_users.zip", ContextWrapper(this.applicationContext).dataDir.absolutePath, this.applicationContext)
+            Log.d(TAG, "finish -> dynamicDeploymentTrainData:$ret")
         }
     }
 

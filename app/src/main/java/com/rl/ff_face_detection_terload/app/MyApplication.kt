@@ -12,11 +12,18 @@ import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
+import com.hyphenate.EMCallBack
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.adapter.MessageListenerAdapter
 import com.rl.ff_face_detection_terload.faceRecognize.FaceRecognize
 import com.rl.ff_face_detection_terload.ui.activity.ChatActivity
 import com.hyphenate.chat.*
+import com.hyphenate.exceptions.HyphenateException
+import com.rl.ff_face_detection_terload.database.DB
+import com.rl.ff_face_detection_terload.database.User
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.litepal.LitePal
 
 class MyApplication : Application() {
@@ -87,7 +94,7 @@ class MyApplication : Application() {
                     .setContentTitle(userName)
                     .setContentText(contentText)
                     .setContentIntent(pendingIntent)
-                    .setSmallIcon(R.mipmap.ic_login_3party_wechat)
+                    .setSmallIcon(R.mipmap.atom)
                     .setChannelId("id").build()
             notificationManager.notify(1, build)
         }
@@ -128,7 +135,62 @@ class MyApplication : Application() {
         LitePal.initialize(applicationContext)
 
         registerActivityLifecycleCallbacks(mCallbacks)
+//        setDefaultUser() //比较暴力，一般跑一次就可以了
         FaceRecognize.loadJNIFaceModel(this.applicationContext)
+    }
+
+    private fun setDefaultUser() {
+        GlobalScope.launch {
+            val names = arrayOf("Atomu", "LiangZhaoyang", "WuYiming", "ZhangXiangyu", "ChenWeijie", "LiuJiahui", "SunQianying", "WangJianfeng", "ZhouXingyu", "HuangYifan", "LiMinghui", "DengYuhan", "TangZhengyang", "LinQingyang", "GaoXiaodong", "HuQianwen", "JinXinyi", "FengYunlong", "CaoXinran", "LiJiaming", "ZhouYifei", "WuYufei", "ChenJianyu", "XuYuhang", "ZhangXinyi", "WangMengjie", "LiuXiaowei", "HuangZhihao", "YangKaiwen", "ShenZhihui", "GuoYaqi", "TangXueqin", "DengYuting", "JiangYingjie", "HuShanshan", "YaoZhijun", "FanXiaojing", "MeiXiaochen", "CaiMengxuan")
+            val userDao = DB.getInstance(this@MyApplication).userDao()
+            val emc = EMClient.getInstance()
+            emc.login("root", "123", object : EMCallBack {
+                override fun onSuccess() {}
+                override fun onProgress(progress: Int, status: String?) {}
+                override fun onError(code: Int, error: String?) {}
+            })
+            userDao.addUser(User(0, "root", "123"))
+            userDao.addUser(User(1, "yangjing", "123"))
+            for (i in names.indices) {
+                userDao.addUser(User(i + 2, names[i], "111"))
+                try {
+                    emc.createAccount(names[i], "111")
+                } catch (e: HyphenateException) {
+                    Log.i("setDefaultUser", "注册失败: " + e.message)
+                }
+                try {
+                    emc.contactManager().addContact(names[i], "Initialization Contact")
+                } catch (e: HyphenateException) {
+                    Log.i("setDefaultUser", "添加好友失败: " + e.message)
+                }
+            }
+            emc.logout(true)
+
+            for (i in names.indices) {
+                delay(200)
+                try {
+                    emc.login(names[i], "111", object : EMCallBack {
+                        override fun onSuccess() {
+                            emc.contactManager().addContact("root", "Initialization Contact")
+                            emc.logout(true)
+                        }
+
+                        override fun onProgress(progress: Int, status: String?) {
+                            Log.d("setDefaultUser", "onProgress: $status")
+                        }
+
+                        override fun onError(code: Int, error: String?) {
+                            Log.d("setDefaultUser", "onError: $error")
+                        }
+                    })
+                } catch (e: HyphenateException) {
+                    Log.i("setDefaultUser", "同意好友失败: " + e.message)
+                }
+            }
+
+            Log.d("setDefaultUser", "setDefaultUser: Done")
+        }
+
     }
 
     override fun onTerminate() {

@@ -43,6 +43,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import com.rl.ff_face_detection_terload.R;
+import com.rl.ff_face_detection_terload.extensions.DynamicDeploymentData;
 
 
 import org.opencv.android.Utils;
@@ -106,11 +107,11 @@ public class FaceRecognize {
         new Thread(() -> {
             String workPath = application.getFilesDir().getAbsolutePath();
             Log.d(TAG, "run: dynamicDeploymentCascadeClassifier");
-            jni_initialization_status[0] = dynamicDeploymentCascadeClassifier(R.raw.haarcascade_frontalface, workPath, application);
+            jni_initialization_status[0] = DynamicDeploymentData.dynamicDeploymentCascadeClassifier(R.raw.haarcascade_frontalface, workPath, application);
             Log.d(TAG, "initialization finish -> dynamicDeploymentCascadeClassifier:" + jni_initialization_status[0]);
 
             Log.d(TAG, "run: dynamicDeploymentTrainData");
-            jni_initialization_status[1] = dynamicDeploymentTrainData("lfw.zip", workPath, application);
+            jni_initialization_status[1] = DynamicDeploymentData.dynamicDeploymentTrainData("lfw.zip", workPath, application);
             Log.d(TAG, "initialization finish -> dynamicDeploymentTrainData:" + jni_initialization_status[1]);
 
 
@@ -118,82 +119,6 @@ public class FaceRecognize {
             jni_initialization_status[2] = JNI_Initialization(workPath, "lfw", "haarcascades/haarcascade_frontalface.xml", 2);
             Log.d(TAG, "initialization finish -> jni_initialization_status:" + jni_initialization_status[2]);
         }).start();
-    }
-
-    public static int dynamicDeploymentTrainData(String assetsZipFile, String targetDirectory, Context context) {
-        InputStream inputStream;
-        ZipInputStream zipInputStream;
-
-        try {
-            inputStream = context.getAssets().open(assetsZipFile);
-            zipInputStream = new ZipInputStream(new BufferedInputStream(inputStream));
-
-            ZipEntry zipEntry;
-            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                String entryName = zipEntry.getName();
-
-                if (zipEntry.isDirectory()) {
-                    File folder = new File(targetDirectory + File.separator + entryName);
-                    if (!folder.exists()) {
-                        folder.mkdirs();
-                    }
-                } else {
-                    FileOutputStream fileOut = new FileOutputStream(targetDirectory + File.separator + entryName);
-                    BufferedOutputStream bufferedOut = new BufferedOutputStream(fileOut);
-
-                    byte[] buffer = new byte[1024];
-                    int count;
-                    while ((count = zipInputStream.read(buffer)) != -1) {
-                        bufferedOut.write(buffer, 0, count);
-                    }
-
-                    bufferedOut.flush();
-                    bufferedOut.close();
-                    fileOut.close();
-                }
-                zipInputStream.closeEntry();
-            }
-            zipInputStream.close();
-            return 0;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return -1;
-    }
-
-    private static int dynamicDeploymentCascadeClassifier(int id, String workPath, Context application) {
-        try {
-            InputStream is = application.getResources().openRawResource(id);
-            File cascadeDir = new File(workPath + "/haarcascades");
-            if (!cascadeDir.exists()) {
-                boolean status = cascadeDir.mkdir();
-                if (status) {
-                    Log.d(TAG, "Folder created");
-                } else {
-                    Log.e(TAG, "Failed to create folder" + cascadeDir.getAbsolutePath());
-                    return -1;
-                }
-            }
-            File cascadeFile = new File(workPath + "/haarcascades", "haarcascade_frontalface.xml");
-            if (!cascadeFile.exists()) {
-                FileOutputStream os = new FileOutputStream(cascadeFile);
-
-                byte[] buffer = new byte[4096];
-                int bytesRead;
-                while ((bytesRead = is.read(buffer)) != -1) {
-                    os.write(buffer, 0, bytesRead);
-                }
-
-                is.close();
-                os.close();
-                Log.d(TAG, "CascadeFile write " + cascadeFile.getAbsolutePath());
-            }
-            return 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(TAG, "loadCascadeClassifier: error -> ", e);
-        }
-        return -1;
     }
 
     public static void onDestroy() {
@@ -629,7 +554,7 @@ public class FaceRecognize {
 
             if (JNI_JustSaveFaceImage(file.getAbsolutePath()) == -1)
                 showToast("未识别到人脸，上传人脸失败!!!");
-            else{
+            else {
                 showToast("上传人脸成功");
                 onReturnListener.onReturn(0, null);
             }

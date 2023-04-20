@@ -1,22 +1,4 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 <!--    <style name="FlatWhiteTheme" parent="Theme.MaterialComponents.Light">-->
-    <style name="FlatWhiteTheme" parent="Theme.MaterialComponents.Light">
-
-    <!-- Primary brand color -->
-        <item name="colorPrimary">#FFFFFF</item>
-        <item name="colorPrimaryDark">#EEEEEE</item>
-        <item name="colorAccent">#FF4081</item>
-
-        <!-- Status bar color (API level 21+) -->
-        <item name="android:statusBarColor">#EEEEEE</item>
-
-        <!-- Navigation bar color (API level 21+) -->
-        <item name="android:navigationBarColor">#FFFFFF</item>
-
-        <!-- Text color -->
-        <item name="android:textColorPrimary">#212121</item>
-        <item name="android:textColorSecondary">#727272</item>
-
-    </style>
 
 </resources>

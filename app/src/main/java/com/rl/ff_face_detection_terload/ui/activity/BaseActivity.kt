@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.TextView
@@ -31,8 +32,18 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     private val bottomDialog by lazy {
-        BottomSheetDialog(this).apply {
+//        BottomSheetDialog(requireContext(), R.style.BottomSheetDialogStyle).apply {
+//            setContentView(R.layout.dialog_bottom)
+//            window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//        }
+        Dialog(this).apply {
             setContentView(R.layout.dialog_bottom)
+            window!!.setBackgroundDrawableResource(R.drawable.bg_loading)
+            window!!.attributes.apply {
+                gravity = Gravity.BOTTOM
+                width = ViewGroup.LayoutParams.MATCH_PARENT
+                windowAnimations = R.style.BottomSheetDialogAnimation
+            }
         }
     }
 
