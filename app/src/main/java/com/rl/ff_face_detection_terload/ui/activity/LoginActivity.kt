@@ -116,7 +116,7 @@ class LoginActivity : BaseActivity(), LoginContract.View {
     override fun onLoggedInFailed(mes: String?) {
         dismissProgress()
         if (mes == null)
-            toast("登陆失败")
+            toast("登录失败")
         else
             toast(mes)
     }

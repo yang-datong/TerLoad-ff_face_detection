@@ -43,25 +43,25 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/bt_database_restore"
+        android:id="@+id/bt_data_restore"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:text="数据库恢复"
+        android:text="数据恢复"
         app:layout_constraintBottom_toTopOf="@+id/bt_upload"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/bt_database_backup"
+        android:id="@+id/bt_data_backup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:text="数据库备份"
-        app:layout_constraintBottom_toTopOf="@+id/bt_database_restore"
+        android:text="数据备份"
+        app:layout_constraintBottom_toTopOf="@+id/bt_data_restore"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
@@ -73,7 +73,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:text="暗黑模式/日间模式"
-        app:layout_constraintBottom_toTopOf="@+id/bt_database_backup"
+        app:layout_constraintBottom_toTopOf="@+id/bt_data_backup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />

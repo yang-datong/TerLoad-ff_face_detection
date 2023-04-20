@@ -9,7 +9,8 @@ import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.ui.activity.LoginActivity
 import com.hyphenate.EMCallBack
 import com.hyphenate.chat.EMClient
-import com.rl.ff_face_detection_terload.database.DataBaseOperation
+import com.rl.ff_face_detection_terload.database.DataOperation
+import com.rl.ff_face_detection_terload.extensions.zipDirectory
 import com.rl.ff_face_detection_terload.ui.activity.UploadFaceActivity
 import kotlinx.android.synthetic.main.fragment_dynamic.*
 import org.jetbrains.anko.alert
@@ -34,51 +35,60 @@ class DynamicFragment : BaseFragment() {
     override fun inits() {
         tv_user_nmae.text = EMClient.getInstance().currentUser
         bt_logout.setOnClickListener {
-            context?.alert("退出后将接受不到信息！") {
-                positiveButton("退出登录") {
+            showBottomDialog("退出后将接受不到信息！", "退出登录", object : OnClickListener {
+                override fun onClick(v: View) {
+                    dismissBottomDialog()
+                    showProgress()
                     logout()
                 }
-                noButton { }
-            }?.show()
+            })
         }
         bt_upload.setOnClickListener {
             context?.startActivity<UploadFaceActivity>()
         }
-        bt_database_backup.setOnClickListener {
-            showBottomDialog("将要备份数据库到\"${ContextWrapper(context?.applicationContext).dataDir}\"会覆盖原来的备份文件，是否继续？",
+        bt_data_backup.setOnClickListener {
+            val status = arrayOf(-1, -1)
+            showBottomDialog("将要备份数据到\"${ContextWrapper(context?.applicationContext).dataDir}\"会覆盖原来的备份文件，是否继续？",
                     "继续", object : OnClickListener {
                 override fun onClick(v: View) {
+                    dismissBottomDialog()
+                    showProgress()
                     //SHM文件通常用于存储缓存数据或者共享数据结构,SHM文件只有在Memory Mapping模式下才会存在
-                    //当应用程序执行修改操作时，Room会先将操作记录到WAL文件中，然后在后台异步地将这些操作应用到数据库文件中,WAL文件只有在WAL模式下才会存在。
-                    val status = DataBaseOperation.backupData(arrayOf("user.db", "user.db-shm", "user.db-wal"), context?.applicationContext)
-                    if (status == 0) {
-                        Snackbar.make(it, "备份数据库完成", Snackbar.LENGTH_LONG).show()
+                    //当应用程序执行修改操作时，Room会先将操作记录到WAL文件中，然后在后台异步地将这些操作应用到数据文件中,WAL文件只有在WAL模式下才会存在。
+                    status[0] = DataOperation.backupDataBase(arrayOf("user.db", "user.db-shm", "user.db-wal"), context?.applicationContext)
+                    status[1] = DataOperation.backupFaceData(arrayOf("${EMClient.getInstance().currentUser}.jpg", "model/"), context?.applicationContext)
+                    if (status[0] == 0 && status[1] == 0) {
+                        Snackbar.make(it, "备份数据完成", Snackbar.LENGTH_LONG).show()
+                    } else if (status[0] == 0 && status[1] != 0) {
+                        Snackbar.make(it, "备份用户数据完成", Snackbar.LENGTH_LONG).show()
                     } else {
-                        Snackbar.make(it, "备份数据库失败", Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(it, "备份数据失败", Snackbar.LENGTH_LONG).show()
                     }
-                    dismissBottomDialog()
+                    dismissProgress()
                 }
             })
         }
-        bt_database_restore.setOnClickListener {
-            showBottomDialog("将要从\"${ContextWrapper(context?.applicationContext).dataDir}\"备份文件恢复到数据库，是否继续？", "继续", object : OnClickListener {
+        bt_data_restore.setOnClickListener {
+            val status = arrayOf(-1, -1)
+            showBottomDialog("将要从\"${ContextWrapper(context?.applicationContext).dataDir}\"备份文件恢复到数据，是否继续？", "继续", object : OnClickListener {
                 override fun onClick(v: View) {
-                    val status = DataBaseOperation.restoreData(arrayOf("user.db", "user.db-shm", "user.db-wal"), context?.applicationContext)
-                    when (status) {
-                        0 -> {
-                            Snackbar.make(it, "恢复数据库完成", Snackbar.LENGTH_LONG).show()
-                        }
-                        1 -> {
-                            Snackbar.make(it, "当前没有可恢复的数据库文件", Snackbar.LENGTH_LONG).show()
-                        }
-                        else -> {
-                            Snackbar.make(it, "恢复数据库失败", Snackbar.LENGTH_LONG).show()
-                        }
-                    }
                     dismissBottomDialog()
+                    showProgress()
+                    status[0] = DataOperation.restoreDataBase(arrayOf("user.db", "user.db-shm", "user.db-wal"), context?.applicationContext)
+                    status[1] = DataOperation.restoreFaceData(arrayOf("${EMClient.getInstance().currentUser}.jpg", "model/"), context?.applicationContext)
+                    if (status[0] == 0 && status[1] == 0)
+                        Snackbar.make(it, "恢复数据完成", Snackbar.LENGTH_LONG).show()
+                    else if (status[0] == 0 && status[1] != 0)
+                        Snackbar.make(it, "恢复用户数据完成", Snackbar.LENGTH_LONG).show()
+                    else if (status[0] == 1 || status[1] != 1)
+                        Snackbar.make(it, "当前没有可恢复的数据文件", Snackbar.LENGTH_LONG).show()
+                    else
+                        Snackbar.make(it, "恢复数据失败", Snackbar.LENGTH_LONG).show()
+                    dismissProgress()
                 }
             })
         }
+
         bt_theme_model.setOnClickListener {
             sp?.let {
                 val hasDark = it.getBoolean("dark", false)
@@ -95,12 +105,12 @@ class DynamicFragment : BaseFragment() {
     private fun logout() {
         EMClient.getInstance().logout(true, object : EMCallBack {
             override fun onSuccess() {
+                dismissProgress()
                 context?.startActivity<LoginActivity>()
                 activity?.finish()
             }
 
             override fun onProgress(progress: Int, status: String?) {
-                showProgress("退出中...")
             }
 
             override fun onError(code: Int, error: String?) {

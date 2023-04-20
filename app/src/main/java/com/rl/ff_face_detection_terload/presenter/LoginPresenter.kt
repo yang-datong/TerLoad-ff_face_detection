@@ -92,7 +92,7 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
         EMClient.getInstance().logout(true, object : EMCallBack {
             override fun onSuccess() {
                 uiThread {
-                    view.onLoggedInFailed("已在另一台设备中退出，尝试重新登陆")
+                    view.onLoggedInFailed("已在另一台设备中退出，尝试重新登录")
                 }
             }
 

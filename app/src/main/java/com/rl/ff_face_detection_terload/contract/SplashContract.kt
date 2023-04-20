@@ -6,7 +6,7 @@ interface SplashContract {
     }
 
     interface View{
-        fun onNotLoggedIn();//没登陆
-        fun onLoggedIn();//登陆
+        fun onNotLoggedIn();//没登录
+        fun onLoggedIn();//登录
     }
 }

@@ -19,17 +19,15 @@ abstract class BaseFragment : Fragment() {
     private var confirm: Button? = null
 
     private val dialog by lazy {
-        context?.let {
-            Dialog(it, R.style.DialogStyle).apply {
-                setCancelable(false)
-                setContentView(R.layout.dialog_loading)
-                window!!.setBackgroundDrawableResource(R.drawable.bg_loading)
-                window!!.attributes.apply {
-                    gravity = Gravity.CENTER
-                    width = 500
-                    height = 500
-                    alpha = 0.7f
-                }
+        Dialog(requireContext()).apply {
+            setCancelable(false)
+            setContentView(R.layout.dialog_loading)
+            window!!.setBackgroundDrawableResource(R.drawable.bg_loading)
+            window!!.attributes.apply {
+                gravity = Gravity.CENTER
+                width = 500
+                height = 500
+                alpha = 0.7f
             }
         }
     }
@@ -54,8 +52,8 @@ abstract class BaseFragment : Fragment() {
     open fun inits() {
     }
 
-    open fun showProgress(message: String) {
-        dialog?.show()
+    open fun showProgress() {
+        dialog.show()
     }
 
     open fun showBottomDialog(msg: String?, bt_tips: String?, onClickListener: OnClickListener) {
