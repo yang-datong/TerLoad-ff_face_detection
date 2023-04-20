@@ -8,7 +8,6 @@
     <string name="login_hold_hint">自动登录</string>
     <string name="login_forget_hint">忘记密码？</string>
     <string name="login_register_hint">注册</string>
-    <string name="login_other_hint">其他方式登录</string>
     <string name="register_username_hint">用户名</string>
 
     <string name="register_done_hint">完成</string>

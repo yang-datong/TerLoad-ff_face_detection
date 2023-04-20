@@ -13,7 +13,7 @@
             android:id="@+id/firstLetter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#F3F3F3"
+            android:background="#f3f3f3"
             android:padding="5dp"
             android:textAllCaps="true" />
 

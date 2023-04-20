@@ -1,7 +1,9 @@
 package com.rl.ff_face_detection_terload.ui.fargment
 
+import android.content.Context
 import android.content.ContextWrapper
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.snackbar.Snackbar
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.ui.activity.LoginActivity
@@ -22,7 +24,12 @@ import org.jetbrains.anko.toast
  */
 //动态页面
 class DynamicFragment : BaseFragment() {
+
     override fun getLayoutResID() = R.layout.fragment_dynamic
+
+    private val sp by lazy {
+        context?.getSharedPreferences("theme_model", Context.MODE_PRIVATE)
+    }
 
     override fun inits() {
         tv_user_nmae.text = EMClient.getInstance().currentUser
@@ -37,7 +44,6 @@ class DynamicFragment : BaseFragment() {
         bt_upload.setOnClickListener {
             context?.startActivity<UploadFaceActivity>()
         }
-
         bt_database_backup.setOnClickListener {
             showBottomDialog("将要备份数据库到\"${ContextWrapper(context?.applicationContext).dataDir}\"会覆盖原来的备份文件，是否继续？",
                     "继续", object : OnClickListener {
@@ -54,7 +60,6 @@ class DynamicFragment : BaseFragment() {
                 }
             })
         }
-
         bt_database_restore.setOnClickListener {
             showBottomDialog("将要从\"${ContextWrapper(context?.applicationContext).dataDir}\"备份文件恢复到数据库，是否继续？", "继续", object : OnClickListener {
                 override fun onClick(v: View) {
@@ -73,6 +78,17 @@ class DynamicFragment : BaseFragment() {
                     dismissBottomDialog()
                 }
             })
+        }
+        bt_theme_model.setOnClickListener {
+            sp?.let {
+                val hasDark = it.getBoolean("dark", false)
+                if (hasDark)
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)//日间模式
+                else
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //夜间模式
+
+                it.edit().putBoolean("dark", !hasDark).apply()
+            }
         }
     }
 

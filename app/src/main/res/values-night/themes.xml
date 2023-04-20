@@ -1,21 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.MyApplication" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
+    <style name="Theme.MyApplication" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- 按钮背景色. -->
+        <item name="colorPrimary">@color/black_383839</item>
+        <item name="colorPrimaryVariant">@color/black_383839</item>
+        <!-- 字体色 -->
+        <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnSecondary">@color/black_383839</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/black_alpha_128</item>
-
-        <!--        <item name="android:statusBarColor">@color/black</item>-->
-        <!--        <item name="android:windowNoTitle">true</item>-->
-        <!--        <item name="android:windowActionBar">true</item>-->
-        <!--        <item name="android:windowLightStatusBar">false</item>-->
-        <!-- Customize your theme here. -->
+        <item name="android:statusBarColor">@color/black</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <!-- 默认布局背景色 -->
+        <item name="android:windowBackground">@color/black</item>
     </style>
 </resources>

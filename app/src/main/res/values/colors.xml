@@ -1,34 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#383839</color>
-    <color name="purple_500">#0B0707</color>
-    <color name="purple_700">#FF000000</color>
+    <color name="black_383839">#383839</color>
+    <color name="black_0B0707">#0B0707</color>
+    <color name="black_FF000000">#FF000000</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="grey">#33333333</color>
     <color name="wechat_green">#1AAD19</color>
 
-    <color name="colorPrimaryDark">#FFFFFF</color>
-
     <!-- 常用颜色值 -->
-        <color name="transparent">#00000000</color>
-        <color name="black_alpha_128">#80000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="black_alpha_128">#5E202020</color>
 
-    <!-- 下拉刷新时，颜色值 -->
 
     <!--  created by  fei -->
-        <color name="text_secondary_color">#9d9d9d</color>
+    <color name="text_secondary_color">#9d9d9d</color>
 
-        <!-- 新版登录模块-->
-        <color name="login_line_color">#dededf</color>
-        <color name="login_input_active">#31b968</color>
-        <color name="login_other_color">#cacaca</color>
-        <color name="account_input_bg_color">#33ffffff</color>
-        <color name="account_lock_bg">#ff43815c</color>
+    <!-- 新版登录模块-->
+    <color name="login_line_color">#dededf</color>
+    <color name="login_input_active">#31b968</color>
+    <color name="account_input_bg_color">#33ffffff</color>
     <color name="account_pressed_true">#14b94d</color>
 
-        <color name="bg_press">#ebebeb</color>\
+    <color name="bg_press">#ebebeb</color>\
 
 </resources>

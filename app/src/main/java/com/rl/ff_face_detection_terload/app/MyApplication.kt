@@ -103,10 +103,19 @@ class MyApplication : Application() {
         RingtoneManager.getRingtone(applicationContext, defaultUri).play()
     }
 
+
+    private val sp_theme by lazy {
+        getSharedPreferences("theme_model", Context.MODE_PRIVATE)
+    }
+
     override fun onCreate() {
         super.onCreate()
-//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //夜间模式
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)//日间模式
+        val hasDark = sp_theme.getBoolean("dark", false)
+        if (!hasDark)
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)//日间模式
+        else
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //夜间模式
+
         val isAuto = sp.getBoolean("isAuto", true)
         val emOptions = EMOptions()
         emOptions.autoLogin = isAuto
