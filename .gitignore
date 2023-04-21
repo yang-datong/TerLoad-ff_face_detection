@@ -12,6 +12,7 @@
 /build
 /java/build
 /captures
+/.settings
 .externalNativeBuild
 .cxx
 local.properties

@@ -5,14 +5,14 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.hyphenate.chat.EMClient
+import com.hyphenate.chat.EMMessage
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.adapter.MessageListAdapter
 import com.rl.ff_face_detection_terload.adapter.MessageListenerAdapter
 import com.rl.ff_face_detection_terload.contract.ChatContract
 import com.rl.ff_face_detection_terload.presenter.ChatPresenter
 import com.rl.ff_face_detection_terload.widget.MicrophoneDialog
-import com.hyphenate.chat.EMClient
-import com.hyphenate.chat.EMMessage
 import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.android.synthetic.main.title_bar.*
 import org.jetbrains.anko.alert
@@ -27,13 +27,10 @@ import org.jetbrains.anko.yesButton
  */
 class ChatActivity : BaseActivity(), ChatContract.View {
     override fun getLayoutResID() = R.layout.activity_chat
-    override fun onSupportNavigateUp(): Boolean {
-        finish()
-        return super.onSupportNavigateUp()
-    }
+
+    lateinit var username: String
 
     val presenter by lazy { ChatPresenter(this) }
-    lateinit var username: String
 
     private val msgListener = object : MessageListenerAdapter() {
         override fun onMessageReceived(messages: MutableList<EMMessage>?) {
@@ -49,10 +46,19 @@ class ChatActivity : BaseActivity(), ChatContract.View {
 
     override fun inits() {
         username = intent.getStringExtra("username").toString()
+        initView()
+        EMClient.getInstance().chatManager().addMessageListener(msgListener);
+        presenter.loadData(username)
+        val hasMessage = intent.getStringExtra("message")
+        if (!hasMessage.isNullOrEmpty())
+            send(hasMessage)
+    }
+
+    private fun initView() {
         title = username
         tv_title.text = username
         img_ret.setOnClickListener { finish() }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         recycleview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
@@ -81,9 +87,7 @@ class ChatActivity : BaseActivity(), ChatContract.View {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
-        sed_message.setOnClickListener { send() }
-        EMClient.getInstance().chatManager().addMessageListener(msgListener);
-        presenter.loadData(username)
+        sed_message.setOnClickListener { send(null) }
         image_voice.setOnClickListener {
             it.visibility = View.GONE
             input_message.visibility = View.GONE
@@ -104,8 +108,6 @@ class ChatActivity : BaseActivity(), ChatContract.View {
             override fun sendVoice() {
             }
         }
-
-
     }
 
     override fun onMessageLoad() {
@@ -113,8 +115,11 @@ class ChatActivity : BaseActivity(), ChatContract.View {
         scrollTOBottom()
     }
 
-    private fun send() {
-        presenter.sendMessage(username, input_message.text.toString())
+    private fun send(hasMessage: String?) {
+        if (!hasMessage.isNullOrEmpty())
+            presenter.sendMessage(username, hasMessage)
+        else
+            presenter.sendMessage(username, input_message.text.toString())
     }
 
     override fun onStartSend() {

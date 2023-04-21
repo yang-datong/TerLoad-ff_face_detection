@@ -4,16 +4,17 @@ import androidx.core.view.isGone
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.hyphenate.chat.EMClient
+import com.hyphenate.chat.EMMessage
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.adapter.ConversationListAdapter
 import com.rl.ff_face_detection_terload.adapter.MessageListenerAdapter
 import com.rl.ff_face_detection_terload.contract.ConversationContract
 import com.rl.ff_face_detection_terload.presenter.ConversationPresenter
-import com.hyphenate.chat.EMClient
-import com.hyphenate.chat.EMMessage
 import kotlinx.android.synthetic.main.fragment_contact.recyclerview
 import kotlinx.android.synthetic.main.fragment_conversation.*
 import kotlinx.android.synthetic.main.title_bar.*
+import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.runOnUiThread
 import java.util.*
 
@@ -56,7 +57,10 @@ class ConversationFragment : BaseFragment(), ConversationContract.View {
 
 
     override fun inits() {
-        tv_title.text = "聊天"
+        tv_title.text = getString(R.string.page_one_root)
+        if (requireContext().defaultSharedPreferences.getString("username", "") != "root") {
+            tv_title.text = getString(R.string.page_one)
+        }
         img_ret.isGone = true
         recyclerview.apply {
             setHasFixedSize(true)

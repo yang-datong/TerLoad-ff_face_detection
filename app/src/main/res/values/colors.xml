@@ -7,7 +7,6 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="wechat_green">#1AAD19</color>
 
     <!-- 常用颜色值 -->
     <color name="transparent">#00000000</color>
@@ -23,6 +22,10 @@
     <color name="account_input_bg_color">#33ffffff</color>
     <color name="account_pressed_true">#14b94d</color>
 
-    <color name="bg_press">#ebebeb</color>\
+    <color name="bg_press">#ebebeb</color>
 
+<!--    Wechat-->
+    <color name="wechat_green">#1AAD19</color>
+    <color name="wechat_red">#F44336</color>
+    <color name="wechat_yellow">#FF9800</color>
 </resources>

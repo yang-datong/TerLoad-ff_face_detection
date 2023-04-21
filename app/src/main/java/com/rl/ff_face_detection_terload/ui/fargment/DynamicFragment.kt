@@ -2,26 +2,17 @@ package com.rl.ff_face_detection_terload.ui.fargment
 
 import android.content.Context
 import android.content.ContextWrapper
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import androidx.core.view.isGone
 import com.google.android.material.snackbar.Snackbar
-import com.rl.ff_face_detection_terload.R
-import com.rl.ff_face_detection_terload.ui.activity.LoginActivity
 import com.hyphenate.EMCallBack
 import com.hyphenate.chat.EMClient
+import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.database.DataOperation
-import com.rl.ff_face_detection_terload.extensions.zipDirectory
+import com.rl.ff_face_detection_terload.ui.activity.LoginActivity
 import com.rl.ff_face_detection_terload.ui.activity.UploadFaceActivity
 import kotlinx.android.synthetic.main.fragment_dynamic.*
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.noButton
+import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
@@ -40,7 +31,16 @@ class DynamicFragment : BaseFragment() {
     }
 
     override fun inits() {
-        tv_user_nmae.text = EMClient.getInstance().currentUser
+        initView()
+    }
+
+    private fun initView() {
+        tv_user_nmae.text = requireContext().defaultSharedPreferences.getString("username", "")
+        if (tv_user_nmae.text != "root"){
+            bt_update_info.text = getString(R.string.update_info)
+            bt_data_backup.isGone = true
+            bt_data_restore.isGone = true
+        }
         bt_logout.setOnClickListener {
             showBottomDialog("退出后将接受不到信息！", "退出登录") {
                 showProgress()
@@ -52,7 +52,7 @@ class DynamicFragment : BaseFragment() {
         }
         bt_data_backup.setOnClickListener {
             val status = arrayOf(-1, -1)
-            showBottomDialog("将要备份数据到\"${ContextWrapper(context?.applicationContext).dataDir}\"会覆盖原来的备份文件，是否继续？",
+            showBottomDialog("将要备份数据到\"${ContextWrapper(context?.applicationContext).externalCacheDir}\"会覆盖原来的备份文件，是否继续？",
                     "继续") {
                 dismissBottomDialog()
                 showProgress()
@@ -72,7 +72,7 @@ class DynamicFragment : BaseFragment() {
         }
         bt_data_restore.setOnClickListener {
             val status = arrayOf(-1, -1)
-            showBottomDialog("将要从\"${ContextWrapper(context?.applicationContext).dataDir}\"备份文件恢复到数据，是否继续？", "继续") {
+            showBottomDialog("将要从\"${ContextWrapper(context?.applicationContext).externalCacheDir}\"备份文件恢复到数据，是否继续？", "继续") {
                 dismissBottomDialog()
                 showProgress()
                 status[0] = DataOperation.restoreDataBase(arrayOf("user.db", "user.db-shm", "user.db-wal"), context?.applicationContext)
@@ -88,7 +88,6 @@ class DynamicFragment : BaseFragment() {
                 dismissProgress()
             }
         }
-
         bt_theme_model.setOnClickListener {
             sp?.let {
                 val hasDark = it.getBoolean("dark", false)
@@ -99,6 +98,9 @@ class DynamicFragment : BaseFragment() {
 
                 it.edit().putBoolean("dark", !hasDark).apply()
             }
+        }
+        bt_update_info.setOnClickListener {
+            requireActivity().toast("TODO")
         }
     }
 

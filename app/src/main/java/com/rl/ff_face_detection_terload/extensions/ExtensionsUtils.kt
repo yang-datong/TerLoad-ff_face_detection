@@ -1,7 +1,8 @@
 package com.rl.ff_face_detection_terload.extensions
 
-import android.content.Context
 import java.io.*
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
@@ -78,4 +79,10 @@ private fun extractFile(zipIn: ZipInputStream, filePath: String) {
             bos.write(bytesIn, 0, read)
         }
     }
+}
+
+
+fun formatTimestamp(timestamp: Long): String {
+    val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    return format.format(Date(timestamp))
 }

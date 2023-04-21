@@ -5,14 +5,11 @@
 
     <fragment
         android:id="@+id/conversationFragment"
-        android:name="com.rl.ff_face_detection_terload.ui.fargment.ConversationFragment"
-        android:label="消息" />
+        android:name="com.rl.ff_face_detection_terload.ui.fargment.ConversationFragment" />
     <fragment
         android:id="@+id/contactFragment"
-        android:name="com.rl.ff_face_detection_terload.ui.fargment.ContactFragment"
-        android:label="联系人" />
+        android:name="com.rl.ff_face_detection_terload.ui.fargment.ContactFragment" />
     <fragment
         android:id="@+id/dynamicFragment"
-        android:name="com.rl.ff_face_detection_terload.ui.fargment.DynamicFragment"
-        android:label="动态" />
+        android:name="com.rl.ff_face_detection_terload.ui.fargment.DynamicFragment" />
 </navigation>

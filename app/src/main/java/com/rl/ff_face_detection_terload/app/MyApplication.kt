@@ -8,19 +8,21 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Vibrator
 import android.util.Log
-import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import com.hyphenate.EMCallBack
+import com.hyphenate.chat.EMClient
+import com.hyphenate.chat.EMMessage
+import com.hyphenate.chat.EMOptions
+import com.hyphenate.chat.EMTextMessageBody
+import com.hyphenate.exceptions.HyphenateException
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.adapter.MessageListenerAdapter
-import com.rl.ff_face_detection_terload.faceRecognize.FaceRecognize
-import com.rl.ff_face_detection_terload.ui.activity.ChatActivity
-import com.hyphenate.chat.*
-import com.hyphenate.exceptions.HyphenateException
 import com.rl.ff_face_detection_terload.database.DB
 import com.rl.ff_face_detection_terload.database.User
+import com.rl.ff_face_detection_terload.faceRecognize.FaceRecognize
+import com.rl.ff_face_detection_terload.ui.activity.ChatActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -149,10 +151,10 @@ class MyApplication : Application() {
                 override fun onProgress(progress: Int, status: String?) {}
                 override fun onError(code: Int, error: String?) {}
             })
-            userDao.addUser(User(0, "root", "123"))
-            userDao.addUser(User(1, "yangjing", "123"))
+            userDao.addUser(User(0, "root", "123", "管理员", create_time = System.currentTimeMillis()))
+            userDao.addUser(User(1, "yangjing", "123","元老", create_time = System.currentTimeMillis()))
             for (i in names.indices) {
-                userDao.addUser(User(i + 2, names[i], "111"))
+                userDao.addUser(User(i + 2, names[i], "111", create_time = System.currentTimeMillis()))
                 try {
                     emc.createAccount(names[i], "111")
                 } catch (e: HyphenateException) {

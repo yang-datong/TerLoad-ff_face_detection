@@ -2,6 +2,7 @@ package com.rl.ff_face_detection_terload.ui.activity
 
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -10,7 +11,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.rl.ff_face_detection_terload.R
 
 
@@ -80,6 +80,27 @@ abstract class BaseActivity : AppCompatActivity() {
                 confirm!!.text = bt_tips
             confirm!!.setOnClickListener {
                 onClickListener.onClick(it)
+            }
+            show()
+        }
+    }
+
+    open fun showBottomDialog(msg: String?, bt_tips: String?, bt_tips_color: Int, onConfirm: () -> Unit) {
+        if (message == null || confirm == null) {
+            message = bottomDialog.findViewById(R.id.tv_message)
+            confirm = bottomDialog.findViewById(R.id.bt_confirm)
+            confirm?.let {
+                it.setTextColor(Color.WHITE)
+                it.setBackgroundColor(getColor(bt_tips_color))
+            }
+        }
+        bottomDialog.apply {
+            if (!msg.isNullOrEmpty())
+                message!!.text = msg
+            if (!bt_tips.isNullOrEmpty())
+                confirm!!.text = bt_tips
+            confirm!!.setOnClickListener {
+                onConfirm()
             }
             show()
         }

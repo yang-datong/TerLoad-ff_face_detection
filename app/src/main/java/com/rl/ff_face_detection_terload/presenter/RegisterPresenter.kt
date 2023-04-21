@@ -2,13 +2,13 @@ package com.rl.ff_face_detection_terload.presenter
 
 import android.content.Context
 import android.util.Log
+import com.hyphenate.chat.EMClient
+import com.hyphenate.exceptions.HyphenateException
 import com.rl.ff_face_detection_terload.contract.RegisterContract
 import com.rl.ff_face_detection_terload.database.DB
 import com.rl.ff_face_detection_terload.database.User
 import com.rl.ff_face_detection_terload.extensions.isValidPassword
 import com.rl.ff_face_detection_terload.extensions.isValidUserName
-import com.hyphenate.chat.EMClient
-import com.hyphenate.exceptions.HyphenateException
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.doAsync
@@ -60,14 +60,14 @@ class RegisterPresenter(val view: RegisterContract.View) : RegisterContract.Pres
             val userDao = DB.getInstance(context).userDao()
             val user = userDao.getUserByUsername(username)
             if (user == null) {
-                val ret = userDao.addUser(User(null, username, pswd))
+                val ret = userDao.addUser(User(null, username, pswd, create_time = System.currentTimeMillis()))
                 if (ret > 0L) {
                     Log.d(TAG, "用户账号已添加到数据库")
                 } else {
                     Log.e(TAG, "用户账号添加到数据库错误，数据库添加:已${ret}个")
                 }
             } else {
-                val ret = userDao.updateUser(User(null, username, pswd))
+                val ret = userDao.updateUser(User(null, username, pswd, create_time = System.currentTimeMillis()))
                 if (ret > 0) {
                     Log.d(TAG, "用户账号已更新到数据库")
                 } else {

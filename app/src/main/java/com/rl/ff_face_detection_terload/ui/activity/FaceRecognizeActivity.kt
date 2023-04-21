@@ -7,7 +7,6 @@ import android.view.TextureView
 import android.view.View
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.faceRecognize.FaceRecognize
-import org.jetbrains.anko.toast
 
 class FaceRecognizeActivity : BaseActivity() {
     private var faceRecognize: FaceRecognize? = null
@@ -26,16 +25,14 @@ class FaceRecognizeActivity : BaseActivity() {
         val mTextureView = findViewById<TextureView>(R.id.texture_view)
         faceRecognize = FaceRecognize()
         faceRecognize?.onCreate(mTextureView, this) { status, faceRecognizeUserName ->
-            if (status == 0) {
-                val resultIntent = Intent()
-                if (!faceRecognizeUserName.isNullOrBlank()) {
-                    resultIntent.putExtra("faceRecognizeUserName", faceRecognizeUserName)
-                    setResult(Activity.RESULT_OK, resultIntent)
-                } else {
-                    setResult(Activity.RESULT_CANCELED, resultIntent)
-                }
-                finish()
+            val resultIntent = Intent()
+            if (!faceRecognizeUserName.isNullOrBlank()) {
+                resultIntent.putExtra("faceRecognizeUserName", faceRecognizeUserName)
+                setResult(Activity.RESULT_OK, resultIntent)
+            } else {
+                setResult(Activity.RESULT_CANCELED, resultIntent)
             }
+            finish()
         }
     }
 

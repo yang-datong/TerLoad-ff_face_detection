@@ -16,5 +16,18 @@
     <string name="register_pwd_hint">请输入至少三位数密码</string>
     <string name="register_pwd_confirm">确认密码</string>
 
+    <string name="page_one_root">会话</string>
+    <string name="page_two_root">用户</string>
+    <string name="page_three_root">设置</string>
+
+    <string name="page_one">会话</string>
+    <string name="page_two">考勤</string>
+    <string name="page_three">设置</string>
+
+    <string name="update_info_root">更改管理员信息</string>
+    <string name="update_info">更改账户信息</string>
+    <string name="checkin_time">签到时间：%s</string>
+    <string name="checkout_time">签退时间：%s</string>
+
 
 </resources>

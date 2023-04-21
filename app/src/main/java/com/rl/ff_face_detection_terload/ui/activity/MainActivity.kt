@@ -5,10 +5,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import com.rl.ff_face_detection_terload.R.layout.activity_main
-import com.rl.ff_face_detection_terload.adapter.MessageListenerAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.hyphenate.EMConnectionListener
@@ -16,9 +13,12 @@ import com.hyphenate.EMError
 import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMMessage
 import com.rl.ff_face_detection_terload.R
+import com.rl.ff_face_detection_terload.R.layout.activity_main
+import com.rl.ff_face_detection_terload.adapter.MessageListenerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.angle_numver.view.*
 import org.jetbrains.anko.alert
+import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.yesButton
 
@@ -58,9 +58,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun init() {
         val findNavController = Navigation.findNavController(this, R.id.fragment)
-        val build = AppBarConfiguration.Builder(bottomNavigationView.menu).build()      //建立构造者
+//        val build = AppBarConfiguration.Builder(bottomNavigationView.menu).build()      //建立构造者
 //        NavigationUI.setupActionBarWithNavController(this, findNavController, build)//设置返回按钮
         NavigationUI.setupWithNavController(bottomNavigationView, findNavController) //设置联动
+        if (defaultSharedPreferences.getString("username", "") != "root") {
+            val menu = bottomNavigationView.menu
+            menu.findItem(R.id.conversationFragment).title = getString(R.string.page_one)
+            menu.findItem(R.id.contactFragment).title = getString(R.string.page_two)
+            menu.findItem(R.id.dynamicFragment).title = getString(R.string.page_three)
+            menu.findItem(R.id.contactFragment).icon = getDrawable(R.drawable.kaoqing_log)
+        }
     }
 
     private fun angleNumber() {
