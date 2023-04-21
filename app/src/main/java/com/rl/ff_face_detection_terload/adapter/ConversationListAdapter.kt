@@ -6,12 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.hyphenate.chat.*
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.ui.activity.ChatActivity
-import com.hyphenate.chat.EMClient
-import com.hyphenate.chat.EMConversation
-import com.hyphenate.chat.EMMessage
-import com.hyphenate.chat.EMTextMessageBody
 import kotlinx.android.synthetic.main.view_conversion_item.view.*
 import org.jetbrains.anko.startActivity
 import java.text.SimpleDateFormat
@@ -36,14 +33,20 @@ class ConversationListAdapter(val context: Context, private val conversations: M
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val conversationListItemViewHolder = holder as ConversationListItemViewHolder
         conversationListItemViewHolder.itemView.textView6.text = conversations[position].conversationId()
-        if (conversations[position].lastMessage.type == EMMessage.Type.TXT) {
-            val emMessageBody = conversations[position].lastMessage.body as EMTextMessageBody
-            conversationListItemViewHolder.itemView.textView7.text = emMessageBody.message
-        }else
-            conversationListItemViewHolder.itemView.textView7.text = "当前消息不为文本消息"
+        when (conversations[position].lastMessage.type) {
+            EMMessage.Type.TXT -> {
+                val emMessageBody = conversations[position].lastMessage.body as EMTextMessageBody
+                conversationListItemViewHolder.itemView.textView7.text = emMessageBody.message
+            }
+            EMMessage.Type.VOICE -> {
+                val emMessageBody = conversations[position].lastMessage.body as EMVoiceMessageBody
+                conversationListItemViewHolder.itemView.textView7.text = "[${emMessageBody.length}] 秒语音"
+            }
+            else -> conversationListItemViewHolder.itemView.textView7.text = "当前消息不为文本消息"
+        }
 
         conversationListItemViewHolder.itemView.textView8.text = SimpleDateFormat("HH:mm").format(conversations[position].lastMessage.msgTime)
-        conversationListItemViewHolder.itemView.textView9.visibility = if (conversations[position].unreadMsgCount>0) View.VISIBLE else View.GONE
+        conversationListItemViewHolder.itemView.textView9.visibility = if (conversations[position].unreadMsgCount > 0) View.VISIBLE else View.GONE
         conversationListItemViewHolder.itemView.textView9.text = conversations[position].unreadMsgCount.toString()
 
         conversationListItemViewHolder.itemView.layout_item.setOnClickListener {
@@ -51,7 +54,7 @@ class ConversationListAdapter(val context: Context, private val conversations: M
         }
 
         conversationListItemViewHolder.itemView.textView11.setOnClickListener {
-            Collections.swap(conversations,position,0)
+            Collections.swap(conversations, position, 0)
             notifyDataSetChanged()
         }
 

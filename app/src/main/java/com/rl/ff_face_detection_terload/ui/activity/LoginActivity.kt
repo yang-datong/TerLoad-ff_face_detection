@@ -76,7 +76,7 @@ class LoginActivity : BaseActivity(), LoginContract.View {
     }
 
     private fun applyWriteExternalStoragePermission() { //弹出请求权限对话框
-        val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+        val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,Manifest.permission.RECORD_AUDIO)
         ActivityCompat.requestPermissions(this, permissions, 0)
     }
 

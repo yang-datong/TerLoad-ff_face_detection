@@ -1,8 +1,11 @@
 package com.rl.ff_face_detection_terload.ui.activity
 
+import android.media.MediaRecorder
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hyphenate.chat.EMClient
@@ -11,14 +14,19 @@ import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.adapter.MessageListAdapter
 import com.rl.ff_face_detection_terload.adapter.MessageListenerAdapter
 import com.rl.ff_face_detection_terload.contract.ChatContract
+import com.rl.ff_face_detection_terload.extensions.formatTimestamp
 import com.rl.ff_face_detection_terload.presenter.ChatPresenter
 import com.rl.ff_face_detection_terload.widget.MicrophoneDialog
 import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.android.synthetic.main.title_bar.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.yesButton
+import java.io.File
+
 
 /**
  * @author 杨景
@@ -26,6 +34,7 @@ import org.jetbrains.anko.yesButton
  * @date :2021/1/3 1:22
  */
 class ChatActivity : BaseActivity(), ChatContract.View {
+    private val TAG = "ChatActivity"
     override fun getLayoutResID() = R.layout.activity_chat
 
     lateinit var username: String
@@ -58,7 +67,6 @@ class ChatActivity : BaseActivity(), ChatContract.View {
         title = username
         tv_title.text = username
         img_ret.setOnClickListener { finish() }
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         recycleview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
@@ -102,13 +110,58 @@ class ChatActivity : BaseActivity(), ChatContract.View {
         }
         long_voice_dialog.setOnLongClickListener {
             microphoneDialog.show()
+            startRecording()
             true
         }
         microphoneDialog.onSendVoiceListener = object : MicrophoneDialog.OnSendVoiceListener {
             override fun sendVoice() {
+                microphoneDialog.dismiss()
+                stopRecording()
+                val duration = ((stopTime - startTime) / 1000).toInt()
+
+                val voiceUri = FileProvider.getUriForFile(
+                        this@ChatActivity,
+                        "${packageName}.fileprovider",
+                        File("${externalCacheDir?.absolutePath}/$audioFileName")
+                )
+                Log.d(TAG, "sendVoice-> audio duration: $duration , uri path : ${voiceUri.path}")
+                presenter.sendAudioMessage(username, voiceUri, duration)
             }
         }
     }
+
+
+    private lateinit var recorder: MediaRecorder
+    private var output: String? = null
+    private var startTime: Long = 0
+    private var stopTime: Long = 0
+    private var audioFileName: String? = null
+
+    private fun startRecording() {
+        GlobalScope.launch {
+            audioFileName = "recording_${System.currentTimeMillis()}.mp4"
+            recorder = MediaRecorder()
+            recorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+            output = "${externalCacheDir?.absolutePath}/$audioFileName"
+            Log.d(TAG, "startRecording-> outputFile: $output")
+            recorder.setOutputFile(output)
+            recorder.prepare()
+            recorder.start()
+            startTime = System.currentTimeMillis()
+            Log.d(TAG, "startRecording-> time: ${formatTimestamp(startTime)}")
+        }
+    }
+
+    private fun stopRecording() {
+        recorder.stop()
+        recorder.release()
+        stopTime = System.currentTimeMillis()
+        Log.d(TAG, "stopRecording-> time: ${formatTimestamp(stopTime)}")
+        // Do something with output and duration
+    }
+
 
     override fun onMessageLoad() {
         recycleview.adapter?.notifyDataSetChanged()

@@ -1,5 +1,6 @@
 package com.rl.ff_face_detection_terload.contract
 
+import android.net.Uri
 import com.hyphenate.chat.EMMessage
 
 /**
@@ -10,6 +11,7 @@ import com.hyphenate.chat.EMMessage
 interface ChatContract {
     interface Presenter : BasePresenter{
         fun sendMessage(contact:String,message:String)
+        fun sendAudioMessage(contact: String, voiceUri: Uri, duration: Int)
         fun addMessage(username: String, messages: MutableList<EMMessage>?)
         fun loadData(username: String)
         fun loadMoreData(username: String)

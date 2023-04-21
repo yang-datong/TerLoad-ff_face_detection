@@ -1,14 +1,19 @@
 package com.rl.ff_face_detection_terload.adapter
 
 import android.content.Context
+import android.media.AudioManager
+import android.media.MediaPlayer
+import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.rl.ff_face_detection_terload.R
 import com.hyphenate.chat.EMMessage
 import com.hyphenate.chat.EMTextMessageBody
+import com.hyphenate.chat.EMVoiceMessageBody
 import com.hyphenate.util.DateUtils
+import com.rl.ff_face_detection_terload.R
 import kotlinx.android.synthetic.main.view_send_message_item.view.*
 import java.text.SimpleDateFormat
 
@@ -23,6 +28,7 @@ class MessageListAdapter(var context: Context, var messages: MutableList<EMMessa
     companion object {
         const val ITEM_TYPE_SEND_MESSAGE = 0;
         const val ITEM_TYPE_RECEIVE_MESSAGE = 1;
+        const val TAG = "MessageListAdapter"
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -50,15 +56,40 @@ class MessageListAdapter(var context: Context, var messages: MutableList<EMMessa
                 messageListViewHolder.itemView.progressBar.visibility = if (it == EMMessage.Status.INPROGRESS) View.VISIBLE else View.GONE
                 messageListViewHolder.itemView.imageView5.visibility = if (it == EMMessage.Status.SUCCESS) View.GONE else View.VISIBLE
             }
-        }
-        else messageListViewHolder = holder as MessageReceiveListViewHolder
+        } else messageListViewHolder = holder as MessageReceiveListViewHolder
 
         messageListViewHolder.itemView.textView2.text = SimpleDateFormat("HH:mm").format(messages[position].msgTime)
-        if (messages[position].type == EMMessage.Type.TXT) //如果消息为文本类型
-            messageListViewHolder.itemView.textView3.text = (messages[position].body as EMTextMessageBody).message
-        else messageListViewHolder.itemView.textView3.text = "非文本消息！"
+        when (messages[position].type) {
+            EMMessage.Type.TXT //如果消息为文本类型
+            -> messageListViewHolder.itemView.textView3.text = (messages[position].body as EMTextMessageBody).message
+            EMMessage.Type.VOICE -> { //如果消息为语音类型
+                messageListViewHolder.itemView.textView3.text = "${(messages[position].body as EMVoiceMessageBody).length}'' "
+                messageListViewHolder.itemView.textView3.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_bar_chart_24, 0)
+            }
+            else -> messageListViewHolder.itemView.textView3.text = "非文本消息！"
+        }
 
+        messageListViewHolder.itemView.setOnClickListener {
+            if (messages[position].type == EMMessage.Type.VOICE) {
+                val em = messages[position].body as EMVoiceMessageBody
+                Log.d(TAG, "duration: ${em.length}, uri path: ${em.localUri}, file: ${em.fileName}")
+                playVoice(em.localUri)
+            }
+        }
         messageListViewHolder.itemView.textView2.visibility = if (isShowTimestamp(position)) View.VISIBLE else View.GONE
+    }
+
+    private fun playVoice(uri: Uri) {
+        val mediaPlayer = MediaPlayer()
+        mediaPlayer.setDataSource(context, uri)
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+        mediaPlayer.setOnCompletionListener {
+            Log.d(TAG, "playVoice: release()")
+            mediaPlayer.release()
+        }
+        mediaPlayer.prepare()
+        mediaPlayer.start()
+        Log.d(TAG, "playVoice: start()")
     }
 
     private fun isShowTimestamp(position: Int): Boolean {

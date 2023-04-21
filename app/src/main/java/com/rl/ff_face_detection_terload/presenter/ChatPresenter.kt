@@ -1,10 +1,13 @@
 package com.rl.ff_face_detection_terload.presenter
 
-import com.rl.ff_face_detection_terload.contract.ChatContract
+import android.net.Uri
+import android.util.Log
 import com.hyphenate.EMCallBack
 import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMMessage
+import com.rl.ff_face_detection_terload.contract.ChatContract
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
 
 /**
@@ -20,15 +23,18 @@ class ChatPresenter(val view: ChatContract.View) : ChatContract.Presenter {
     override fun sendMessage(contact: String, message: String) {
         val createTxtSendMessage = EMMessage.createTxtSendMessage(message, contact)
         EMClient.getInstance().chatManager().sendMessage(createTxtSendMessage)
-        view.onStartSend()
+        uiThread {
+            view.onStartSend()
+        }
         messages.add(createTxtSendMessage)
-        createTxtSendMessage.setMessageStatusCallback(object : EMCallBack{
+        createTxtSendMessage.setMessageStatusCallback(object : EMCallBack {
             override fun onSuccess() {
                 uiThread {
                     println("姓名：$contact 消息：$message")
                     view.onSendSuccess()
                 }
             }
+
             override fun onProgress(progress: Int, status: String?) {}
             override fun onError(code: Int, error: String?) {
                 uiThread {
@@ -38,8 +44,36 @@ class ChatPresenter(val view: ChatContract.View) : ChatContract.Presenter {
         })
     }
 
+    override fun sendAudioMessage(contact: String, voiceUri: Uri, duration: Int) {
+        doAsync {
+            val audioMessage: EMMessage = EMMessage.createVoiceSendMessage(voiceUri, duration, contact)
+//            audioMessage.chatType = EMMessage.ChatType.Chat //`Chat`、`GroupChat` 和 `ChatRoom`，表示单聊、群聊或聊天室
+            EMClient.getInstance().chatManager().sendMessage(audioMessage)
+            uiThread {
+                view.onStartSend()
+            }
+            messages.add(audioMessage)
+            audioMessage.setMessageStatusCallback(object : EMCallBack {
+                override fun onSuccess() {
+                    uiThread {
+                        println("姓名：$contact 语音消息：${voiceUri.path},时长： ${duration}(秒数)")
+                        view.onSendSuccess()
+                    }
+                }
+
+                override fun onProgress(progress: Int, status: String?) {}
+                override fun onError(code: Int, error: String?) {
+                    uiThread {
+                        Log.e("ChatPresenter", "sendAudioMessage error")
+                        view.onSendFailed()
+                    }
+                }
+            })
+        }
+    }
+
     override fun addMessage(username: String, mes: MutableList<EMMessage>?) {
-        mes?.let { messages.addAll(it)}
+        mes?.let { messages.addAll(it) }
         val conversation = EMClient.getInstance().chatManager().getConversation(username)
         conversation.markAllMessagesAsRead()
     }
@@ -47,11 +81,11 @@ class ChatPresenter(val view: ChatContract.View) : ChatContract.Presenter {
     override fun loadData(username: String) {
         doAsync {
             val conversation = EMClient.getInstance().chatManager().getConversation(username)
-              if (conversation==null){
-                    uiThread {
-                        view.onErrorLogin()
-                    }
-                 }
+            if (conversation == null) {
+                uiThread {
+                    view.onErrorLogin()
+                }
+            }
             val allMessages = conversation.allMessages
             messages.addAll(allMessages)
             conversation.markAllMessagesAsRead()
@@ -65,10 +99,10 @@ class ChatPresenter(val view: ChatContract.View) : ChatContract.Presenter {
         val conversation = EMClient.getInstance().chatManager().getConversation(username)
         val startMsgId = messages[0].msgId
         val moreMessages: List<EMMessage> = conversation.loadMoreMsgFromDB(startMsgId, pageSize)
-        messages.addAll(0,moreMessages)
+        messages.addAll(0, moreMessages)
         handler.postDelayed({
             uiThread { view.onMoreMessageLoad(moreMessages.size) }
-        },1500)
+        }, 500)
 
     }
 }
