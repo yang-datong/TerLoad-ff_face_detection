@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/animation"
+    android:oneshot="false">
+    <item
+        android:drawable="@drawable/yuying"
+        android:duration="300" />
+    <item
+        android:drawable="@drawable/yuying1"
+        android:duration="300" />
+    <item
+        android:drawable="@drawable/yuying2"
+        android:duration="300" />
+    <item
+        android:drawable="@drawable/yuying3"
+        android:duration="300" />
+    <item
+        android:drawable="@drawable/yuying4"
+        android:duration="300" />
+    <item
+        android:drawable="@drawable/yuying5"
+        android:duration="300" />
+</animation-list>

@@ -110,11 +110,13 @@ class ChatActivity : BaseActivity(), ChatContract.View {
         }
         long_voice_dialog.setOnLongClickListener {
             microphoneDialog.show()
+            microphoneDialog.showImgAnimation()
             startRecording()
             true
         }
         microphoneDialog.onSendVoiceListener = object : MicrophoneDialog.OnSendVoiceListener {
             override fun sendVoice() {
+                microphoneDialog.dismissImgAnimation()
                 microphoneDialog.dismiss()
                 stopRecording()
                 val duration = ((stopTime - startTime) / 1000).toInt()
@@ -127,7 +129,20 @@ class ChatActivity : BaseActivity(), ChatContract.View {
                 Log.d(TAG, "sendVoice-> audio duration: $duration , uri path : ${voiceUri.path}")
                 presenter.sendAudioMessage(username, voiceUri, duration)
             }
+
+            override fun stopVoice() {
+                microphoneDialog.dismissImgAnimation()
+                microphoneDialog.dismiss()
+                stopRecording()
+            }
         }
+
+        //TODO 这里有问题，会导致语音时间戳错误
+//        microphoneDialog.setOnDismissListener {
+//            microphoneDialog.dismissImgAnimation()
+//            stopRecording()
+//            Log.d(TAG, "initView: setOnDismissListener")
+//        }
     }
 
 

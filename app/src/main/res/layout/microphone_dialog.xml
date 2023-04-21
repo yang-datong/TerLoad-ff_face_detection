@@ -17,7 +17,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/yuying" />
+            app:srcCompat="@drawable/yuying_animation" />
 
         <TextView
             android:id="@+id/textView15"
@@ -35,16 +35,18 @@
                 android:id="@+id/button6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
-                android:background="#0C0C0C"
+                android:background="@drawable/border"
+                android:backgroundTint="@color/black"
                 android:text="取消"
-                android:visibility="gone" />
+                android:textColor="@color/white" />
 
             <com.qmuiteam.qmui.alpha.QMUIAlphaButton
                 android:id="@+id/button5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/border"
                 android:backgroundTint="@color/black"
