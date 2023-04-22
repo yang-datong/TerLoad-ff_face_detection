@@ -9,9 +9,9 @@ data class User(
         @PrimaryKey(autoGenerate = true) var id: Int? = null,
         @ColumnInfo(name = "username") val username: String,
         @ColumnInfo(name = "password") var password: String,
-        @ColumnInfo(name = "name") val name: String? = null,
-        @ColumnInfo(name = "email") val email: String? = null,
-        @ColumnInfo(name = "phone") val phone: String? = null,
+        @ColumnInfo(name = "name") var name: String? = null,
+        @ColumnInfo(name = "email") var email: String? = null,
+        @ColumnInfo(name = "phone") var phone: String? = null,
         @ColumnInfo(name = "avatar") val avatar: String? = null,
         @ColumnInfo(name = "status") var status: Int = 0, //0=未考勤，1=开始考勤，2=结束考勤
         @ColumnInfo(name = "checkin_time") var checkin_time: Long = 0,

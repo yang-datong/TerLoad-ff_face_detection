@@ -18,6 +18,7 @@ import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
 import java.util.*
 
+//TODO 用户在另一个手机上完成签到时，管理员手机上不能获取情况
 
 class UserDetailedActivity : BaseActivity() {
 
@@ -28,7 +29,7 @@ class UserDetailedActivity : BaseActivity() {
         const val REMIND_MESSAGE = "管理员提醒你尽快完成考勤~"
     }
 
-    fun setUserCheckStatus(username: String?) {
+    private fun setUserCheckStatus(username: String?) {
         GlobalScope.launch {
             var userStatusAndCheckTime: UserStatusAndCheckTime? = null
             if (!username.isNullOrEmpty()) {

@@ -7,28 +7,23 @@ import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
 import com.hyphenate.EMValueCallBack
 import com.hyphenate.chat.EMClient
-import com.hyphenate.chat.EMUserInfo
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.database.DB
 import com.rl.ff_face_detection_terload.database.User
 import com.rl.ff_face_detection_terload.extensions.isValidPassword
+import com.rl.ff_face_detection_terload.extensions.userObjToEMUserObj
 import kotlinx.android.synthetic.main.activity_update_info.*
 import kotlinx.android.synthetic.main.title_bar.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.toast
-import org.json.JSONObject
 
 class UpdateInfoActivity : BaseActivity() {
     override fun getLayoutResID() = R.layout.activity_update_info
     private val TAG = "UpdateInfoActivity"
-
     private var fetchDataDone = false
-    private var name: String = ""
-    private var email: String = ""
-    private var phone: String = ""
-    private var password: String = ""
+    private var user: User? = null
 
     override fun inits() {
         initView()
@@ -57,15 +52,21 @@ class UpdateInfoActivity : BaseActivity() {
         if (!fetchDataDone)
             return -1
         hideSoftKeyboard()
-        var user: User? = null
+        var isLive = false
         //1. 信息发生改变就直接构造用户对象
-        if (ev_name.text.toString() != this.name || ev_email.text.toString() != this.email || ev_phone.text.toString() != this.phone) {
-            user = User(userId, username = username!!, password = this.password, name = ev_name.text.toString(), email = ev_email.text.toString(), phone = ev_phone.text.toString())
+        if (ev_name.text.toString() != this.user!!.name || ev_email.text.toString() != this.user!!.email || ev_phone.text.toString() != this.user!!.phone) {
+//            user = User(userId, username = username!!, password = this.user!!.password, name = ev_name.text.toString(), email = ev_email.text.toString(), phone = ev_phone.text.toString())
+            user!!.apply {
+                name = ev_name.text.toString()
+                email = ev_email.text.toString()
+                phone = ev_phone.text.toString()
+            }
+            isLive = true
         }
 
         //2. 判断密码是否改变或者新密码是否可用
         if (ev_password.text.toString() != "" || ev_password.text.toString() != "") {
-            if (ev_password.text.toString() != this.password) {
+            if (ev_password.text.toString() != this.user!!.password) {
                 Log.d(TAG, "inits: 原密码错误")
                 Snackbar.make(it, "原密码错误", Snackbar.LENGTH_LONG).show()
                 return -1
@@ -74,42 +75,28 @@ class UpdateInfoActivity : BaseActivity() {
                 Snackbar.make(it, "无效密码", Snackbar.LENGTH_LONG).show()
                 return -1
             } else {
-                if (user != null)  //追加用户密码更新信息
-                    user.password = ev_password_confirm.text.toString()
-                else               //只修改了密码
-                    user = User(userId, username = username!!, password = ev_password_confirm.text.toString(), name = ev_name.text.toString(), email = ev_email.text.toString(), phone = ev_phone.text.toString())
+                user!!.password = ev_password_confirm.text.toString()
                 Log.d(TAG, "img_option.setOnClickListener: update password")
             }
+            isLive = true
         }
 
         //3. 是否需要提交信息变更
-        user?.let { u ->
-            updateUserInfoData(u, it)
-        }
+        if (isLive)
+            updateUserInfoData(it)
         return 0
     }
 
-    private fun updateUserInfoData(user: User, view: View) {
+    private fun updateUserInfoData(view: View) {
         showProgress("")
 
         GlobalScope.launch {
-            val emUser = EMUserInfo().apply {
-//                user.password  //TODO
-                nickname = user.name
-                email = user.email
-                phoneNumber = user.phone
-                val json = JSONObject().apply {
-                    put("status", user.status)
-                    put("checkin_time", user.checkin_time)
-                    put("checkout_time", user.checkout_time)
-                }
-                ext = json.toString()
-            }
+            val emUser = userObjToEMUserObj(user!!)
 
             EMClient.getInstance().userInfoManager().updateOwnInfo(emUser, object : EMValueCallBack<String> {
                 override fun onSuccess(value: String?) {
                     GlobalScope.launch {
-                        updateLocalDataBase(user, view)
+                        updateLocalDataBase(view)
                         runOnUiThread { dismissProgress() }
                     }
                 }
@@ -122,16 +109,12 @@ class UpdateInfoActivity : BaseActivity() {
         }
     }
 
-    private suspend fun updateLocalDataBase(user: User, view: View) {
+    private suspend fun updateLocalDataBase(view: View) {
         //save DataBase
         Log.d(TAG, "img_option.setOnClickListener: update user info , $user")
-        val ret = DB.getInstance(this@UpdateInfoActivity).userDao().updateUser(user)
+        val ret = DB.getInstance(this@UpdateInfoActivity).userDao().updateUser(user!!)
         if (ret == 1) {
             Log.d(TAG, "updateUser success")
-            this@UpdateInfoActivity.name = user.name.toString()
-            this@UpdateInfoActivity.email = user.email.toString()
-            this@UpdateInfoActivity.phone = user.phone.toString()
-            this@UpdateInfoActivity.password = user.password
             runOnUiThread {
                 ev_password.text.clear()
                 ev_password_confirm.text.clear()
@@ -148,23 +131,17 @@ class UpdateInfoActivity : BaseActivity() {
         GlobalScope.launch {
             Log.d(TAG, "initData start: $fetchDataDone")
             fetchDataDone = false
-            val user = DB.getInstance(this@UpdateInfoActivity).userDao().getUserByUsername(username!!)
+            this@UpdateInfoActivity.user = DB.getInstance(this@UpdateInfoActivity).userDao().getUserByUsername(username!!)
             user?.let {
                 runOnUiThread {
                     it.name?.let {
                         ev_name.setText(it)
-                        this@UpdateInfoActivity.name = it
                     }
                     it.email?.let {
                         ev_email.setText(it)
-                        this@UpdateInfoActivity.email = it
                     }
                     it.phone?.let {
                         ev_phone.setText(it)
-                        this@UpdateInfoActivity.phone = it
-                    }
-                    it.password.let {
-                        this@UpdateInfoActivity.password = it
                     }
                     dismissProgress()
                 }

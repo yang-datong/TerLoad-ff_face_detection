@@ -1,5 +1,10 @@
 package com.rl.ff_face_detection_terload.extensions
 
+import android.util.Log
+import com.hyphenate.chat.EMUserInfo
+import com.rl.ff_face_detection_terload.database.User
+import com.rl.ff_face_detection_terload.database.UserStatusAndCheckTime
+import org.json.JSONObject
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -86,3 +91,51 @@ fun formatTimestamp(timestamp: Long): String {
     val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
     return format.format(Date(timestamp))
 }
+
+
+fun userObjToEMUserObj(user: User): EMUserInfo {
+    return EMUserInfo().apply {
+//                user.password  //TODO
+        nickname = user.name
+        email = user.email
+        phoneNumber = user.phone
+        val json = JSONObject().apply {
+            put("status", user.status)
+            put("checkin_time", user.checkin_time)
+            put("checkout_time", user.checkout_time)
+        }
+        ext = json.toString()
+    }
+}
+
+
+fun emUserObjToUserObj(emUser: EMUserInfo, TAG: String): User {
+    val user = User(username = emUser.userId, password = "", name = emUser.nickname, email = emUser.email, phone = emUser.phoneNumber)
+    //解析自定义数据: 考勤状态、签到时间、签退时间
+    val solutionCustomData = solutionCustomData(emUser.ext, TAG)
+    solutionCustomData?.let { u ->
+        user.status = u.status
+        user.checkin_time = u.checkin_time
+        user.checkout_time = u.checkout_time
+    }
+    return user
+}
+
+private fun solutionCustomData(ext: String?, TAG: String): UserStatusAndCheckTime? {
+    if (!ext.isNullOrEmpty()) {
+        try {
+            val json = JSONObject(ext)
+            return UserStatusAndCheckTime(json.getInt("status")
+                    , json.getLong("checkin_time")
+                    , json.getLong("checkout_time"))
+        } catch (e: Exception) {
+            Log.e(TAG, "Solution JSON error", e)
+        }
+    }
+    return null
+}
+
+
+
+
+

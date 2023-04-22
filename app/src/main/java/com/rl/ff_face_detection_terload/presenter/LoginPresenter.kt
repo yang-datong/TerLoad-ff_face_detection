@@ -9,7 +9,7 @@ import com.hyphenate.chat.EMUserInfo
 import com.rl.ff_face_detection_terload.contract.LoginContract
 import com.rl.ff_face_detection_terload.database.DB
 import com.rl.ff_face_detection_terload.database.User
-import com.rl.ff_face_detection_terload.database.UserStatusAndCheckTime
+import com.rl.ff_face_detection_terload.extensions.emUserObjToUserObj
 import com.rl.ff_face_detection_terload.extensions.isValidPassword
 import com.rl.ff_face_detection_terload.extensions.isValidUserName
 import kotlinx.coroutines.GlobalScope
@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.doAsync
-import org.json.JSONObject
 
 class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
     private val TAG = "LoginPresenter"
@@ -66,14 +65,15 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
                     value?.let { v ->
                         v.values.first()?.let {
                             if (user == null) {
-                                user = User(username = it.userId, password = "", name = it.nickname, email = it.email, phone = it.phoneNumber)
-                                //解析自定义数据: 考勤状态、签到时间、签退时间
-                                val solutionCustomData = solutionCustomData(it.ext)
-                                solutionCustomData?.let { u ->
-                                    user!!.status = u.status
-                                    user!!.checkin_time = u.checkin_time
-                                    user!!.checkout_time = u.checkout_time
-                                }
+                                user = emUserObjToUserObj(it, TAG)
+//                                user = User(username = it.userId, password = "", name = it.nickname, email = it.email, phone = it.phoneNumber)
+//                                //解析自定义数据: 考勤状态、签到时间、签退时间
+//                                val solutionCustomData = solutionCustomData(it.ext)
+//                                solutionCustomData?.let { u ->
+//                                    user!!.status = u.status
+//                                    user!!.checkin_time = u.checkin_time
+//                                    user!!.checkout_time = u.checkout_time
+//                                }
                                 Log.d(TAG, "fetchServerUserInfo-> onSuccess: $user")
                                 saveIntoDataBase(username, passWord, context)
                             }
@@ -89,19 +89,19 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
         }
     }
 
-    private fun solutionCustomData(ext: String?): UserStatusAndCheckTime? {
-        if (!ext.isNullOrEmpty()) {
-            try {
-                val json = JSONObject(ext)
-                return UserStatusAndCheckTime(json.getInt("status")
-                        , json.getLong("checkin_time")
-                        , json.getLong("checkout_time"))
-            } catch (e: Exception) {
-                Log.e(TAG, "Solution JSON error", e)
-            }
-        }
-        return null
-    }
+//    private fun solutionCustomData(ext: String?): UserStatusAndCheckTime? {
+//        if (!ext.isNullOrEmpty()) {
+//            try {
+//                val json = JSONObject(ext)
+//                return UserStatusAndCheckTime(json.getInt("status")
+//                        , json.getLong("checkin_time")
+//                        , json.getLong("checkout_time"))
+//            } catch (e: Exception) {
+//                Log.e(TAG, "Solution JSON error", e)
+//            }
+//        }
+//        return null
+//    }
 
     private fun saveIntoDataBase(username: String, pswd: String, context: Context) {
         GlobalScope.launch {

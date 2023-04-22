@@ -8,14 +8,17 @@ import android.view.View
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.hyphenate.EMValueCallBack
 import com.hyphenate.chat.EMClient
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.adapter.ContactListAdapter
 import com.rl.ff_face_detection_terload.adapter.EMContactListenerAdapter
 import com.rl.ff_face_detection_terload.contract.ContactContract
 import com.rl.ff_face_detection_terload.database.DB
+import com.rl.ff_face_detection_terload.database.User
 import com.rl.ff_face_detection_terload.database.UserStatusAndCheckTime
 import com.rl.ff_face_detection_terload.extensions.formatTimestamp
+import com.rl.ff_face_detection_terload.extensions.userObjToEMUserObj
 import com.rl.ff_face_detection_terload.presenter.ContactPresenter
 import com.rl.ff_face_detection_terload.ui.activity.AddFriendActivity
 import com.rl.ff_face_detection_terload.ui.activity.FaceRecognizeActivity
@@ -71,7 +74,7 @@ class ContactFragment : BaseFragment(), ContactContract.View {
 
     private fun initUserView() {
         showUI(false)
-        updateUIByUserStatus()
+        initUIByUserStatus()
         card_recognition.setOnClickListener {
             startActivityForResult(Intent(requireActivity(), FaceRecognizeActivity::class.java), REQUEST_CODE)
         }
@@ -80,7 +83,7 @@ class ContactFragment : BaseFragment(), ContactContract.View {
         }
     }
 
-    private fun updateUIByUserStatus() {
+    private fun initUIByUserStatus() {
         GlobalScope.launch {
             var userStatusAndCheckTime: UserStatusAndCheckTime? = null
             if (!username.isNullOrEmpty()) {
@@ -111,6 +114,59 @@ class ContactFragment : BaseFragment(), ContactContract.View {
                     }
                 }
             }
+        }
+    }
+
+    private fun updateUIByUserStatus() {
+        GlobalScope.launch {
+            var userStatusAndCheckTime: UserStatusAndCheckTime? = null
+            var user: User? = null
+            if (!username.isNullOrEmpty()) {
+                user = DB.getInstance(requireContext()).userDao().getUserByUsername(username!!)
+                if (user == null) {
+                    Log.e(TAG, "updateUIByUserStatus: error")
+                    return@launch
+                }
+                Log.d(TAG, "updateUIByUserStatus: $user")
+                userStatusAndCheckTime = UserStatusAndCheckTime(user.status, user.checkin_time, user.checkout_time)
+            } else {
+                Log.e(TAG, "initUserView: username == null")
+            }
+
+            //更新服务器数据
+            EMClient.getInstance().userInfoManager().updateOwnInfo(userObjToEMUserObj(user!!), object : EMValueCallBack<String> {
+                override fun onSuccess(value: String?) {
+                    //更新UI显示
+                    requireActivity().runOnUiThread {
+                        tv_checkin_time.text = getString(R.string.checkin_time, "待签到 ")
+                        tv_checkout_time.text = getString(R.string.checkout_time, "待签退 ")
+
+                        tv_user_attendance2.apply {
+                            if (userStatusAndCheckTime != null && userStatusAndCheckTime.status == 2 && Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 6) {
+                                // 当前时间是早上6点之前
+                                text = "已完成考勤"
+                                setTextColor(Color.GREEN)
+                                if (userStatusAndCheckTime.checkin_time != 0L)
+                                    tv_checkin_time.text = getString(R.string.checkin_time, formatTimestamp(userStatusAndCheckTime.checkin_time))
+                                if (userStatusAndCheckTime.checkout_time != 0L)
+                                    tv_checkout_time.text = getString(R.string.checkout_time, formatTimestamp(userStatusAndCheckTime.checkout_time))
+                            } else if (userStatusAndCheckTime != null && userStatusAndCheckTime.status == 1) {
+                                text = "开始考勤中..."
+                                setTextColor(Color.YELLOW)
+                                if (userStatusAndCheckTime.checkin_time != 0L)
+                                    tv_checkin_time.text = getString(R.string.checkin_time, formatTimestamp(userStatusAndCheckTime.checkin_time))
+                            } else {
+                                text = "未考勤"
+                                setTextColor(Color.RED)
+                            }
+                        }
+                    }
+                }
+
+                override fun onError(error: Int, errorMsg: String?) {
+                    requireActivity().toast("当前网络错误")
+                }
+            })
         }
     }
 
