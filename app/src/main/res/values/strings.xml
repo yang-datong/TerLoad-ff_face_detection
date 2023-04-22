@@ -28,6 +28,7 @@
     <string name="update_info">更改账户信息</string>
     <string name="checkin_time">签到时间：%s</string>
     <string name="checkout_time">签退时间：%s</string>
+    <string name="username">Username: @%s</string>
 
 
 </resources>

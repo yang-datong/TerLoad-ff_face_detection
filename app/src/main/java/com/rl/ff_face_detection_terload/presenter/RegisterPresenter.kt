@@ -33,8 +33,8 @@ class RegisterPresenter(val view: RegisterContract.View) : RegisterContract.Pres
                 EMClient.getInstance().createAccount(username, pswd);//同步方法
                 uiThread {
                     //注册到数据库
-                    registerBmob(username, pswd, context)
-                    view.onRegisterInSuccess()
+                    saveIntoDataBase(username, pswd, context)
+                    uiThread { view.onRegisterInSuccess() }
                 }
             } catch (e: HyphenateException) {
                 uiThread {
@@ -45,17 +45,7 @@ class RegisterPresenter(val view: RegisterContract.View) : RegisterContract.Pres
         }
     }
 
-    private fun registerBmob(username: String, pswd: String, context: Context) {
-//        val user = MyUser(username, confirmPawd)
-//        user.save(object : SaveListener<String>() {
-//            override fun done(objectId: String?, e: BmobException?) {
-//                if (e == null) {
-//                } else {
-//                    view.onRegisterInFailed()
-//                }
-//            }
-//        })
-
+    private fun saveIntoDataBase(username: String, pswd: String, context: Context) {
         GlobalScope.launch {
             val userDao = DB.getInstance(context).userDao()
             val user = userDao.getUserByUsername(username)
@@ -67,15 +57,14 @@ class RegisterPresenter(val view: RegisterContract.View) : RegisterContract.Pres
                     Log.e(TAG, "用户账号添加到数据库错误，数据库添加:已${ret}个")
                 }
             } else {
-                val ret = userDao.updateUser(User(null, username, pswd, create_time = System.currentTimeMillis()))
+                val ret = userDao.updateCreateTimeByUsername(username, System.currentTimeMillis())
                 if (ret > 0) {
                     Log.d(TAG, "用户账号已更新到数据库")
                 } else {
-                    Log.e(TAG, "用户账号更新到数据库错误，数据库更新:已${ret}个")
+                    Log.e(TAG, "用户账号不需要更新，数据库更新:已${ret}个")
                 }
             }
         }
-
     }
 
 }

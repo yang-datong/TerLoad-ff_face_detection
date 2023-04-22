@@ -12,6 +12,7 @@ import com.rl.ff_face_detection_terload.extensions.isValidUserName
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.jetbrains.anko.defaultSharedPreferences
 
 class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
     private val TAG = "LoginPresenter"
@@ -32,14 +33,11 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
                 EMClient.getInstance().chatManager().loadAllConversations()//这是子线程
 //                if (isAutoLogin)options.setAutoLogin(false)
                 saveIntoDataBase(userName, passWord, context)
-                //返回主线程控制UI
-                uiThread { view.onLoggedInSuccess() }
             }
 
             override fun onProgress(progress: Int, status: String?) {}
 
             override fun onError(code: Int, error: String?) {
-                println(code)
                 if (code == 200) {
                     logout()
                     return
@@ -87,13 +85,24 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
                 val ret = userDao.addUser(User(null, username, pswd, create_time = System.currentTimeMillis()))
                 if (ret > 0L) {
                     Log.d(TAG, "用户账号已添加到数据库")
+                    val userId = userDao.getIdByUsername(username)
+                    uiThread {
+                        context.defaultSharedPreferences.edit().putString("username", username).apply()
+                        context.defaultSharedPreferences.edit().putInt("id", userId).apply()
+                        view.onLoggedInSuccess()
+                    }
                 } else {
                     Log.e(TAG, "用户账号添加到数据库错误，数据库添加:已${ret}个")
                 }
             } else {
-                val ret = userDao.updateUser(User(null, username, pswd, create_time = System.currentTimeMillis()))
+                val ret = userDao.updateCreateTimeByUsername(username, System.currentTimeMillis())
                 if (ret > 0) {
                     Log.d(TAG, "用户账号已更新到数据库")
+                    uiThread {
+                        context.defaultSharedPreferences.edit().putString("username", username).apply()
+                        context.defaultSharedPreferences.edit().putInt("id", user.id!!).apply()
+                        view.onLoggedInSuccess()
+                    }
                 } else {
                     Log.e(TAG, "用户账号不需要更新，数据库更新:已${ret}个")
                 }

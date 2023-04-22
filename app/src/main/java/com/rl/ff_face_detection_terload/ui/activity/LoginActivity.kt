@@ -12,13 +12,11 @@ import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isGone
 import com.google.android.material.snackbar.Snackbar
-import com.hyphenate.chat.EMClient
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.contract.LoginContract
 import com.rl.ff_face_detection_terload.extensions.DynamicDeploymentData
 import com.rl.ff_face_detection_terload.presenter.LoginPresenter
 import kotlinx.android.synthetic.main.activity_main_login.*
-import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
@@ -116,7 +114,6 @@ class LoginActivity : BaseActivity(), LoginContract.View {
     override fun onLoggedInSuccess() {
         dismissProgress()
         sp.edit().putBoolean("isAuto", cb_remember_login.isChecked).apply()
-        defaultSharedPreferences.edit().putString("username", EMClient.getInstance().currentUser).apply()
         startActivity<MainActivity>()
         finish()
     }
@@ -126,8 +123,9 @@ class LoginActivity : BaseActivity(), LoginContract.View {
         if (mes == null)
             toast("登录失败")
         else
-            toast(mes)
+            toast("登录失败: $mes")
     }
+    //TODO 密码更改提交到服务器，默认显示用户别名
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

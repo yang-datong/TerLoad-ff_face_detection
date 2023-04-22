@@ -11,6 +11,9 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE username = :username")
     suspend fun getUserByUsername(username: String): User?
 
+    @Query("SELECT id FROM users WHERE username = :username")
+    suspend fun getIdByUsername(username: String): Int
+
 //    @Query("SELECT status FROM users WHERE username = :username")
 //    suspend fun getStatusByUsername(username: String): Int? //还需要后续逻辑判断，使用getStatusAndCheckTimeByUsername
 
@@ -23,7 +26,7 @@ interface UserDao {
 
 
     @Update
-    suspend fun updateUser(user: User): Int
+    suspend fun updateUser(user: User): Int  //默认按id来更新
 
     @Query("UPDATE users SET status = :status WHERE username = :username")
     suspend fun updateStatusByUsername(username: String, status: Int): Int
@@ -37,6 +40,9 @@ interface UserDao {
 
     @Query("UPDATE users SET checkin_time = :checkin_time WHERE username = :username")
     suspend fun updateCheckinTimeByUsername(username: String, checkin_time: Long): Int
+
+    @Query("UPDATE users SET create_time = :createTime WHERE username = :username")
+    suspend fun updateCreateTimeByUsername(username: String, createTime: Long): Int
 
 
     @Delete

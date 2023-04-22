@@ -10,6 +10,7 @@ import com.hyphenate.chat.EMClient
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.database.DataOperation
 import com.rl.ff_face_detection_terload.ui.activity.LoginActivity
+import com.rl.ff_face_detection_terload.ui.activity.UpdateInfoActivity
 import com.rl.ff_face_detection_terload.ui.activity.UploadFaceActivity
 import kotlinx.android.synthetic.main.fragment_dynamic.*
 import org.jetbrains.anko.defaultSharedPreferences
@@ -36,7 +37,7 @@ class DynamicFragment : BaseFragment() {
 
     private fun initView() {
         tv_user_nmae.text = requireContext().defaultSharedPreferences.getString("username", "")
-        if (tv_user_nmae.text != "root"){
+        if (tv_user_nmae.text != "root") {
             bt_update_info.text = getString(R.string.update_info)
             bt_data_backup.isGone = true
             bt_data_restore.isGone = true
@@ -100,12 +101,12 @@ class DynamicFragment : BaseFragment() {
             }
         }
         bt_update_info.setOnClickListener {
-            requireActivity().toast("TODO")
+            requireActivity().startActivity<UpdateInfoActivity>()
         }
     }
 
     private fun logout() {
-        EMClient.getInstance().logout(true, object : EMCallBack {
+        EMClient.getInstance().logout(false, object : EMCallBack {
             override fun onSuccess() {
                 dismissProgress()
                 context?.startActivity<LoginActivity>()
