@@ -1,5 +1,6 @@
 package com.rl.ff_face_detection_terload.adapter
 
+import android.content.ContentResolver
 import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
@@ -15,7 +16,9 @@ import com.hyphenate.chat.EMVoiceMessageBody
 import com.hyphenate.util.DateUtils
 import com.rl.ff_face_detection_terload.R
 import kotlinx.android.synthetic.main.view_send_message_item.view.*
+import java.io.File
 import java.text.SimpleDateFormat
+
 
 /**
  * @author 杨景
@@ -79,17 +82,38 @@ class MessageListAdapter(var context: Context, var messages: MutableList<EMMessa
         messageListViewHolder.itemView.textView2.visibility = if (isShowTimestamp(position)) View.VISIBLE else View.GONE
     }
 
-    private fun playVoice(uri: Uri) {
-        val mediaPlayer = MediaPlayer()
-        mediaPlayer.setDataSource(context, uri)
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
-        mediaPlayer.setOnCompletionListener {
-            Log.d(TAG, "playVoice: release()")
-            mediaPlayer.release()
+    private fun isUriExists(uri: Uri): Boolean {
+        return if (uri.scheme == "file") {
+            val file = File(uri.path)
+            file.exists()
+        } else {
+            val contentResolver: ContentResolver = context.contentResolver
+            val type = contentResolver.getType(uri)
+            type != null
         }
-        mediaPlayer.prepare()
-        mediaPlayer.start()
-        Log.d(TAG, "playVoice: start()")
+    }
+
+    private fun playVoice(uri: Uri?) {
+        Log.d(TAG, "playVoice: uri path=${uri}")
+        if (uri != null && isUriExists(uri)) {
+            try {
+                val mediaPlayer = MediaPlayer()
+                mediaPlayer.setDataSource(context, uri)
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+                mediaPlayer.setOnCompletionListener {
+                    Log.d(TAG, "playVoice: release()")
+                    mediaPlayer.release()
+                }
+                mediaPlayer.prepare()
+                mediaPlayer.start()
+                Log.d(TAG, "playVoice: start()")
+            } catch (e: Exception) {
+                Log.e(TAG, "playVoice -> ", e)
+            }
+        } else {
+            Log.e(TAG, "playVoice: isUriExists = false")
+        }
+
     }
 
     private fun isShowTimestamp(position: Int): Boolean {
