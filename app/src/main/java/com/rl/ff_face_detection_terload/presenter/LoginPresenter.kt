@@ -66,14 +66,6 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
                         v.values.first()?.let {
                             if (user == null) {
                                 user = emUserObjToUserObj(it, TAG)
-//                                user = User(username = it.userId, password = "", name = it.nickname, email = it.email, phone = it.phoneNumber)
-//                                //解析自定义数据: 考勤状态、签到时间、签退时间
-//                                val solutionCustomData = solutionCustomData(it.ext)
-//                                solutionCustomData?.let { u ->
-//                                    user!!.status = u.status
-//                                    user!!.checkin_time = u.checkin_time
-//                                    user!!.checkout_time = u.checkout_time
-//                                }
                                 Log.d(TAG, "fetchServerUserInfo-> onSuccess: $user")
                                 saveIntoDataBase(username, passWord, context)
                             }
@@ -129,7 +121,7 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
                 val userId = userDao.getIdByUsername(username)
                 uiThread {
                     context.defaultSharedPreferences.edit().putString("username", username).apply()
-                    context.defaultSharedPreferences.edit().putInt("id", userId).apply()
+                    context.defaultSharedPreferences.edit().putInt("id", userId!!).apply()
                     view.onLoggedInSuccess()
                 }
             } else {

@@ -8,6 +8,7 @@ import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.database.DB
 import com.rl.ff_face_detection_terload.database.UserStatusAndCheckTime
 import com.rl.ff_face_detection_terload.extensions.formatTimestamp
+import com.rl.ff_face_detection_terload.extensions.pullUpdateOtherUserDataIntoDatabaseByServer
 import kotlinx.android.synthetic.main.activity_user_detailed.*
 import kotlinx.android.synthetic.main.title_bar.*
 import kotlinx.coroutines.GlobalScope
@@ -28,6 +29,37 @@ class UserDetailedActivity : BaseActivity() {
     companion object {
         const val REMIND_MESSAGE = "管理员提醒你尽快完成考勤~"
     }
+
+    override fun inits() {
+        val username = intent.getStringExtra("username").toString()
+        tv_user_name.text = username
+        tv_title.isInvisible = true
+        initView(username)
+        pullUpdateOtherUserDataIntoDatabaseByServer(username, TAG, this, {
+            setUserCheckStatus(username)
+        }, { errorMsg ->
+            Log.e(TAG, "errorMsg: $errorMsg")
+        })
+    }
+
+    private fun initView(username: String) {
+        img_ret.setOnClickListener {
+            finish()
+        }
+        bt_send_message.setOnClickListener {
+            startActivity<ChatActivity>("username" to username)
+        }
+        bt_remind.setOnClickListener {
+            startActivity<ChatActivity>("username" to username, "message" to REMIND_MESSAGE)
+        }
+        bt_delete_friend.setOnClickListener {
+            showBottomDialog("同时会屏蔽对方的临时对话，不再接收此人的消息，是否继续?", "确认删除", R.color.wechat_red) {
+                deleteFriend(username)
+                dismissBottomDialog()
+            }
+        }
+    }
+
 
     private fun setUserCheckStatus(username: String?) {
         GlobalScope.launch {
@@ -59,28 +91,6 @@ class UserDetailedActivity : BaseActivity() {
                         setTextColor(Color.RED)
                     }
                 }
-            }
-        }
-    }
-
-    override fun inits() {
-        val username = intent.getStringExtra("username").toString()
-        tv_user_name.text = username
-        tv_title.isInvisible = true
-        setUserCheckStatus(username)
-        img_ret.setOnClickListener {
-            finish()
-        }
-        bt_send_message.setOnClickListener {
-            startActivity<ChatActivity>("username" to username)
-        }
-        bt_remind.setOnClickListener {
-            startActivity<ChatActivity>("username" to username, "message" to REMIND_MESSAGE)
-        }
-        bt_delete_friend.setOnClickListener {
-            showBottomDialog("同时会屏蔽对方的临时对话，不再接收此人的消息，是否继续?", "确认删除", R.color.wechat_red) {
-                deleteFriend(username)
-                dismissBottomDialog()
             }
         }
     }

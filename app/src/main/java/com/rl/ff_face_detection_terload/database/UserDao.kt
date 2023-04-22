@@ -12,7 +12,7 @@ interface UserDao {
     suspend fun getUserByUsername(username: String): User?
 
     @Query("SELECT id FROM users WHERE username = :username")
-    suspend fun getIdByUsername(username: String): Int
+    suspend fun getIdByUsername(username: String): Int?
 
 //    @Query("SELECT status FROM users WHERE username = :username")
 //    suspend fun getStatusByUsername(username: String): Int? //还需要后续逻辑判断，使用getStatusAndCheckTimeByUsername

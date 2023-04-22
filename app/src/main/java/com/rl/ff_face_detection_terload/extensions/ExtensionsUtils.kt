@@ -1,9 +1,15 @@
 package com.rl.ff_face_detection_terload.extensions
 
+import android.content.Context
 import android.util.Log
+import com.hyphenate.EMValueCallBack
+import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMUserInfo
+import com.rl.ff_face_detection_terload.database.DB
 import com.rl.ff_face_detection_terload.database.User
 import com.rl.ff_face_detection_terload.database.UserStatusAndCheckTime
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.*
 import java.text.SimpleDateFormat
@@ -135,6 +141,59 @@ private fun solutionCustomData(ext: String?, TAG: String): UserStatusAndCheckTim
     return null
 }
 
+
+fun pullUpdateOtherUserDataByServer(otherUsername: String, TAG: String, _onSuccess: (user: User) -> Unit, _onError: (errorMsg: String?) -> Unit) {
+    GlobalScope.launch {
+        EMClient.getInstance().userInfoManager().fetchUserInfoByUserId(arrayOf(otherUsername), object : EMValueCallBack<Map<String?, EMUserInfo?>?> {
+            override fun onSuccess(value: Map<String?, EMUserInfo?>?) {
+                value?.let { v ->
+                    v.values.first()?.let {
+                        val user = emUserObjToUserObj(it, TAG)
+                        Log.d(TAG, "onSuccess: $user")
+                        _onSuccess(user)
+                    }
+                }
+            }
+
+            override fun onError(error: Int, errorMsg: String?) {
+                Log.e(TAG, "fetchServerUserInfo-> onError: ${error},errorMsg: $errorMsg")
+                _onError(errorMsg)
+            }
+
+        })
+    }
+}
+
+fun pullUpdateOtherUserDataIntoDatabaseByServer(otherUsername: String, TAG: String, context: Context, _onSuccess: () -> Unit, _onError: (errorMsg: String?) -> Unit) {
+    GlobalScope.launch {
+        EMClient.getInstance().userInfoManager().fetchUserInfoByUserId(arrayOf(otherUsername), object : EMValueCallBack<Map<String?, EMUserInfo?>?> {
+            override fun onSuccess(value: Map<String?, EMUserInfo?>?) {
+                value?.let { v ->
+                    v.values.first()?.let {
+                        val user = emUserObjToUserObj(it, TAG)
+                        Log.d(TAG, "onSuccess: $user")
+                        GlobalScope.launch {
+                            val userDao = DB.getInstance(context).userDao()
+                            val id = userDao.getIdByUsername(otherUsername)
+                            if (id == null) {
+                                userDao.addUser(user)
+                            } else {
+                                user.id = id
+                                userDao.updateUser(user)
+                            }
+                            _onSuccess()
+                        }
+                    }
+                }
+            }
+
+            override fun onError(error: Int, errorMsg: String?) {
+                Log.e(TAG, "fetchServerUserInfo-> onError: ${error},errorMsg: $errorMsg")
+                _onError(errorMsg)
+            }
+        })
+    }
+}
 
 
 
