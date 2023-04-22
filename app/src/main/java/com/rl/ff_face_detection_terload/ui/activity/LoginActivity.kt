@@ -126,7 +126,7 @@ class LoginActivity : BaseActivity(), LoginContract.View {
         else
             toast("登录失败: $mes")
     }
-    //TODO 密码更改提交到服务器，默认显示用户别名
+    //TODO 密码更改提交到服务器
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

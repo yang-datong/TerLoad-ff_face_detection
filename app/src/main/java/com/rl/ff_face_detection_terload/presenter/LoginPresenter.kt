@@ -12,10 +12,10 @@ import com.rl.ff_face_detection_terload.database.User
 import com.rl.ff_face_detection_terload.extensions.emUserObjToUserObj
 import com.rl.ff_face_detection_terload.extensions.isValidPassword
 import com.rl.ff_face_detection_terload.extensions.isValidUserName
+import com.rl.ff_face_detection_terload.extensions.updateCommonUserData
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.doAsync
 
 class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
@@ -81,19 +81,6 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
         }
     }
 
-//    private fun solutionCustomData(ext: String?): UserStatusAndCheckTime? {
-//        if (!ext.isNullOrEmpty()) {
-//            try {
-//                val json = JSONObject(ext)
-//                return UserStatusAndCheckTime(json.getInt("status")
-//                        , json.getLong("checkin_time")
-//                        , json.getLong("checkout_time"))
-//            } catch (e: Exception) {
-//                Log.e(TAG, "Solution JSON error", e)
-//            }
-//        }
-//        return null
-//    }
 
     private fun saveIntoDataBase(username: String, pswd: String, context: Context) {
         GlobalScope.launch {
@@ -108,6 +95,7 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
             //如果本地数据库存在该用户则进行更新，反之新增
             val localUser = userDao.getUserByUsername(username)
             var ret = -1L
+
             if (localUser != null) {
                 user!!.id = userDao.getIdByUsername(username)
                 ret = userDao.updateUser(user!!).toLong()
@@ -116,12 +104,13 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
                 ret = userDao.addUser(user!!)
                 Log.d(TAG, "新增本地数据库")
             }
+
+            //完成数据库操作
             if (ret == 1L) {
                 Log.d(TAG, "saveIntoDataBase-> onSuccess: $user")
                 val userId = userDao.getIdByUsername(username)
                 uiThread {
-                    context.defaultSharedPreferences.edit().putString("username", username).apply()
-                    context.defaultSharedPreferences.edit().putInt("id", userId!!).apply()
+                    updateCommonUserData(context, userId!!, username, user!!.name!!)
                     view.onLoggedInSuccess()
                 }
             } else {
@@ -129,18 +118,6 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
                 view.onLoggedInFailed("添加数据失败")
             }
         }
-    }
-
-    private fun saveIntoSharedPreferences(context: Context, it: EMUserInfo) {
-        context.defaultSharedPreferences.edit()
-                .putString("nickname", it.nickname)
-                .putString("avatarUrl", it.avatarUrl)
-                .putString("email", it.email)
-                .putString("phoneNumber", it.phoneNumber)
-                .putInt("gender", it.gender)
-                .putString("signature", it.signature)
-                .putString("birth", it.birth)
-                .putString("ext", it.ext).apply()
     }
 
     override fun rootUserIsExist(context: Context): Boolean {

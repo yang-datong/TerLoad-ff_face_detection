@@ -27,7 +27,7 @@ import java.util.*
 class ConversationFragment : BaseFragment(), ConversationContract.View {
     override fun getLayoutResID() = R.layout.fragment_conversation
 
-//TODO 第二次登录会报连接错误
+    //TODO 第二次登录会报连接错误
     val presenter by lazy { ConversationPresenter(this) }
 
     private val msgListener = object : MessageListenerAdapter() {

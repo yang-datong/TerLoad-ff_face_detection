@@ -10,6 +10,7 @@ import com.rl.ff_face_detection_terload.database.User
 import com.rl.ff_face_detection_terload.database.UserStatusAndCheckTime
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.jetbrains.anko.defaultSharedPreferences
 import org.json.JSONObject
 import java.io.*
 import java.text.SimpleDateFormat
@@ -193,6 +194,25 @@ fun pullUpdateOtherUserDataIntoDatabaseByServer(otherUsername: String, TAG: Stri
             }
         })
     }
+}
+
+fun updateCommonUserData(context: Context, id: Int, username: String, name: String) {
+    context.defaultSharedPreferences.edit()
+            .putInt("id", id)
+            .putString("username", username)
+            .putString("name", name).apply()
+}
+
+fun saveIntoSharedPreferencesEMUser(context: Context, it: EMUserInfo) {
+    context.defaultSharedPreferences.edit()
+            .putString("nickname", it.nickname)
+            .putString("avatarUrl", it.avatarUrl)
+            .putString("email", it.email)
+            .putString("phoneNumber", it.phoneNumber)
+            .putInt("gender", it.gender)
+            .putString("signature", it.signature)
+            .putString("birth", it.birth)
+            .putString("ext", it.ext).apply()
 }
 
 

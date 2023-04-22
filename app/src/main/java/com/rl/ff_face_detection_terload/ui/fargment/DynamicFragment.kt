@@ -36,8 +36,10 @@ class DynamicFragment : BaseFragment() {
     }
 
     private fun initView() {
-        tv_user_nmae.text = requireContext().defaultSharedPreferences.getString("username", "")
-        if (tv_user_nmae.text != "root") {
+        val username = requireContext().defaultSharedPreferences.getString("username", "")
+        val name = requireContext().defaultSharedPreferences.getString("name", "")
+        tv_user_nmae.text = if (name != "") name else username
+        if (username != "root") {
             bt_update_info.text = getString(R.string.update_info)
             bt_data_backup.isGone = true
             bt_data_restore.isGone = true

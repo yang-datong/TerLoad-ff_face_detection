@@ -19,7 +19,6 @@ import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
 import java.util.*
 
-//TODO 用户在另一个手机上完成签到时，管理员手机上不能获取情况
 
 class UserDetailedActivity : BaseActivity() {
 

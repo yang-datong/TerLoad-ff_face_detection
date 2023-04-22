@@ -37,9 +37,10 @@ class ContactListAdapter(var context: Context, private val contactListItems: Mut
             contactListItemView.firstLetter.visibility = View.GONE
 
         contactListItemView.userNmae.text = contactListItems[position].userName
-        val username = contactListItems[position].userName
+//        contactListItemView.userNmae.text = if (name != "") name else contactListItems[position].userName
+
         contactListItemView.setOnClickListener {
-            context.startActivity<UserDetailedActivity>("username" to username)
+            context.startActivity<UserDetailedActivity>("username" to contactListItems[position].userName)
         }
         contactListItemView.setOnLongClickListener {
 //            context.alert("同时会屏蔽对方的临时对话，不再接收此人的消息", "删除好友") {

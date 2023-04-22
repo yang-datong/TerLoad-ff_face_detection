@@ -39,7 +39,7 @@ import java.util.*
  * @description:
  * @date :2021/1/2 22:24
  */
-//联系人
+//联系人 //TODO 不需要每次进入界面就刷新适配器
 class ContactFragment : BaseFragment(), ContactContract.View {
     override fun getLayoutResID() = R.layout.fragment_contact
 
@@ -181,7 +181,6 @@ class ContactFragment : BaseFragment(), ContactContract.View {
             adapter = ContactListAdapter(context, presenter.contactListItems)
         }
         presenter.loadData()
-
         EMClient.getInstance().contactManager().setContactListener(object : EMContactListenerAdapter() {
             override fun onContactDeleted(username: String?) {
                 super.onContactDeleted(username)
@@ -193,7 +192,6 @@ class ContactFragment : BaseFragment(), ContactContract.View {
                 presenter.loadData()
             }
         })
-
         slideBar_view.onSectionChangeListener = object : SlideBar.OnSectionChangeListener {
             override fun onSectionChange(firstLetter: String) {
                 textView.text = firstLetter

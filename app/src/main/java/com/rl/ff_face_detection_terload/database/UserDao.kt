@@ -30,7 +30,6 @@ interface UserDao {
 
     @Query("UPDATE users SET status = :status WHERE username = :username")
     suspend fun updateStatusByUsername(username: String, status: Int): Int
-    //TODO 用户考勤的数据需要上传到服务器与管理员端进行同步展示
 
     @Query("UPDATE users SET status = :status, checkin_time = :checkinTime WHERE username = :username")
     suspend fun updateStatusAndCheckinTimeByUsername(username: String, status: Int, checkinTime: Long): Int

@@ -11,6 +11,7 @@ import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.database.DB
 import com.rl.ff_face_detection_terload.database.User
 import com.rl.ff_face_detection_terload.extensions.isValidPassword
+import com.rl.ff_face_detection_terload.extensions.updateCommonUserData
 import com.rl.ff_face_detection_terload.extensions.userObjToEMUserObj
 import kotlinx.android.synthetic.main.activity_update_info.*
 import kotlinx.android.synthetic.main.title_bar.*
@@ -97,7 +98,9 @@ class UpdateInfoActivity : BaseActivity() {
                 override fun onSuccess(value: String?) {
                     GlobalScope.launch {
                         updateLocalDataBase(view)
-                        runOnUiThread { dismissProgress() }
+                        runOnUiThread {
+                            dismissProgress()
+                        }
                     }
                 }
 
@@ -116,6 +119,7 @@ class UpdateInfoActivity : BaseActivity() {
         if (ret == 1) {
             Log.d(TAG, "updateUser success")
             runOnUiThread {
+                updateCommonUserData(this@UpdateInfoActivity, user!!.id!!, user!!.username, user!!.name!!)
                 ev_password.text.clear()
                 ev_password_confirm.text.clear()
                 Snackbar.make(view, "updateUser success", Snackbar.LENGTH_LONG).show()
