@@ -27,7 +27,7 @@
         app:layout_constraintTop_toBottomOf="@+id/include2" />
 
     <TextView
-        android:id="@+id/tv_user_name"
+        android:id="@+id/tv_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -36,6 +36,18 @@
         android:textColor="@color/black"
         android:textSize="36sp"
         android:textStyle="bold|italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_user_name" />
+
+    <TextView
+        android:id="@+id/tv_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/username"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +64,7 @@
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_user_name" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
     <Button
         android:id="@+id/bt_remind"
@@ -107,6 +119,28 @@
         android:textStyle="bold|italic"
         app:layout_constraintStart_toStartOf="@+id/tv_checkin_time2"
         app:layout_constraintTop_toBottomOf="@+id/tv_checkin_time2" />
+
+    <TextView
+        android:id="@+id/tv_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/email"
+        android:textSize="18sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="@+id/tv_checkin_time2"
+        app:layout_constraintTop_toBottomOf="@+id/tv_checkout_time2" />
+
+    <TextView
+        android:id="@+id/tv_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/phone"
+        android:textSize="18sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="@+id/tv_checkin_time2"
+        app:layout_constraintTop_toBottomOf="@+id/tv_email" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

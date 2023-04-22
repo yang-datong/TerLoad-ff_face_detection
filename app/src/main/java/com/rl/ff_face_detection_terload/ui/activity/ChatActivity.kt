@@ -1,11 +1,14 @@
 package com.rl.ff_face_detection_terload.ui.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.media.MediaRecorder
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hyphenate.chat.EMClient
@@ -34,6 +37,7 @@ import java.io.File
  * @date :2021/1/3 1:22
  */
 class ChatActivity : BaseActivity(), ChatContract.View {
+    private val REQUEST_CODE = 0x111
     private val TAG = "ChatActivity"
     override fun getLayoutResID() = R.layout.activity_chat
 
@@ -67,6 +71,16 @@ class ChatActivity : BaseActivity(), ChatContract.View {
         title = username
         tv_title.text = username
         img_ret.setOnClickListener { finish() }
+        img_option.isVisible = true
+        img_option.setImageDrawable(getDrawable(R.drawable.ic_baseline_more_horiz_24))
+        img_option.setOnClickListener {
+//            startActivity<UserDetailedActivity>("username" to username, "afterRemindingNeedFinish" to true)
+            val intent = Intent(this, UserDetailedActivity::class.java).apply {
+                putExtra("username", username)
+                putExtra("afterRemindingNeedFinish", true)
+            }
+            startActivityForResult(intent, REQUEST_CODE)
+        }
         recycleview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
@@ -230,4 +244,13 @@ class ChatActivity : BaseActivity(), ChatContract.View {
         EMClient.getInstance().chatManager().removeMessageListener(msgListener);
     }
 
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            val hasMessage = data.getStringExtra("message")
+            if (!hasMessage.isNullOrEmpty())
+                send(hasMessage)
+        }
+    }
 }

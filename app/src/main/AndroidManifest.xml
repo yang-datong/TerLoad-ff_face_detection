@@ -86,25 +86,25 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
-
         </receiver>
 
+        <activity android:name=".ui.activity.LoginActivity" />
+        <!--        android:theme="@style/Theme.AppCompat.Light.NoActionBar"-->
+        <activity android:name=".ui.activity.RegisterActivity" />
+        <!--        android:theme="@style/Theme.AppCompat.NoActionBar"-->
+        <activity android:name=".ui.activity.MainActivity" />
         <activity
-            android:name="com.rl.ff_face_detection_terload.ui.activity.LoginActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:name=".ui.activity.ChatActivity"
+            android:parentActivityName=".ui.activity.MainActivity" />
         <activity
-            android:name="com.rl.ff_face_detection_terload.ui.activity.RegisterActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name="com.rl.ff_face_detection_terload.ui.activity.MainActivity" />
+            android:name=".ui.activity.AddFriendActivity"
+            android:launchMode="singleTask" />
         <activity
-            android:name="com.rl.ff_face_detection_terload.ui.activity.ChatActivity"
-            android:parentActivityName="com.rl.ff_face_detection_terload.ui.activity.MainActivity" />
+            android:name=".ui.activity.FaceRecognizeActivity"
+            android:launchMode="singleTask" />
         <activity
-            android:name="com.rl.ff_face_detection_terload.ui.activity.AddFriendActivity"
-            android:label="添加用户"
-            android:launchMode="singleInstance" />
-        <activity android:name="com.rl.ff_face_detection_terload.ui.activity.FaceRecognizeActivity" />
-        <activity android:name=".ui.activity.UploadFaceActivity" />
+            android:name=".ui.activity.UploadFaceActivity"
+            android:launchMode="singleTask" />
         <activity android:name=".ui.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
