@@ -41,7 +41,8 @@
                 android:backgroundTint="#EAFAE2"
                 android:gravity="center_vertical"
                 android:padding="8dp"
-                android:text="TextView" />
+                android:text="TextView"
+                android:textColor="@color/black" />
 
         </LinearLayout>
     </LinearLayout>

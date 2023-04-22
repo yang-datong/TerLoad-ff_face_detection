@@ -51,7 +51,8 @@
                 android:backgroundTint="#95ec69"
                 android:gravity="center_vertical"
                 android:padding="8dp"
-                android:text="TextView" />
+                android:text="TextView"
+                android:textColor="@color/black" />
 
             <ImageView
                 android:id="@+id/imageView3"

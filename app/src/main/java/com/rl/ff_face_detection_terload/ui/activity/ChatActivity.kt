@@ -74,7 +74,6 @@ class ChatActivity : BaseActivity(), ChatContract.View {
         img_option.isVisible = true
         img_option.setImageDrawable(getDrawable(R.drawable.ic_baseline_more_horiz_24))
         img_option.setOnClickListener {
-//            startActivity<UserDetailedActivity>("username" to username, "afterRemindingNeedFinish" to true)
             val intent = Intent(this, UserDetailedActivity::class.java).apply {
                 putExtra("username", username)
                 putExtra("afterRemindingNeedFinish", true)
@@ -109,6 +108,7 @@ class ChatActivity : BaseActivity(), ChatContract.View {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
+
         sed_message.setOnClickListener { send(null) }
         image_voice.setOnClickListener {
             it.visibility = View.GONE
