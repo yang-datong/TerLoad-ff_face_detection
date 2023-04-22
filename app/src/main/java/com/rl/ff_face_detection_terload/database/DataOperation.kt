@@ -5,7 +5,10 @@ import android.content.ContextWrapper
 import android.util.Log
 import com.rl.ff_face_detection_terload.extensions.unZipToDirectory
 import com.rl.ff_face_detection_terload.extensions.zipDirectory
-import java.io.*
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 import java.nio.channels.FileChannel
 
 class DataOperation {
@@ -30,7 +33,7 @@ class DataOperation {
                     } else {
                         //File
                         backupFile = File(exportDir, backupDataName)
-                        copyFile(File("${workPath}/${backupDataName}"), backupFile)
+                        if (copyFile(File("${workPath}/${backupDataName}"), backupFile) != 0) return -1
                     }
                     Log.d(TAG, "FaceData exported to " + backupFile.absolutePath)
                 }
@@ -59,7 +62,7 @@ class DataOperation {
                     } else {
                         //File
                         restoreFile = File(exportDir, restoreDataName)
-                        copyFile(restoreFile, File("${workPath}/${restoreDataName}"))
+                        if (copyFile(restoreFile, File("${workPath}/${restoreDataName}")) != 0) return 1
                     }
                     Log.d(TAG, "FaceData import from " + restoreFile.absolutePath)
                 }
@@ -79,7 +82,7 @@ class DataOperation {
                 for (backupDatabaseName in backupDatabaseNames) {
                     val dbFile: File = applicationContext!!.getDatabasePath(backupDatabaseName)
                     val backupFile = File(exportDir, backupDatabaseName)
-                    copyFile(dbFile, backupFile)
+                    if (copyFile(dbFile, backupFile) != 0) return 1
                     Log.d(TAG, "Database exported to " + backupFile.absolutePath)
                 }
                 return 0
@@ -93,23 +96,22 @@ class DataOperation {
             try {
                 val contextWrapper = ContextWrapper(applicationContext)
                 val importDir = File(contextWrapper.externalCacheDir, "database_backup")
-                if (!importDir.exists())
-                    return 1
+                if (!importDir.exists()) return 1
                 for (restoreDatabaseName in restoreDatabaseNames) {
                     val dbFile: File = applicationContext!!.getDatabasePath(restoreDatabaseName)
                     val backupFile = File(importDir, restoreDatabaseName)
-                    copyFile(backupFile, dbFile)
+                    if (copyFile(backupFile, dbFile) != 0) return 1
                     Log.d(TAG, "Database import from " + backupFile.absolutePath)
                 }
                 return 0
             } catch (e: IOException) {
-                Log.e(TAG, "Failed to import database", e)
+                Log.d(TAG, "Failed to import database")
             }
             return -1
         }
 
-        @Throws(IOException::class)
-        private fun copyFile(source: File?, destination: File?) {
+        private fun copyFile(source: File, destination: File?): Int {
+            if (!source.exists()) return -1
             val inputStream = FileInputStream(source)
             val outputStream = FileOutputStream(destination)
             val sourceChannel: FileChannel = inputStream.channel
@@ -119,6 +121,7 @@ class DataOperation {
             destinationChannel.close()
             inputStream.close()
             outputStream.close()
+            return 0
         }
     }
 

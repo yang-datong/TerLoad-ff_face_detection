@@ -101,7 +101,7 @@
             android:parentActivityName="com.rl.ff_face_detection_terload.ui.activity.MainActivity" />
         <activity
             android:name="com.rl.ff_face_detection_terload.ui.activity.AddFriendActivity"
-            android:label="添加好友"
+            android:label="添加用户"
             android:launchMode="singleInstance" />
         <activity android:name="com.rl.ff_face_detection_terload.ui.activity.FaceRecognizeActivity" />
         <activity android:name=".ui.activity.UploadFaceActivity" />

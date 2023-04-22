@@ -25,11 +25,11 @@ class AddFriendActivity : BaseActivity(), AddFriendContract.View {
             layoutManager = LinearLayoutManager(context)
             adapter = AddFriendListAdapter(context, presenter.addFriendItems)
         }
-        presenter.search("",this)
+        presenter.search("", this)
         searchview.isSubmitButtonEnabled = true
         searchview.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let { presenter.search(it,this@AddFriendActivity) }
+                query?.let { presenter.search(it, this@AddFriendActivity) }
                 hideSoftKeyboard()
                 return true
             }
@@ -43,7 +43,7 @@ class AddFriendActivity : BaseActivity(), AddFriendContract.View {
     override fun onSearchSuccess() {
         dismissProgress()
         recyclerview.adapter?.notifyDataSetChanged()
-        toast("搜索成功")
+//        toast("搜索成功")
     }
 
     override fun onSearchFailed() {

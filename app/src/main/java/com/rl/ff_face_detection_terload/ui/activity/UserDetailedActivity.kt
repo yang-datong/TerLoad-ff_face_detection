@@ -2,6 +2,7 @@ package com.rl.ff_face_detection_terload.ui.activity
 
 import android.graphics.Color
 import android.util.Log
+import android.view.View
 import androidx.core.view.isInvisible
 import com.hyphenate.chat.EMClient
 import com.rl.ff_face_detection_terload.R
@@ -15,11 +16,10 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
 import java.util.*
 
-
+//TODO 用户详情界面显示用户别名、等其他信息
 class UserDetailedActivity : BaseActivity() {
 
     private val TAG = "UserDetailedActivity"
@@ -53,7 +53,7 @@ class UserDetailedActivity : BaseActivity() {
         }
         bt_delete_friend.setOnClickListener {
             showBottomDialog("同时会屏蔽对方的临时对话，不再接收此人的消息，是否继续?", "确认删除", R.color.wechat_red) {
-                deleteFriend(username)
+                deleteFriend(username, it)
                 dismissBottomDialog()
             }
         }
@@ -94,12 +94,11 @@ class UserDetailedActivity : BaseActivity() {
         }
     }
 
-    private fun deleteFriend(username: String) {
+    private fun deleteFriend(username: String, view: View) {
         doAsync {
             EMClient.getInstance().contactManager().deleteContact(username)
-            uiThread {
-                toast("删除成功！")
-            }
+//            uiThread { Snackbar.make(view, "删除成功", Snackbar.LENGTH_LONG).show() }
+            uiThread { finish() }
         }
     }
 }

@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hyphenate.EMValueCallBack
 import com.hyphenate.chat.EMClient
+import com.hyphenate.exceptions.HyphenateException
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.adapter.ContactListAdapter
 import com.rl.ff_face_detection_terload.adapter.EMContactListenerAdapter
@@ -39,7 +40,7 @@ import java.util.*
  * @description:
  * @date :2021/1/2 22:24
  */
-//联系人 //TODO 不需要每次进入界面就刷新适配器
+//联系人 //TODO 不需要每次进入界面就刷新适配器 , 每次考勤数据应该存储，不然用户可以随便让一个人考勤
 class ContactFragment : BaseFragment(), ContactContract.View {
     override fun getLayoutResID() = R.layout.fragment_contact
 
@@ -140,6 +141,7 @@ class ContactFragment : BaseFragment(), ContactContract.View {
                     requireActivity().runOnUiThread {
                         tv_checkin_time.text = getString(R.string.checkin_time, "待签到 ")
                         tv_checkout_time.text = getString(R.string.checkout_time, "待签退 ")
+                        Log.d(TAG, "onSuccess-> updateOwnInfo()")
 
                         tv_user_attendance2.apply {
                             if (userStatusAndCheckTime != null && userStatusAndCheckTime.status == 2 && Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 6) {
@@ -165,6 +167,7 @@ class ContactFragment : BaseFragment(), ContactContract.View {
 
                 override fun onError(error: Int, errorMsg: String?) {
                     requireActivity().toast("当前网络错误")
+                    Log.e(TAG, "onError: $errorMsg")
                 }
             })
         }
@@ -218,8 +221,9 @@ class ContactFragment : BaseFragment(), ContactContract.View {
         }
     }
 
-    override fun onLoadFailed() {
-        context.let { it?.toast("数据加载失败") }
+    override fun onLoadFailed(e: HyphenateException) {
+        requireActivity().toast("数据加载失败->${e.message}")
+        Log.e(TAG, "onLoadFailed: $e", e)
     }
 
     // 判断当前考勤是签到还是签退，（每天凌晨6点刷新状态为未考勤）

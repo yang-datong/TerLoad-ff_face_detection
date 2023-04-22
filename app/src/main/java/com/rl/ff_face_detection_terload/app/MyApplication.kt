@@ -163,7 +163,7 @@ class MyApplication : Application() {
                 try {
                     emc.contactManager().addContact(names[i], "Initialization Contact")
                 } catch (e: HyphenateException) {
-                    Log.i("setDefaultUser", "添加好友失败: " + e.message)
+                    Log.i("setDefaultUser", "添加用户失败: " + e.message)
                 }
             }
             emc.logout(true)

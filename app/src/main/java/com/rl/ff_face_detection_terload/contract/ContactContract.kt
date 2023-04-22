@@ -1,5 +1,7 @@
 package com.rl.ff_face_detection_terload.contract
 
+import com.hyphenate.exceptions.HyphenateException
+
 /**
  * @author 杨景
  * @description:
@@ -11,6 +13,6 @@ interface ContactContract {
     }
     interface View {
         fun onLoadSuccess()
-        fun onLoadFailed()
+        fun onLoadFailed(e: HyphenateException)
     }
 }

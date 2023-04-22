@@ -148,21 +148,6 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
     }
 
     private fun logout() {
-        EMClient.getInstance().logout(true, object : EMCallBack {
-            override fun onSuccess() {
-                uiThread {
-                    view.onLoggedInFailed("已在另一台设备中退出，尝试重新登录")
-                }
-            }
-
-            override fun onProgress(progress: Int, status: String?) {
-            }
-
-            override fun onError(code: Int, error: String?) {
-                uiThread {
-                    view.onLoggedInFailed("账号异常")
-                }
-            }
-        })
+        EMClient.getInstance().logout(true)
     }
 }

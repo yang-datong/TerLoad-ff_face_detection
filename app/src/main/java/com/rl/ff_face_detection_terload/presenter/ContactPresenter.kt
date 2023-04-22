@@ -1,10 +1,10 @@
 package com.rl.ff_face_detection_terload.presenter
 
+import com.hyphenate.chat.EMClient
+import com.hyphenate.exceptions.HyphenateException
 import com.rl.ff_face_detection_terload.contract.ContactContract
 import com.rl.ff_face_detection_terload.emp.ContactEmp
 import com.rl.ff_face_detection_terload.emp.Person
-import com.hyphenate.chat.EMClient
-import com.hyphenate.exceptions.HyphenateException
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.litepal.LitePal
@@ -31,7 +31,7 @@ class ContactPresenter(val view: ContactContract.View) : ContactContract.Present
                 }
                 uiThread { view.onLoadSuccess() }
             } catch (e: HyphenateException) {
-                uiThread { view.onLoadFailed() }
+                uiThread { view.onLoadFailed(e) }
             }
 
         }
