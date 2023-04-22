@@ -5,6 +5,9 @@ import android.view.View
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
+import com.hyphenate.EMValueCallBack
+import com.hyphenate.chat.EMClient
+import com.hyphenate.chat.EMUserInfo
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.database.DB
 import com.rl.ff_face_detection_terload.database.User
@@ -15,6 +18,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.toast
+import org.json.JSONObject
 
 class UpdateInfoActivity : BaseActivity() {
     override fun getLayoutResID() = R.layout.activity_update_info
@@ -88,33 +92,55 @@ class UpdateInfoActivity : BaseActivity() {
     private fun updateUserInfoData(user: User, view: View) {
         showProgress("")
 
-//        doAsync {
-//      //TODO 上传服务器更新密码
-//        }
-
-        //save DataBase
         GlobalScope.launch {
-            Log.d(TAG, "img_option.setOnClickListener: update user info , $user")
-            val ret = DB.getInstance(this@UpdateInfoActivity).userDao().updateUser(user)
-            runOnUiThread { dismissProgress() }
-            if (ret == 1) {
-                Log.d(TAG, "updateUser success")
-                this@UpdateInfoActivity.name = user.name.toString()
-                this@UpdateInfoActivity.email = user.email.toString()
-                this@UpdateInfoActivity.phone = user.phone.toString()
-                this@UpdateInfoActivity.password = user.password
-                runOnUiThread {
-                    ev_password.text.clear()
-                    ev_password_confirm.text.clear()
-                    Snackbar.make(view, "updateUser success", Snackbar.LENGTH_LONG).show()
+            val emUser = EMUserInfo().apply {
+//                user.password  //TODO
+                nickname = user.name
+                email = user.email
+                phoneNumber = user.phone
+                val json = JSONObject().apply {
+                    put("status", user.status)
+                    put("checkin_time", user.checkin_time)
+                    put("checkout_time", user.checkout_time)
                 }
-            } else {
-                Log.e(TAG, "updateUser failed ret:${ret}")
-                runOnUiThread { Snackbar.make(view, "updateUser failed", Snackbar.LENGTH_LONG).show() }
+                ext = json.toString()
             }
+
+            EMClient.getInstance().userInfoManager().updateOwnInfo(emUser, object : EMValueCallBack<String> {
+                override fun onSuccess(value: String?) {
+                    GlobalScope.launch {
+                        updateLocalDataBase(user, view)
+                        runOnUiThread { dismissProgress() }
+                    }
+                }
+
+                override fun onError(error: Int, errorMsg: String?) {
+                    Log.e(TAG, "onError: $errorMsg")
+                    dismissProgress()
+                }
+            })
         }
+    }
 
-
+    private suspend fun updateLocalDataBase(user: User, view: View) {
+        //save DataBase
+        Log.d(TAG, "img_option.setOnClickListener: update user info , $user")
+        val ret = DB.getInstance(this@UpdateInfoActivity).userDao().updateUser(user)
+        if (ret == 1) {
+            Log.d(TAG, "updateUser success")
+            this@UpdateInfoActivity.name = user.name.toString()
+            this@UpdateInfoActivity.email = user.email.toString()
+            this@UpdateInfoActivity.phone = user.phone.toString()
+            this@UpdateInfoActivity.password = user.password
+            runOnUiThread {
+                ev_password.text.clear()
+                ev_password_confirm.text.clear()
+                Snackbar.make(view, "updateUser success", Snackbar.LENGTH_LONG).show()
+            }
+        } else {
+            Log.e(TAG, "updateUser failed ret:${ret}")
+            runOnUiThread { Snackbar.make(view, "updateUser failed", Snackbar.LENGTH_LONG).show() }
+        }
     }
 
     private fun initData(username: String?) {

@@ -21,12 +21,13 @@ import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
 class LoginActivity : BaseActivity(), LoginContract.View {
+    companion object {
+        private const val TAG = "LoginActivity"
+        private const val REQUEST_CODE = 0x111
+        private const val REQUEST_FACE_RECOGNIZE_LOGIN = 0x222
+        private const val REQUEST_NORMAL_LOGIN = 0x333
+    }
 
-
-    private val TAG = "LoginActivity"
-    private val REQUEST_CODE = 0x111
-    private val REQUEST_FACE_RECOGNIZE_LOGIN = 0x222
-    private val REQUEST_NORMAL_LOGIN = 0x333
     private val loginPresenter = LoginPresenter(this)
     override fun getLayoutResID() = R.layout.activity_main_login
     private var permissionType = REQUEST_FACE_RECOGNIZE_LOGIN
@@ -74,7 +75,7 @@ class LoginActivity : BaseActivity(), LoginContract.View {
     }
 
     private fun applyWriteExternalStoragePermission() { //弹出请求权限对话框
-        val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,Manifest.permission.RECORD_AUDIO)
+        val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
         ActivityCompat.requestPermissions(this, permissions, 0)
     }
 

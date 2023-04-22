@@ -90,7 +90,8 @@ dependencies {
     //Anko库
     implementation "org.jetbrains.anko:anko-commons:0.10.8"
 
-    api 'com.hyphenate:hyphenate-sdk:3.7.2'
+//    api 'com.hyphenate:hyphenate-sdk:3.7.2'
+    implementation 'io.hyphenate:hyphenate-chat:3.9.4'
 
     //Bmob
 //    implementation 'cn.bmob.android:bmob-sdk:3.7.8'

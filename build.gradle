@@ -4,6 +4,7 @@ buildscript {
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.1.0"
@@ -18,10 +19,11 @@ allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
         maven { url "https://jitpack.io" }
-        maven { url 'http://developer.huawei.com/repo'} //如果需要使用华为推送HMS，则需要加上此句
+//        maven { url 'http://developer.huawei.com/repo'} //如果需要使用华为推送HMS，则需要加上此句
         //Bmob的maven仓库地址--必填
-        maven {url 'https://dl.bintray.com/chaozhouzhang/maven' }
+//        maven {url 'https://dl.bintray.com/chaozhouzhang/maven' }
     }
 }
 
