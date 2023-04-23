@@ -175,6 +175,7 @@ class ContactFragment : BaseFragment(), ContactContract.View {
 
     private fun initRootView() {
         showUI(true)
+        Log.e(TAG, "initRootView: ")
         img_option.setOnClickListener {
             requireActivity().startActivity<AddFriendActivity>()
         }
@@ -222,7 +223,7 @@ class ContactFragment : BaseFragment(), ContactContract.View {
     }
 
     override fun onLoadFailed(e: HyphenateException) {
-        requireActivity().toast("数据加载失败->${e.message}")
+//        requireActivity().toast("数据加载失败->${e.message}") //网络出问题后 这里会crash
         Log.e(TAG, "onLoadFailed: $e", e)
     }
 

@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(activity_main)
         init()
-        angleNumber()//添加角标
+        angleNumber()//添加角标 //TODO 放在resume中试试
         EMClient.getInstance().chatManager().addMessageListener(msgListener)//消息监听
         EMClient.getInstance().addConnectionListener(connectionListener)
     }
@@ -68,6 +68,19 @@ class MainActivity : AppCompatActivity() {
             menu.findItem(R.id.dynamicFragment).title = getString(R.string.page_three)
             menu.findItem(R.id.contactFragment).icon = getDrawable(R.drawable.kaoqing_log)
         }
+
+//        bottomNavigationView.setOnNavigationItemSelectedListener {
+//            // 避免B返回到A重复创建
+//            val popBackStack = findNavController.popBackStack(it.itemId, false)
+//            if (popBackStack) {
+//                // 已创建
+//                return@setOnNavigationItemSelectedListener popBackStack
+//            } else {
+//                // 未创建
+//                return@setOnNavigationItemSelectedListener NavigationUI.onNavDestinationSelected(
+//                        it, findNavController)
+//            }
+//        }
     }
 
     private fun angleNumber() {

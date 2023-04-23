@@ -2,19 +2,12 @@ package com.rl.ff_face_detection_terload.presenter
 
 import android.content.Context
 import android.util.Log
-import cn.bmob.v3.BmobQuery
-import cn.bmob.v3.exception.BmobException
-import cn.bmob.v3.listener.FindListener
 import com.rl.ff_face_detection_terload.contract.AddFriendContract
 import com.rl.ff_face_detection_terload.emp.AddFriendItem
-import com.rl.ff_face_detection_terload.emp.MyUser
-import com.rl.ff_face_detection_terload.emp.Person
-import com.hyphenate.chat.EMClient
 import com.rl.ff_face_detection_terload.database.DB
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.doAsync
-import org.litepal.LitePal
 
 
 /**

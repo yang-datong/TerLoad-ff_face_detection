@@ -14,13 +14,11 @@
 
 
     <!--  created by  fei -->
-    <color name="text_secondary_color">#9d9d9d</color>
 
     <!-- 新版登录模块-->
     <color name="login_line_color">#dededf</color>
     <color name="login_input_active">#31b968</color>
     <color name="account_input_bg_color">#33ffffff</color>
-    <color name="account_pressed_true">#14b94d</color>
 
     <color name="bg_press">#ebebeb</color>
 

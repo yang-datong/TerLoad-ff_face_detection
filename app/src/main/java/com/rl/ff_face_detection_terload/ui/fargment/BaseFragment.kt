@@ -1,10 +1,6 @@
 package com.rl.ff_face_detection_terload.ui.fargment
 
 import android.app.Dialog
-import android.app.ProgressDialog
-import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -13,9 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.rl.ff_face_detection_terload.R
-import com.rl.ff_face_detection_terload.ui.activity.BaseActivity
 
 abstract class BaseFragment : Fragment() {
     private var message: TextView? = null
@@ -36,10 +30,6 @@ abstract class BaseFragment : Fragment() {
     }
 
     private val bottomDialog by lazy {
-//        BottomSheetDialog(requireContext(), R.style.BottomSheetDialogStyle).apply {
-//            setContentView(R.layout.dialog_bottom)
-//            window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-//        }
         Dialog(requireContext()).apply {
             setContentView(R.layout.dialog_bottom)
             window!!.setBackgroundDrawableResource(R.drawable.bg_loading)
@@ -60,8 +50,7 @@ abstract class BaseFragment : Fragment() {
         inits()
     }
 
-    open fun inits() {
-    }
+    open fun inits() {}
 
     open fun showProgress() {
         dialog.show()

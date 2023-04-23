@@ -14,6 +14,7 @@ import org.litepal.LitePal
  * @description:
  * @date :2021/1/3 0:15
  */
+//TODO 联系人库的用户类 换为Room的user数据类
 class ContactPresenter(val view: ContactContract.View) : ContactContract.Presenter {
     var contactListItems = mutableListOf<ContactEmp>()
     override fun loadData() {

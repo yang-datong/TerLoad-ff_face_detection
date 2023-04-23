@@ -54,10 +54,10 @@
                 android:resource="@xml/audio_provider" />
         </provider>
 
-        <provider
-            android:name="cn.bmob.v3.util.BmobContentProvider"
-            android:authorities="com.rl.ff_face_detection_terload.BmobContentProvider"
-            android:exported="false" />
+        <!--        <provider-->
+        <!--            android:name="cn.bmob.v3.util.BmobContentProvider"-->
+        <!--            android:authorities="com.rl.ff_face_detection_terload.BmobContentProvider"-->
+        <!--            android:exported="false" />-->
 
         <meta-data
             android:name="EASEMOB_APPKEY"
