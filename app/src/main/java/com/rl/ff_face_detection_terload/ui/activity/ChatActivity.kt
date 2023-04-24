@@ -218,10 +218,10 @@ class ChatActivity : BaseActivity(), ChatContract.View {
         recycleview.scrollToPosition(presenter.messages.size - 1)
     }
 
-    override fun onSendFailed() {
+    override fun onSendFailed(error: String?) {
         recycleview.adapter?.notifyDataSetChanged()
         input_message.text.clear()
-        toast("发送失败")
+        toast("发送失败:${error}")
     }
 
     override fun onMoreMessageLoad(size: Int) {

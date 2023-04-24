@@ -68,6 +68,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+//        if (defaultSharedPreferences.getBoolean("updateTheme", false)) {
+//            bottomNavigationView.selectedItemId = R.id.dynamicFragment
+//            fragment_container.invalidate()
+//            defaultSharedPreferences.edit().putBoolean("updateTheme", false).apply()
+//        }
     }
 
     override fun onResume() {

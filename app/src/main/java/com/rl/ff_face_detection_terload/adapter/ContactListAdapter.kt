@@ -9,6 +9,7 @@ import com.rl.ff_face_detection_terload.emp.ContactEmp
 import com.rl.ff_face_detection_terload.ui.activity.UserDetailedActivity
 import com.rl.ff_face_detection_terload.widget.ContactListItemView
 import kotlinx.android.synthetic.main.view_contact_item.view.*
+import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.startActivity
 
 /**
@@ -28,7 +29,7 @@ class ContactListAdapter(var context: Context, private val contactListItems: Mut
         if (contactListItems[position].isShowFirst) {
             contactListItemView.firstLetter.visibility = View.VISIBLE
             contactListItemView.firstLetter.text = "${contactListItems[position].firstLetter}"
-            if (context.getSharedPreferences("theme_model", Context.MODE_PRIVATE).getBoolean("dark", false))
+            if (context.defaultSharedPreferences.getBoolean("dark", false))
                 contactListItemView.firstLetter.setBackgroundColor(Color.BLACK)
             else
                 contactListItemView.firstLetter.setBackgroundColor(Color.parseColor("#f3f3f3"))
@@ -37,7 +38,6 @@ class ContactListAdapter(var context: Context, private val contactListItems: Mut
             contactListItemView.firstLetter.visibility = View.GONE
 
         contactListItemView.userNmae.text = contactListItems[position].userName
-//        contactListItemView.userNmae.text = if (name != "") name else contactListItems[position].userName
 
         contactListItemView.setOnClickListener {
             context.startActivity<UserDetailedActivity>("username" to contactListItems[position].userName)

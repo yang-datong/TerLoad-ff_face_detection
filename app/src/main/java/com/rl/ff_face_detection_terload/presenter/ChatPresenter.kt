@@ -38,7 +38,7 @@ class ChatPresenter(val view: ChatContract.View) : ChatContract.Presenter {
             override fun onProgress(progress: Int, status: String?) {}
             override fun onError(code: Int, error: String?) {
                 uiThread {
-                    view.onSendFailed()
+                    view.onSendFailed(error)
                 }
             }
         })
@@ -65,7 +65,7 @@ class ChatPresenter(val view: ChatContract.View) : ChatContract.Presenter {
                 override fun onError(code: Int, error: String?) {
                     uiThread {
                         Log.e("ChatPresenter", "sendAudioMessage error")
-                        view.onSendFailed()
+                        view.onSendFailed(error)
                     }
                 }
             })

@@ -59,9 +59,6 @@
         <!--            android:authorities="com.rl.ff_face_detection_terload.BmobContentProvider"-->
         <!--            android:exported="false" />-->
 
-<!--        <meta-data-->
-<!--            android:name="EASEMOB_APPKEY"-->
-<!--            android:value="1107210101040542#demo" />-->
 
         <!-- 声明SDK所需的service SDK核心功能 -->
         <service
@@ -92,7 +89,9 @@
         <!--        android:theme="@style/Theme.AppCompat.Light.NoActionBar"-->
         <activity android:name=".ui.activity.RegisterActivity" />
         <!--        android:theme="@style/Theme.AppCompat.NoActionBar"-->
-        <activity android:name=".ui.activity.MainActivity" />
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:launchMode="singleTask" />
         <activity
             android:name=".ui.activity.ChatActivity"
             android:parentActivityName=".ui.activity.MainActivity" />

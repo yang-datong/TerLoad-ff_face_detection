@@ -1,8 +1,10 @@
 package com.rl.ff_face_detection_terload.contract
 
+import android.content.Context
+
 interface SplashContract {
     interface Presenter : BasePresenter{
-        fun checkLoginStatus () //登录状态判断
+        fun checkLoginStatus(context: Context)
     }
 
     interface View{

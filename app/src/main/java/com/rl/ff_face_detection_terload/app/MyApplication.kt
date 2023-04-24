@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Vibrator
 import android.util.Log
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import com.hyphenate.EMCallBack
@@ -29,9 +28,22 @@ class MyApplication : Application() {
     private val TAG = "MyApplication"
     private var isBackground = true
 
+    override fun onCreate() {
+        super.onCreate()
+        val emOptions = EMOptions()
+        emOptions.appKey = "1107210101040542#demo" //qq邮箱
+//        emOptions.appKey = "1135230423163966#demo" //网易邮箱  //TODO 3. 去除底部框
+        val emc = EMClient.getInstance()
+        emc.init(applicationContext, emOptions)
+        EMClient.getInstance().setDebugMode(BuildConfig.DEBUG)
+        emc.chatManager().addMessageListener(msgListener)
 
-    private val sp by lazy {
-        getSharedPreferences("isAutoLogin", Context.MODE_PRIVATE)
+//        Bmob.initialize(applicationContext, "c063550ad7c3587f4fae8ff7f68deef1");
+        LitePal.initialize(applicationContext)
+
+        registerActivityLifecycleCallbacks(mCallbacks)
+//        setDefaultUser() //比较暴力，一般跑一次就可以了
+        FaceRecognize.loadJNIFaceModel(this.applicationContext)
     }
 
     private val mCallbacks = object : ActivityLifecycleCallbacks {
@@ -109,35 +121,11 @@ class MyApplication : Application() {
     }
 
 
-    private val sp_theme by lazy {
-        getSharedPreferences("theme_model", Context.MODE_PRIVATE)
+    override fun onTerminate() {
+        FaceRecognize.onDestroy()
+        super.onTerminate()
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        val hasDark = sp_theme.getBoolean("dark", false)
-        if (!hasDark)
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)//日间模式
-        else
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //夜间模式
-
-//        val isAuto = sp.getBoolean("isAuto", true)
-        val emOptions = EMOptions()
-//        emOptions.autoLogin = isAuto
-//        emOptions.appKey = "1107210101040542#demo" //qq邮箱
-        emOptions.appKey = "1135230423163966#demo" //网易邮箱
-        val emc = EMClient.getInstance()
-        emc.init(applicationContext, emOptions)
-        EMClient.getInstance().setDebugMode(BuildConfig.DEBUG)
-        emc.chatManager().addMessageListener(msgListener)
-
-//        Bmob.initialize(applicationContext, "c063550ad7c3587f4fae8ff7f68deef1");
-        LitePal.initialize(applicationContext)
-
-        registerActivityLifecycleCallbacks(mCallbacks)
-//        setDefaultUser() //比较暴力，一般跑一次就可以了
-        FaceRecognize.loadJNIFaceModel(this.applicationContext)
-    }
 
     private fun setDefaultUser() {
         GlobalScope.launch {
@@ -193,9 +181,5 @@ class MyApplication : Application() {
 
     }
 
-    override fun onTerminate() {
-        FaceRecognize.onDestroy()
-        super.onTerminate()
-    }
 }
 

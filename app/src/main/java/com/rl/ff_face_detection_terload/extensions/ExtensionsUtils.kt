@@ -1,6 +1,7 @@
 package com.rl.ff_face_detection_terload.extensions
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import com.hyphenate.EMValueCallBack
 import com.hyphenate.chat.EMClient
@@ -8,6 +9,7 @@ import com.hyphenate.chat.EMUserInfo
 import com.rl.ff_face_detection_terload.database.DB
 import com.rl.ff_face_detection_terload.database.User
 import com.rl.ff_face_detection_terload.database.UserStatusAndCheckTime
+import com.rl.ff_face_detection_terload.ui.activity.SplashActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.defaultSharedPreferences
@@ -18,6 +20,7 @@ import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
+import kotlin.system.exitProcess
 
 
 fun String.isValidUserName() = this.matches(Regex("^[a-zA-Z]\\w{2,15}$"))
@@ -224,3 +227,13 @@ fun checkIsCurrentDay(checkTime: Long): Boolean {
     return phoneNowDay == checkOutTimeDay
 }
 
+
+fun restartApp(context: Context) {
+    val intent = Intent(context.applicationContext, SplashActivity::class.java)
+// 设置 Intent 的 Flag，让 Activity 以一种"新"的方式启动
+    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or
+            Intent.FLAG_ACTIVITY_CLEAR_TASK or
+            Intent.FLAG_ACTIVITY_NEW_TASK)
+    context.startActivity(intent)
+    exitProcess(0)
+}

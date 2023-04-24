@@ -1,15 +1,14 @@
 package com.rl.ff_face_detection_terload.ui.fargment
 
-import android.content.Context
 import android.content.ContextWrapper
 import android.util.Log
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isGone
 import com.google.android.material.snackbar.Snackbar
 import com.hyphenate.EMCallBack
 import com.hyphenate.chat.EMClient
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.database.DataOperation
+import com.rl.ff_face_detection_terload.extensions.restartApp
 import com.rl.ff_face_detection_terload.ui.activity.LoginActivity
 import com.rl.ff_face_detection_terload.ui.activity.UpdateInfoActivity
 import com.rl.ff_face_detection_terload.ui.activity.UploadFaceActivity
@@ -17,6 +16,7 @@ import kotlinx.android.synthetic.main.fragment_dynamic.*
 import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+
 
 /**
  * @author 杨景
@@ -26,11 +26,12 @@ import org.jetbrains.anko.toast
 //动态页面
 class DynamicFragment : BaseFragment() {
 
-    override fun getLayoutResID() = R.layout.fragment_dynamic
 
-    private val sp by lazy {
-        context?.getSharedPreferences("theme_model", Context.MODE_PRIVATE)
+    companion object {
+        private const val TAG = "DynamicFragment"
     }
+
+    override fun getLayoutResID() = R.layout.fragment_dynamic
 
     override fun inits() {
         Log.d("DynamicFragment", "inits: ")
@@ -94,14 +95,12 @@ class DynamicFragment : BaseFragment() {
             }
         }
         bt_theme_model.setOnClickListener {
-            sp?.let {
-                val hasDark = it.getBoolean("dark", false)
-                if (hasDark)
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)//日间模式
-                else
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //夜间模式
-
-                it.edit().putBoolean("dark", !hasDark).apply()
+            showBottomDialog("将重启App是否继续？", "继续") {
+                requireActivity().defaultSharedPreferences.apply {
+                    val commit = edit().putBoolean("dark", !getBoolean("dark", false)).commit()
+                    if (commit)
+                        restartApp(requireContext())
+                }
             }
         }
         bt_update_info.setOnClickListener {

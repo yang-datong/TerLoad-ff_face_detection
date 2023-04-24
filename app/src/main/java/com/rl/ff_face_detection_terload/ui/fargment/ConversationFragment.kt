@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.fragment_contact.recyclerview
 import kotlinx.android.synthetic.main.fragment_conversation.*
 import kotlinx.android.synthetic.main.title_bar.*
 import org.jetbrains.anko.defaultSharedPreferences
-import org.jetbrains.anko.runOnUiThread
 import java.util.*
 
 /**
@@ -26,6 +25,10 @@ import java.util.*
  */
 //对话页面
 class ConversationFragment : BaseFragment(), ConversationContract.View {
+    companion object {
+        private const val TAG = "ConversationFragment"
+    }
+
     override fun getLayoutResID() = R.layout.fragment_conversation
 
     //TODO 第二次登录会报连接错误
@@ -48,7 +51,6 @@ class ConversationFragment : BaseFragment(), ConversationContract.View {
         smartrefresh.setOnRefreshListener {
             it.finishRefresh(1000)
             presenter.onConversations()
-            onUpdate()
         }
         presenter.onConversations()
         EMClient.getInstance().chatManager().addMessageListener(msgListener)
@@ -57,7 +59,6 @@ class ConversationFragment : BaseFragment(), ConversationContract.View {
     private val msgListener = object : MessageListenerAdapter() {
         override fun onMessageReceived(messages: MutableList<EMMessage>?) {
             presenter.onConversations()
-            context?.runOnUiThread { onUpdate() }
         }
     }
 
@@ -93,7 +94,7 @@ class ConversationFragment : BaseFragment(), ConversationContract.View {
 
     override fun onResume() {
         super.onResume()
-        onUpdate()
+        presenter.onConversations()
     }
 
     override fun onDestroyView() {

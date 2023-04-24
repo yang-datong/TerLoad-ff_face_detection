@@ -2,7 +2,6 @@ package com.rl.ff_face_detection_terload.ui.activity
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -17,6 +16,7 @@ import com.rl.ff_face_detection_terload.contract.LoginContract
 import com.rl.ff_face_detection_terload.extensions.DynamicDeploymentData
 import com.rl.ff_face_detection_terload.presenter.LoginPresenter
 import kotlinx.android.synthetic.main.activity_main_login.*
+import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
@@ -32,10 +32,6 @@ class LoginActivity : BaseActivity(), LoginContract.View {
     override fun getLayoutResID() = R.layout.activity_main_login
     private var permissionType = REQUEST_FACE_RECOGNIZE_LOGIN
 
-    private val sp by lazy {
-        getSharedPreferences("isAutoLogin", Context.MODE_PRIVATE)
-    }
-
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus);
         window.apply {
@@ -45,8 +41,8 @@ class LoginActivity : BaseActivity(), LoginContract.View {
     }
 
     override fun inits() {
-        username.setText("root")
-        password.setText("123")
+        cb_remember_login.isChecked = defaultSharedPreferences.getBoolean("isAuto", false)
+        username.setText(defaultSharedPreferences.getString("username", ""))
         login.setOnClickListener {
             hideSoftKeyboard()//隐藏软键盘
             if (hasWriteExternalStoragePermission(REQUEST_NORMAL_LOGIN))  //检查是否有权限
@@ -56,9 +52,7 @@ class LoginActivity : BaseActivity(), LoginContract.View {
         }
         //注册
         bt_login_register.setOnClickListener { startActivity<RegisterActivity>() }
-        tv_login_forget_pwd.setOnClickListener {
-            Snackbar.make(it, "忘记密码我也没办法啊...", Snackbar.LENGTH_LONG).setAction("行吧", null).show()
-        }
+        tv_login_forget_pwd.setOnClickListener { Snackbar.make(it, "忘记密码我也没办法啊...", Snackbar.LENGTH_LONG).show() }
         face_login.setOnClickListener {
             ll_login_options.isGone = false
             if (!hasWriteExternalStoragePermission(REQUEST_FACE_RECOGNIZE_LOGIN)) {  //检查是否有权限
@@ -116,7 +110,7 @@ class LoginActivity : BaseActivity(), LoginContract.View {
 
     override fun onLoggedInSuccess() {
         dismissProgress()
-        sp.edit().putBoolean("isAuto", cb_remember_login.isChecked).apply()
+        defaultSharedPreferences.edit().putBoolean("isAuto", cb_remember_login.isChecked).apply()
         startActivity<MainActivity>()
         finish()
     }

@@ -19,7 +19,7 @@ interface ChatContract {
     interface View {
         fun onStartSend()
         fun onSendSuccess()
-        fun onSendFailed()
+        fun onSendFailed(error: String?)
         fun onMessageLoad()
         fun onMoreMessageLoad(size: Int)
         fun onErrorLogin()

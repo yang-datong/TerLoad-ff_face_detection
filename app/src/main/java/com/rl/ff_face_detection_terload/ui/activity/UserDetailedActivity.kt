@@ -30,7 +30,7 @@ class UserDetailedActivity : BaseActivity() {
     override fun getLayoutResID() = R.layout.activity_user_detailed
 
     companion object {
-        const val REMIND_MESSAGE = "管理员提醒你尽快完成考勤~"
+        const val REMIND_MESSAGE = "请尽快完成考勤~"
     }
 
     override fun inits() {
