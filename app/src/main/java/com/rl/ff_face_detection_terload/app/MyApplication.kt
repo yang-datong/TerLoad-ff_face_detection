@@ -12,10 +12,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import com.hyphenate.EMCallBack
-import com.hyphenate.chat.EMClient
-import com.hyphenate.chat.EMMessage
-import com.hyphenate.chat.EMOptions
-import com.hyphenate.chat.EMTextMessageBody
+import com.hyphenate.chat.*
 import com.hyphenate.exceptions.HyphenateException
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.adapter.MessageListenerAdapter
@@ -125,12 +122,14 @@ class MyApplication : Application() {
         else
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //夜间模式
 
-        val isAuto = sp.getBoolean("isAuto", true)
+//        val isAuto = sp.getBoolean("isAuto", true)
         val emOptions = EMOptions()
-        emOptions.autoLogin = isAuto
+//        emOptions.autoLogin = isAuto
+//        emOptions.appKey = "1107210101040542#demo" //qq邮箱
+        emOptions.appKey = "1135230423163966#demo" //网易邮箱
         val emc = EMClient.getInstance()
         emc.init(applicationContext, emOptions)
-//        EMClient.getInstance().setDebugMode(BuildConfig.DEBUG)
+        EMClient.getInstance().setDebugMode(BuildConfig.DEBUG)
         emc.chatManager().addMessageListener(msgListener)
 
 //        Bmob.initialize(applicationContext, "c063550ad7c3587f4fae8ff7f68deef1");
@@ -152,7 +151,7 @@ class MyApplication : Application() {
                 override fun onError(code: Int, error: String?) {}
             })
             userDao.addUser(User(0, "root", "123", "管理员", create_time = System.currentTimeMillis()))
-            userDao.addUser(User(1, "yangjing", "123","元老", create_time = System.currentTimeMillis()))
+            userDao.addUser(User(1, "yangjing", "123", "元老", create_time = System.currentTimeMillis()))
             for (i in names.indices) {
                 userDao.addUser(User(i + 2, names[i], "111", create_time = System.currentTimeMillis()))
                 try {

@@ -101,6 +101,7 @@ dependencies {
     //Anko库
     implementation "org.jetbrains.anko:anko-commons:0.10.8"
     //环信SDK
+//    implementation 'io.hyphenate:hyphenate-chat:4.0.0'
     implementation 'io.hyphenate:hyphenate-chat:3.9.4'
     //Bmob云数据库 //因为需要实名认证所以这里弃用,对项目影响不太大 ,考虑引包问题，项目留存了代码注释
 //    implementation 'io.github.bmob:android-sdk:3.8.21'

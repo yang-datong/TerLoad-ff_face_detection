@@ -11,6 +11,7 @@ import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.database.DB
 import com.rl.ff_face_detection_terload.database.User
 import com.rl.ff_face_detection_terload.database.UserStatusAndCheckTime
+import com.rl.ff_face_detection_terload.extensions.checkIsCurrentDay
 import com.rl.ff_face_detection_terload.extensions.formatTimestamp
 import com.rl.ff_face_detection_terload.extensions.pullUpdateOtherUserDataIntoDatabaseByServer
 import kotlinx.android.synthetic.main.activity_user_detailed.*
@@ -20,7 +21,6 @@ import kotlinx.coroutines.launch
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.uiThread
-import java.util.*
 
 
 class UserDetailedActivity : BaseActivity() {
@@ -75,6 +75,7 @@ class UserDetailedActivity : BaseActivity() {
     }
 
 
+    //签退时间与手机系统时间是当天则表示完成考勤，反之表示未考勤
     private fun setUserCheckStatus(username: String?) {
         GlobalScope.launch {
             var userStatusAndCheckTime: UserStatusAndCheckTime? = null
@@ -95,13 +96,14 @@ class UserDetailedActivity : BaseActivity() {
                 tv_user_attendance.apply {
                     user?.let {
                         tv_name.text = if (it.name.isNullOrEmpty()) username else it.name
-                        tv_email.text = getString(R.string.email, it.email)
-                        tv_phone.text = getString(R.string.phone, it.phone)
+                        tv_email.text = getString(R.string.email, if (it.email!!.isEmpty()) "未设置 " else it.email)
+                        tv_phone.text = getString(R.string.phone, if (it.phone!!.isEmpty()) "未设置 " else it.phone)
                     }
                     tv_checkin_time2.text = getString(R.string.checkin_time, "待签到 ")
                     tv_checkout_time2.text = getString(R.string.checkout_time, "待签退 ")
-                    if (userStatusAndCheckTime != null && userStatusAndCheckTime.status == 2 && Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 6) {
-                        // 当前时间是早上6点之前
+                    //TODO 暂不考虑用户修改系统时间设置行为。。。
+                    if (userStatusAndCheckTime != null && userStatusAndCheckTime.status == 2
+                            && checkIsCurrentDay(userStatusAndCheckTime.checkout_time)) {
                         text = "已完成考勤"
                         setTextColor(Color.GREEN)
                         if (userStatusAndCheckTime.checkin_time != 0L)

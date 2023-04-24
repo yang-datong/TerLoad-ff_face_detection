@@ -18,6 +18,7 @@ import com.rl.ff_face_detection_terload.contract.ContactContract
 import com.rl.ff_face_detection_terload.database.DB
 import com.rl.ff_face_detection_terload.database.User
 import com.rl.ff_face_detection_terload.database.UserStatusAndCheckTime
+import com.rl.ff_face_detection_terload.extensions.checkIsCurrentDay
 import com.rl.ff_face_detection_terload.extensions.formatTimestamp
 import com.rl.ff_face_detection_terload.extensions.userObjToEMUserObj
 import com.rl.ff_face_detection_terload.presenter.ContactPresenter
@@ -33,7 +34,6 @@ import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.runOnUiThread
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
-import java.util.*
 
 /**
  * @author 杨景
@@ -44,8 +44,11 @@ import java.util.*
 class ContactFragment : BaseFragment(), ContactContract.View {
     override fun getLayoutResID() = R.layout.fragment_contact
 
-    private val TAG = "ContactFragment"
-    private val REQUEST_CODE = 0x111
+    companion object {
+        const val TAG = "ContactFragment"
+        const val REQUEST_CODE = 0x111
+    }
+
     private var username: String? = null
     val presenter by lazy { ContactPresenter(this) }
 
@@ -96,8 +99,8 @@ class ContactFragment : BaseFragment(), ContactContract.View {
                 tv_checkin_time.text = getString(R.string.checkin_time, "待签到 ")
                 tv_checkout_time.text = getString(R.string.checkout_time, "待签退 ")
                 tv_user_attendance2.apply {
-                    if (userStatusAndCheckTime != null && userStatusAndCheckTime.status == 2 && Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 6) {
-                        // 当前时间是早上6点之前
+                    if (userStatusAndCheckTime != null && userStatusAndCheckTime.status == 2
+                            && checkIsCurrentDay(userStatusAndCheckTime.checkout_time)) {
                         text = "已完成考勤"
                         setTextColor(Color.GREEN)
                         if (userStatusAndCheckTime.checkin_time != 0L)
@@ -142,10 +145,9 @@ class ContactFragment : BaseFragment(), ContactContract.View {
                         tv_checkin_time.text = getString(R.string.checkin_time, "待签到 ")
                         tv_checkout_time.text = getString(R.string.checkout_time, "待签退 ")
                         Log.d(TAG, "onSuccess-> updateOwnInfo()")
-
                         tv_user_attendance2.apply {
-                            if (userStatusAndCheckTime != null && userStatusAndCheckTime.status == 2 && Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 6) {
-                                // 当前时间是早上6点之前
+                            if (userStatusAndCheckTime != null && userStatusAndCheckTime.status == 2
+                                    && checkIsCurrentDay(userStatusAndCheckTime.checkout_time)) {
                                 text = "已完成考勤"
                                 setTextColor(Color.GREEN)
                                 if (userStatusAndCheckTime.checkin_time != 0L)
@@ -175,7 +177,6 @@ class ContactFragment : BaseFragment(), ContactContract.View {
 
     private fun initRootView() {
         showUI(true)
-        Log.e(TAG, "initRootView: ")
         img_option.setOnClickListener {
             requireActivity().startActivity<AddFriendActivity>()
         }

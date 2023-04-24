@@ -216,5 +216,11 @@ fun saveIntoSharedPreferencesEMUser(context: Context, it: EMUserInfo) {
 }
 
 
-
+fun checkIsCurrentDay(checkTime: Long): Boolean {
+    val calendar = Calendar.getInstance()
+    val phoneNowDay = calendar.get(Calendar.DAY_OF_YEAR)
+    calendar.timeInMillis = checkTime
+    val checkOutTimeDay = calendar.get(Calendar.DAY_OF_YEAR)
+    return phoneNowDay == checkOutTimeDay
+}
 

@@ -45,6 +45,8 @@ class LoginActivity : BaseActivity(), LoginContract.View {
     }
 
     override fun inits() {
+        username.setText("root")
+        password.setText("123")
         login.setOnClickListener {
             hideSoftKeyboard()//隐藏软键盘
             if (hasWriteExternalStoragePermission(REQUEST_NORMAL_LOGIN))  //检查是否有权限

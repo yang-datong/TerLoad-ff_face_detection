@@ -17,6 +17,8 @@ import com.rl.ff_face_detection_terload.R.layout.activity_main
 import com.rl.ff_face_detection_terload.adapter.MessageListenerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.angle_numver.view.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.startActivity
@@ -51,7 +53,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(activity_main)
         init()
-        angleNumber()//添加角标 //TODO 放在resume中试试
         EMClient.getInstance().chatManager().addMessageListener(msgListener)//消息监听
         EMClient.getInstance().addConnectionListener(connectionListener)
     }
@@ -68,6 +69,7 @@ class MainActivity : AppCompatActivity() {
             menu.findItem(R.id.dynamicFragment).title = getString(R.string.page_three)
             menu.findItem(R.id.contactFragment).icon = getDrawable(R.drawable.kaoqing_log)
         }
+        angleNumber()//添加角标 // 放在resume中试试 没用，还是UI控件问题，UI控件无法刷新
 
 //        bottomNavigationView.setOnNavigationItemSelectedListener {
 //            // 避免B返回到A重复创建
@@ -87,13 +89,19 @@ class MainActivity : AppCompatActivity() {
         val menuView = bottomNavigationView.getChildAt(0) as BottomNavigationMenuView
         val view = menuView.getChildAt(0)
         val inflate = layoutInflater.inflate(R.layout.angle_numver, null)
-        (view as BottomNavigationItemView).addView(inflate)
-        val messageNum = EMClient.getInstance().chatManager().unreadMessageCount.toString()
-        if (messageNum.toInt() > 0) {
-            inflate.textView10.text = messageNum
-            inflate.textView10.visibility = View.VISIBLE
-        } else {
-            inflate.textView10.visibility = View.GONE
+        val bottomNavigationItemView = view as BottomNavigationItemView
+        bottomNavigationItemView.addView(inflate)
+        GlobalScope.launch {
+            val messageNum = EMClient.getInstance().chatManager().unreadMessageCount.toString()
+            runOnUiThread {
+                if (messageNum.toInt() > 0)
+                    inflate.textView10.apply {
+                        text = messageNum
+                        visibility = View.VISIBLE
+                    }
+                else
+                    inflate.textView10.visibility = View.GONE
+            }
         }
     }
 

@@ -108,7 +108,7 @@ class DynamicFragment : BaseFragment() {
     }
 
     private fun logout() {
-        EMClient.getInstance().logout(false, object : EMCallBack {
+        EMClient.getInstance().logout(true, object : EMCallBack {
             override fun onSuccess() {
                 dismissProgress()
                 context?.startActivity<LoginActivity>()
