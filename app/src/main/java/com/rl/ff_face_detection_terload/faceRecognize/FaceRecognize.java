@@ -45,24 +45,18 @@ import androidx.core.app.ActivityCompat;
 import com.rl.ff_face_detection_terload.R;
 import com.rl.ff_face_detection_terload.extensions.DynamicDeploymentData;
 
-
 import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class FaceRecognize {
 
@@ -528,7 +522,7 @@ public class FaceRecognize {
 //        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 //        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "IMG_" + timeStamp + ".jpg");
 //        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "IMG.jpg");
-        File file = new File(activity.getFilesDir().getAbsolutePath(), "/" + takePictureTag + ".jpg");
+        File file = new File( takePictureTag);
         try {
             FileOutputStream outputStream = new FileOutputStream(file);
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);

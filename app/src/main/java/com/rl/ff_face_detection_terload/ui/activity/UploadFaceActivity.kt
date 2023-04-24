@@ -2,11 +2,10 @@ package com.rl.ff_face_detection_terload.ui.activity
 
 import android.graphics.Color
 import android.view.View
-import com.hyphenate.chat.EMClient
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.faceRecognize.FaceRecognize
 import kotlinx.android.synthetic.main.activity_upload_face.*
-import java.io.File
+import org.jetbrains.anko.defaultSharedPreferences
 
 class UploadFaceActivity : BaseActivity() {
 
@@ -22,26 +21,24 @@ class UploadFaceActivity : BaseActivity() {
     }
 
     override fun inits() {
-        // 隐藏状态栏和顶部菜单栏
+        showProgress()
         faceRecognize = FaceRecognize()
-        faceRecognize?.onCreate(texture_view, this) { status, faceRecognizeUserName ->
+        faceRecognize?.onCreate(texture_view, this) { status, _ ->
             if (status == 0) {
                 finish()
             }
         }
         faceRecognize?.uploadFaceImage(image_view)
+
+        var takePictureTAG = intent.getStringExtra("takePictureTAG")
+        if (takePictureTAG.isNullOrEmpty())
+            takePictureTAG = filesDir.absolutePath + "/" + defaultSharedPreferences.getString("username", "xxx") + ".jpg"
+
         img_capture.setOnClickListener {
-            val takePictureTag = EMClient.getInstance().currentUser
-            val file = File(filesDir.absolutePath, "/$takePictureTag.jpg")
-            if (file.exists()) {
-                showBottomDialog("当前已有可用的人脸识别模型，是否继续上传？", "继续") {
-                    faceRecognize?.takePicture(takePictureTag)
-                    dismissBottomDialog()
-                }
-            } else {
-                faceRecognize?.takePicture(takePictureTag)
-            }
+            faceRecognize?.takePicture(takePictureTAG)
         }
+
+        dismissProgress()
     }
 
 

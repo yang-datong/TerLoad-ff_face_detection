@@ -34,6 +34,7 @@ import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.runOnUiThread
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+import java.io.File
 
 /**
  * @author 杨景
@@ -81,11 +82,56 @@ class ContactFragment : BaseFragment(), ContactContract.View {
         showUI(false)
         initUIByUserStatus()
         card_recognition.setOnClickListener {
-            startActivityForResult(Intent(requireActivity(), FaceRecognizeActivity::class.java), REQUEST_CODE)
+            val faceModelTotal = getFaceModelTotal()
+            if (faceModelTotal[0] == faceModelTotal[1])
+                startActivityForResult(Intent(requireActivity(), FaceRecognizeActivity::class.java), REQUEST_CODE)
+            else
+                showBottomDialog("当前没有足够的人脸模型，请先进行人脸采集，当前模型: (${faceModelTotal[1]}/${faceModelTotal[0]})", "好的") {}
         }
+
         card_colletion.setOnClickListener {
-            requireActivity().startActivity<UploadFaceActivity>()
+            val takePictureTAG = getFaceModelTAG()
+            if (isCompleteFaceCollection()) {
+                showBottomDialog("当前已有可用的人脸识别模型，是否继续采集？", "继续") {
+                    requireActivity().startActivity<UploadFaceActivity>("takePictureTAG" to takePictureTAG)
+                    dismissBottomDialog()
+                }
+            } else
+                requireActivity().startActivity<UploadFaceActivity>("takePictureTAG" to takePictureTAG)
         }
+    }
+
+    private fun getFaceModelTAG(): String {
+        val path = requireActivity().filesDir.absolutePath
+        val username = requireActivity().defaultSharedPreferences.getString("username", "")
+        val faceSourceImage = arrayOf("${path}/${username}-1.jpg", "${path}/${username}-2.jpg", "${path}/${username}-3.jpg")
+        var takePictureTAG = faceSourceImage[0]
+
+        if (!File(faceSourceImage[0]).exists())
+            takePictureTAG = faceSourceImage[0]
+        else if (!File(faceSourceImage[1]).exists())
+            takePictureTAG = faceSourceImage[1]
+        else if (!File(faceSourceImage[2]).exists())
+            takePictureTAG = faceSourceImage[2]
+
+        return takePictureTAG
+    }
+
+    private fun getFaceModelTotal(): Array<Int> {
+        val path = requireActivity().filesDir.absolutePath
+        val username = requireActivity().defaultSharedPreferences.getString("username", "")
+        val faceSourceImage = arrayOf("${path}/${username}-1.jpg", "${path}/${username}-2.jpg", "${path}/${username}-3.jpg")
+        var faceSourceImageTotal = 0
+        for (f in faceSourceImage) {
+            if (File(f).exists())
+                faceSourceImageTotal++
+        }
+        return arrayOf(faceSourceImage.size, faceSourceImageTotal)
+    }
+
+    private fun isCompleteFaceCollection(): Boolean {
+        val faceModelTotal = getFaceModelTotal()
+        return faceModelTotal[0] == faceModelTotal[1]
     }
 
     private fun initUIByUserStatus() {
