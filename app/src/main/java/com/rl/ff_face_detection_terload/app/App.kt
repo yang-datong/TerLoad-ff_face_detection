@@ -33,8 +33,8 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         val emOptions = EMOptions()
-        emOptions.appKey = "1107210101040542#demo" //qq邮箱
-//        emOptions.appKey = "1135230423163966#demo" //网易邮箱
+//        emOptions.appKey = "1107210101040542#demo" //qq邮箱
+        emOptions.appKey = "1135230423163966#demo" //网易邮箱
         val emc = EMClient.getInstance()
         emc.init(applicationContext, emOptions)
         EMClient.getInstance().setDebugMode(BuildConfig.DEBUG)

@@ -93,7 +93,7 @@ abstract class BaseFragment : Fragment() {
     }
 
     open fun dismissProgress() {
-        if (bottomDialog.isShowing)
+        if (dialog.isShowing)
             dialog.dismiss()
     }
 

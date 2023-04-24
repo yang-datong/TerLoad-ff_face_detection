@@ -36,6 +36,13 @@ class DynamicFragment : BaseFragment() {
     override fun inits() {
         Log.d("DynamicFragment", "inits: ")
         initView()
+
+        //TODO 写好了文件上传下载工具函数
+//        uploadFile("${requireActivity().filesDir}/1.png", TAG, requireContext(), { uuid ->
+//            downloadFile(uuid, imageView7, TAG, requireContext(), { showProgress() }, { dismissProgress() })
+//        }, {
+//            showProgress()
+//        }, { dismissProgress() })
     }
 
     private fun initView() {

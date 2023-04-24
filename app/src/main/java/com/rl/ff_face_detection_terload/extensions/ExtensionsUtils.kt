@@ -3,7 +3,10 @@ package com.rl.ff_face_detection_terload.extensions
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
+import android.widget.ImageView
 import com.hyphenate.EMCallBack
 import com.hyphenate.EMValueCallBack
 import com.hyphenate.chat.EMClient
@@ -11,13 +14,23 @@ import com.hyphenate.chat.EMUserInfo
 import com.rl.ff_face_detection_terload.database.DB
 import com.rl.ff_face_detection_terload.database.User
 import com.rl.ff_face_detection_terload.database.UserStatusAndCheckTime
+import com.rl.ff_face_detection_terload.network.Api
+import com.rl.ff_face_detection_terload.network.ApiService
 import com.rl.ff_face_detection_terload.ui.activity.LoginActivity
 import com.rl.ff_face_detection_terload.ui.activity.SplashActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import org.jetbrains.anko.defaultSharedPreferences
+import org.jetbrains.anko.runOnUiThread
 import org.jetbrains.anko.toast
 import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -262,4 +275,83 @@ fun logout(activity: Activity, dismissProgress: () -> Unit) {
             activity.toast("退出异常")
         }
     })
+}
+
+
+fun downloadFile(file_uuid: String, imageView: ImageView, TAG: String, context: Context, showProgress: () -> Unit, dismissProgress: () -> Unit) {
+    showProgress()
+    GlobalScope.launch {
+        val apiService: ApiService = Api.retrofit.create(ApiService::class.java)
+        val call: Call<ResponseBody?>? = apiService.downloadFile(
+                "Bearer YWMtbfRn6uKwEe2GJEFppWaE_2PD2rdcAz8QsxFDvusmk8E0KLNYrxlOIotxj40nACBuAgMAAAGHs8Wx2AAPoABZ68C3-cSVkEnZN0-oQiTvGqt4PI2xwamTGOR3oSfpeA",
+                file_uuid)//"cc0696a0-e2e7-11ed-88b6-f98a29f3b73f"
+
+        call?.enqueue(object : Callback<ResponseBody?> {
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                Log.e(TAG, "onFailure: ", t)
+            }
+
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                if (response.code() == 200) {
+                    Log.d(TAG, "onResponse: 下载文件成功")
+                    GlobalScope.launch {
+                        val responseBody: ResponseBody? = response.body()
+                        val bytes: ByteArray? = responseBody?.bytes()
+                        val bitmap: Bitmap? = BitmapFactory.decodeByteArray(bytes, 0, bytes?.size
+                                ?: 0)
+                        context.runOnUiThread {
+                            imageView.setImageBitmap(bitmap)
+                            dismissProgress()
+                        }
+                    }
+                } else
+                    Log.e(TAG, "onResponse: ${response.code()}  url : ${call.request().url}")
+            }
+        })
+    }
+}
+
+
+fun uploadFile(filePath: String, TAG: String, context: Context, success: (uuid: String) -> Unit, showProgress: () -> Unit, dismissProgress: () -> Unit) {
+    showProgress()
+    GlobalScope.launch {
+        val apiService: ApiService = Api.retrofit.create(ApiService::class.java)
+
+        val requestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), filePath)
+        val filePart = MultipartBody.Part.createFormData("file", filePath, requestBody)
+
+        val call: Call<ResponseBody?>? = apiService.uploadFile(
+                "Bearer YWMtbfRn6uKwEe2GJEFppWaE_2PD2rdcAz8QsxFDvusmk8E0KLNYrxlOIotxj40nACBuAgMAAAGHs8Wx2AAPoABZ68C3-cSVkEnZN0-oQiTvGqt4PI2xwamTGOR3oSfpeA",
+                filePart)
+
+        call?.enqueue(object : Callback<ResponseBody?> {
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                Log.e(TAG, "onFailure: ", t)
+            }
+
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                if (response.code() == 200) {
+                    Log.d(TAG, "onResponse: 上传成功 ${response.raw()}")
+                    val jsonObject = JSONObject(response.body()?.string())
+                    val entities = jsonObject.optJSONArray("entities")
+
+                    if (entities != null && entities.length() > 0) {
+                        val entity = entities.optJSONObject(0)
+                        val uuid = entity.optString("uuid")
+                        val shareSecret = entity.optString("share-secret")
+                        val fileType = entity.optString("type")
+                        Log.d(TAG, "onResponse: uuid:${uuid}")
+                        success(uuid)
+                    }
+
+                    GlobalScope.launch {
+                        context.runOnUiThread {
+                            dismissProgress()
+                        }
+                    }
+                } else
+                    Log.e(TAG, "onResponse: ${response.code()}  url : ${call.request().url}")
+            }
+        })
+    }
 }
