@@ -40,7 +40,7 @@ import org.jetbrains.anko.toast
  * @description:
  * @date :2023/1/2 22:24
  */
-//联系人 //TODO 不需要每次进入界面就刷新适配器 , 每次考勤数据应该存储，不然用户可以随便让一个人考勤
+//联系人 //TODO 每次考勤数据应该存储，不然用户可以随便让一个人考勤
 class ContactFragment : BaseFragment(), ContactContract.View {
     override fun getLayoutResID() = R.layout.fragment_contact
 

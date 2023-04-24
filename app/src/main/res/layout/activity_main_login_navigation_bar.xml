@@ -14,6 +14,7 @@
         android:layout_height="48dp"
         android:background="@drawable/bg_login_navigation_bar"
         android:contentDescription="@null"
+        android:visibility="invisible"
         app:srcCompat="@mipmap/btn_back_normal" />
 
     <TextView

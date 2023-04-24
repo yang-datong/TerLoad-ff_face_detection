@@ -86,11 +86,13 @@ abstract class BaseFragment : Fragment() {
     }
 
     open fun dismissBottomDialog() {
-        bottomDialog.dismiss()
+        if (bottomDialog.isShowing)
+            bottomDialog.dismiss()
     }
 
     open fun dismissProgress() {
-        dialog.dismiss()
+        if (bottomDialog.isShowing)
+            dialog.dismiss()
     }
 
     abstract fun getLayoutResID(): Int

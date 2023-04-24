@@ -2,6 +2,7 @@ package com.rl.ff_face_detection_terload.ui.activity
 
 import android.util.Log
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
@@ -85,6 +86,8 @@ class UpdateInfoActivity : BaseActivity() {
         //3. 是否需要提交信息变更
         if (isLive)
             updateUserInfoData(it)
+        else
+            Snackbar.make(it, "未发生更新", Snackbar.LENGTH_LONG).show()
         return 0
     }
 
@@ -161,7 +164,7 @@ class UpdateInfoActivity : BaseActivity() {
         }
         tv_title.isInvisible = true
         img_option.isVisible = true
-        img_option.setImageDrawable(getDrawable(R.drawable.ic_baseline_check_24))
+        img_option.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_check_24))
     }
 
 }

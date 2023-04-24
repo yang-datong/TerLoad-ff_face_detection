@@ -10,9 +10,14 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.rl.ff_face_detection_terload.R
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.jetbrains.anko.toast
 
 
 abstract class BaseActivity : AppCompatActivity() {
+    private var showTime: Int = 0
     private var message: TextView? = null
     private var confirm: Button? = null
 
@@ -61,7 +66,22 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     open fun showProgress() {
+        showTime = 0
         dialog.show()
+        GlobalScope.launch {
+            while (true) {
+                delay(1000)
+                showTime++
+                if (showTime == 5) {
+                    if (dialog.isShowing)
+                        runOnUiThread {
+                            dismissProgress()
+                            toast("加载超时，稍后再试试!")
+                        }
+                    break
+                }
+            }
+        }
     }
 
     open fun showBottomDialog(msg: String?, bt_tips: String?, onConfirm: () -> Unit) {
@@ -92,11 +112,13 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     open fun dismissBottomDialog() {
-        bottomDialog.dismiss()
+        if (bottomDialog.isShowing)
+            bottomDialog.dismiss()
     }
 
     open fun dismissProgress() {
-        dialog.dismiss()
+        if (dialog.isShowing)
+            dialog.dismiss()
     }
 
     abstract fun getLayoutResID(): Int
