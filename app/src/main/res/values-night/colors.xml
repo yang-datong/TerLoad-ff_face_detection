@@ -12,7 +12,7 @@
     <color name="transparent">#00000000</color>
     <color name="black_alpha_128">#5E202020</color>
     <!-- Bottom Bar background-->
-    <color name="bottom_nav_background_color">#FFFFFFFF</color>
+    <color name="bottom_nav_background_color">#222222</color>
     <!-- 新版登录模块-->
     <color name="login_line_color">#dededf</color>
     <color name="login_input_active">#31b968</color>
@@ -23,9 +23,9 @@
     <color name="wechat_red">#F44336</color>
     <color name="wechat_yellow">#FF9800</color>
     <!-- bottom dialog text color-->
-    <color name="b_d_text_color">#FF000000</color>
-    <color name="chat_background_color">#f3f3f3</color>
-    <color name="chat_send_msg_background_color">#fafafa</color>
-    <color name="chat_input_msg_background_color">#FFFFFFFF</color>
-    <color name="chat_audio_tips_text_color">#FF000000</color>
+    <color name="b_d_text_color">#BBBBBC</color>
+    <color name="chat_background_color">#FF000000</color>
+    <color name="chat_send_msg_background_color">#222222</color>
+    <color name="chat_input_msg_background_color">#33FFFFFF</color>
+    <color name="chat_audio_tips_text_color">#dededf</color>
 </resources>

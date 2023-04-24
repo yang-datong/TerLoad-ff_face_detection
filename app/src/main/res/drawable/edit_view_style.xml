@@ -2,7 +2,7 @@
     <item>
         <shape android:shape="rectangle">
             <corners android:radius="6dp" />
-            <solid android:color="#FFFFFF" />
+            <solid android:color="@color/chat_input_msg_background_color" />
         </shape>
     </item>
 </selector>

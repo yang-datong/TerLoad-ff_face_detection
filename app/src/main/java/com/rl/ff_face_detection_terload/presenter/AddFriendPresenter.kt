@@ -13,7 +13,7 @@ import org.jetbrains.anko.doAsync
 /**
  * @author 杨景
  * @description:
- * @date :2021/1/3 0:15
+ * @date :2023/1/3 0:15
  */
 class AddFriendPresenter(val view: AddFriendContract.View) : AddFriendContract.Presenter {
     val addFriendItems = mutableListOf<AddFriendItem>()

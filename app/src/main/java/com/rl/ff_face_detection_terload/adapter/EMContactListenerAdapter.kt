@@ -5,7 +5,7 @@ import com.hyphenate.EMContactListener
 /**
  * @author 杨景
  * @description:
- * @date :2021/1/3 2:02
+ * @date :2023/1/3 2:02
  */
 open class EMContactListenerAdapter : EMContactListener {
     override fun onContactInvited(username: String?, reason: String?) {

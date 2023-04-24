@@ -17,7 +17,7 @@ import org.jetbrains.anko.toast
 /**
  * @author 杨景
  * @description:
- * @date :2021/1/2 23:54
+ * @date :2023/1/2 23:54
  */
 class AddFriendListAdapter(var context: Context, private val addFriendListItems: MutableList<AddFriendItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var nowTime = 0L

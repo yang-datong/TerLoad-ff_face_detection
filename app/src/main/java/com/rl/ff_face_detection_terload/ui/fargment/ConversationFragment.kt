@@ -21,7 +21,7 @@ import java.util.*
 /**
  * @author 杨景
  * @description:
- * @date :2021/1/2 22:24
+ * @date :2023/1/2 22:24
  */
 //对话页面
 class ConversationFragment : BaseFragment(), ConversationContract.View {
@@ -31,7 +31,6 @@ class ConversationFragment : BaseFragment(), ConversationContract.View {
 
     override fun getLayoutResID() = R.layout.fragment_conversation
 
-    //TODO 第二次登录会报连接错误
     val presenter by lazy { ConversationPresenter(this) }
 
     override fun inits() {

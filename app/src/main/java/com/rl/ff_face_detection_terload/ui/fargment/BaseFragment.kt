@@ -32,11 +32,13 @@ abstract class BaseFragment : Fragment() {
     private val bottomDialog by lazy {
         Dialog(requireContext()).apply {
             setContentView(R.layout.dialog_bottom)
-            window!!.setBackgroundDrawableResource(R.drawable.bg_loading)
-            window!!.attributes.apply {
-                gravity = Gravity.BOTTOM
-                width = ViewGroup.LayoutParams.MATCH_PARENT
-                windowAnimations = R.style.BottomSheetDialogAnimation
+            window?.let {
+                it.setBackgroundDrawableResource(R.drawable.bottom_dialog_backcolor)
+                it.attributes.apply {
+                    gravity = Gravity.BOTTOM
+                    width = ViewGroup.LayoutParams.MATCH_PARENT
+                    windowAnimations = R.style.BottomSheetDialogAnimation
+                }
             }
         }
     }
@@ -57,9 +59,18 @@ abstract class BaseFragment : Fragment() {
     }
 
     open fun showBottomDialog(msg: String?, bt_tips: String?, onConfirm: () -> Unit) {
+        showBottomDialog(msg, bt_tips, null, onConfirm)
+    }
+
+    open fun showBottomDialog(msg: String?, bt_tips: String?, bt_tips_color: Int?, onConfirm: () -> Unit) {
         if (message == null || confirm == null) {
             message = bottomDialog.findViewById(R.id.tv_message)
             confirm = bottomDialog.findViewById(R.id.bt_confirm)
+            confirm?.let {
+                bt_tips_color?.let { _ ->
+                    it.setTextColor(bt_tips_color)
+                }
+            }
         }
         bottomDialog.apply {
             if (!msg.isNullOrEmpty())

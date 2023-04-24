@@ -12,7 +12,7 @@ import org.jetbrains.anko.toast
 /**
  * @author 杨景
  * @description:
- * @date :2021/1/4 16:34
+ * @date :2023/1/4 16:34
  */
 class AddFriendActivity : BaseActivity(), AddFriendContract.View {
     override fun getLayoutResID() = R.layout.activity_addfriend

@@ -38,7 +38,7 @@ import org.jetbrains.anko.toast
 /**
  * @author 杨景
  * @description:
- * @date :2021/1/2 22:24
+ * @date :2023/1/2 22:24
  */
 //联系人 //TODO 不需要每次进入界面就刷新适配器 , 每次考勤数据应该存储，不然用户可以随便让一个人考勤
 class ContactFragment : BaseFragment(), ContactContract.View {

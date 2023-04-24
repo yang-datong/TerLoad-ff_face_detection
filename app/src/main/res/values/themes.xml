@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.MyApplication" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Primary brand color. -->
+        <!-- 按钮背景色. -->
         <item name="colorPrimary">@color/black_0B0707</item>
         <item name="colorPrimaryVariant">@color/black_FF000000</item>
         <!-- 字体色 -->
@@ -10,11 +10,12 @@
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
+        <!-- 头部状态栏颜色 -->
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar">true</item>
-        <!-- 默认布局背景色 -->
+        <!-- 布局文件背景色 -->
         <item name="android:windowBackground">@color/white</item>
-
+        <!-- 手势指示条背景色 <-->
+        <item name="android:navigationBarColor">@color/white</item>
     </style>
 </resources>

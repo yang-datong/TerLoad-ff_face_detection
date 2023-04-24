@@ -7,6 +7,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,14 +35,17 @@ import java.io.File
 /**
  * @author 杨景
  * @description:
- * @date :2021/1/3 1:22
+ * @date :2023/1/3 1:22
  */
 class ChatActivity : BaseActivity(), ChatContract.View {
-    private val REQUEST_CODE = 0x111
-    private val TAG = "ChatActivity"
+    companion object {
+        private const val TAG = "ChatActivity"
+        private const val REQUEST_CODE = 0x111
+    }
+
     override fun getLayoutResID() = R.layout.activity_chat
 
-    lateinit var username: String
+    private lateinit var username: String
 
     val presenter by lazy { ChatPresenter(this) }
 
@@ -58,6 +62,7 @@ class ChatActivity : BaseActivity(), ChatContract.View {
     private val microphoneDialog by lazy { MicrophoneDialog(this) }
 
     override fun inits() {
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.bottom_nav_background_color)
         username = intent.getStringExtra("username").toString()
         initView()
         EMClient.getInstance().chatManager().addMessageListener(msgListener);
@@ -72,7 +77,7 @@ class ChatActivity : BaseActivity(), ChatContract.View {
         tv_title.text = username
         img_ret.setOnClickListener { finish() }
         img_option.isVisible = true
-        img_option.setImageDrawable(getDrawable(R.drawable.ic_baseline_more_horiz_24))
+        img_option.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_more_horiz_24))
         img_option.setOnClickListener {
             val intent = Intent(this, UserDetailedActivity::class.java).apply {
                 putExtra("username", username)

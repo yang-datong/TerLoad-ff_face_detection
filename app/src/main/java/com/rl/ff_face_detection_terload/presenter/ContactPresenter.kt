@@ -12,7 +12,7 @@ import org.litepal.LitePal
 /**
  * @author 杨景
  * @description:
- * @date :2021/1/3 0:15
+ * @date :2023/1/3 0:15
  */
 //TODO 联系人库的用户类 换为Room的user数据类
 class ContactPresenter(val view: ContactContract.View) : ContactContract.Presenter {

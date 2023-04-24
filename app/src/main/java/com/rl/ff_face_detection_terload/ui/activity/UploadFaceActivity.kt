@@ -1,10 +1,7 @@
 package com.rl.ff_face_detection_terload.ui.activity
 
 import android.graphics.Color
-import android.view.TextureView
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
 import com.hyphenate.chat.EMClient
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.faceRecognize.FaceRecognize
@@ -37,12 +34,10 @@ class UploadFaceActivity : BaseActivity() {
             val takePictureTag = EMClient.getInstance().currentUser
             val file = File(filesDir.absolutePath, "/$takePictureTag.jpg")
             if (file.exists()) {
-                showBottomDialog("当前已有可用的人脸识别模型，是否继续上传？", "继续", object : OnClickListener {
-                    override fun onClick(v: View?) {
-                        faceRecognize?.takePicture(takePictureTag)
-                        dismissBottomDialog()
-                    }
-                })
+                showBottomDialog("当前已有可用的人脸识别模型，是否继续上传？", "继续") {
+                    faceRecognize?.takePicture(takePictureTag)
+                    dismissBottomDialog()
+                }
             } else {
                 faceRecognize?.takePicture(takePictureTag)
             }

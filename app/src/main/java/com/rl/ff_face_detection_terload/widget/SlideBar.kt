@@ -12,7 +12,7 @@ import org.jetbrains.anko.sp
 /**
  * @author 杨景
  * @description:
- * @date :2021/1/3 19:52
+ * @date :2023/1/3 19:52
  */
 class SlideBar @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0

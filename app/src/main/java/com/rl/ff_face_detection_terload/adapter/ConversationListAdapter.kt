@@ -17,7 +17,7 @@ import java.util.*
 /**
  * @author 杨景
  * @description:
- * @date :2021/1/5 21:49
+ * @date :2023/1/5 21:49
  */
 class ConversationListAdapter(val context: Context, private val conversations: MutableList<EMConversation>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val activity = context as Activity

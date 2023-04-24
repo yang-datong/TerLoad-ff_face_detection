@@ -42,7 +42,7 @@ class RegisterActivity : BaseActivity(), RegisterContract.View {
     }
 
     override fun onStartRegister() {
-        showProgress("注册账号中...")
+        showProgress()
     }
 
     override fun onRegisterInSuccess() {

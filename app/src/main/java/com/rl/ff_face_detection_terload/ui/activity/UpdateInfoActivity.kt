@@ -89,7 +89,7 @@ class UpdateInfoActivity : BaseActivity() {
     }
 
     private fun updateUserInfoData(view: View) {
-        showProgress("")
+        showProgress()
 
         GlobalScope.launch {
             val emUser = userObjToEMUserObj(user!!)
@@ -131,7 +131,7 @@ class UpdateInfoActivity : BaseActivity() {
     }
 
     private fun initData(username: String?) {
-        showProgress("")
+        showProgress()
         GlobalScope.launch {
             Log.d(TAG, "initData start: $fetchDataDone")
             fetchDataDone = false

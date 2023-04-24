@@ -3,6 +3,7 @@ package com.rl.ff_face_detection_terload.ui.activity
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.hyphenate.EMConnectionListener
 import com.hyphenate.EMError
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(activity_main)
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.bottom_nav_background_color)
         initBottomNavigationView()
         EMClient.getInstance().chatManager().addMessageListener(msgListener)
         EMClient.getInstance().addConnectionListener(connectionListener)
@@ -128,7 +130,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 Log.e(TAG, "onDisconnected:${errorCode}")
             }
-
         }
     }
 }

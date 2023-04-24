@@ -18,12 +18,13 @@ import com.rl.ff_face_detection_terload.R
 import kotlinx.android.synthetic.main.view_send_message_item.view.*
 import java.io.File
 import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
  * @author 杨景
  * @description:
- * @date :2021/1/2 23:54
+ * @date :2023/1/2 23:54
  */
 class MessageListAdapter(var context: Context, var messages: MutableList<EMMessage>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var messageListViewHolder: RecyclerView.ViewHolder
@@ -61,7 +62,7 @@ class MessageListAdapter(var context: Context, var messages: MutableList<EMMessa
             }
         } else messageListViewHolder = holder as MessageReceiveListViewHolder
 
-        messageListViewHolder.itemView.textView2.text = SimpleDateFormat("HH:mm").format(messages[position].msgTime)
+        messageListViewHolder.itemView.textView2.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(messages[position].msgTime)
         when (messages[position].type) {
             EMMessage.Type.TXT //如果消息为文本类型
             -> messageListViewHolder.itemView.textView3.text = (messages[position].body as EMTextMessageBody).message
@@ -72,13 +73,22 @@ class MessageListAdapter(var context: Context, var messages: MutableList<EMMessa
             else -> messageListViewHolder.itemView.textView3.text = "非文本消息！"
         }
 
-        messageListViewHolder.itemView.setOnClickListener {
+        messageListViewHolder.itemView.textView3.setOnClickListener {
             if (messages[position].type == EMMessage.Type.VOICE) {
                 val em = messages[position].body as EMVoiceMessageBody
                 Log.d(TAG, "duration: ${em.length}, uri path: ${em.localUri}, file: ${em.fileName}")
                 playVoice(em.localUri)
             }
         }
+
+//        messageListViewHolder.itemView.imageView3.setOnClickListener {
+//            val intent = Intent(context, UserDetailedActivity::class.java).apply {
+//                putExtra("username", "username")
+//                putExtra("afterRemindingNeedFinish", true)
+//            }
+//            context.startActivityForResult(intent, 11)
+//        }
+
         messageListViewHolder.itemView.textView2.visibility = if (isShowTimestamp(position)) View.VISIBLE else View.GONE
     }
 

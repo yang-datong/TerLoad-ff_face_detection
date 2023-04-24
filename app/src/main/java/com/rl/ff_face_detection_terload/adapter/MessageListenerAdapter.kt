@@ -6,7 +6,7 @@ import com.hyphenate.chat.EMMessage
 /**
  * @author 杨景
  * @description:
- * @date :2021/1/5 15:43
+ * @date :2023/1/5 15:43
  */
 open class MessageListenerAdapter : EMMessageListener {
     override fun onMessageRecalled(messages: MutableList<EMMessage>?) {

@@ -19,7 +19,7 @@
         android:id="@+id/recycleview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#f3f3f3"
+        android:background="@color/chat_background_color"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -30,7 +30,7 @@
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:background="#fafafa"
+        android:background="@color/chat_send_msg_background_color"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,10 +71,10 @@
             android:layout_weight="1"
             android:background="@drawable/edit_view_style"
             android:ems="10"
-            android:textColor="@color/black"
             android:gravity="start|center_vertical"
             android:imeOptions="actionSend"
             android:inputType="textPersonName"
+            android:textColor="@color/black"
             android:visibility="visible" />
 
 
@@ -100,7 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="长按发送语音消息"
-                android:textColor="@color/black_FF000000"
+                android:textColor="@color/chat_audio_tips_text_color"
                 android:textSize="15sp" />
         </LinearLayout>
 

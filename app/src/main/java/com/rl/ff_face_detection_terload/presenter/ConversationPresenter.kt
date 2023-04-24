@@ -10,7 +10,7 @@ import org.jetbrains.anko.uiThread
 /**
  * @author 杨景
  * @description:
- * @date :2021/1/5 21:45
+ * @date :2023/1/5 21:45
  */
 class ConversationPresenter(val view: ConversationContract.View) : ConversationContract.Presenter {
     companion object {

@@ -13,7 +13,7 @@ import org.jetbrains.anko.uiThread
 /**
  * @author 杨景
  * @description:
- * @date :2021/1/3 0:15
+ * @date :2023/1/3 0:15
  */
 class ChatPresenter(val view: ChatContract.View) : ChatContract.Presenter {
     private val pageSize: Int = 5
@@ -47,7 +47,6 @@ class ChatPresenter(val view: ChatContract.View) : ChatContract.Presenter {
     override fun sendAudioMessage(contact: String, voiceUri: Uri, duration: Int) {
         doAsync {
             val audioMessage: EMMessage = EMMessage.createVoiceSendMessage(voiceUri, duration, contact)
-//            audioMessage.chatType = EMMessage.ChatType.Chat //`Chat`、`GroupChat` 和 `ChatRoom`，表示单聊、群聊或聊天室
             EMClient.getInstance().chatManager().sendMessage(audioMessage)
             uiThread {
                 view.onStartSend()

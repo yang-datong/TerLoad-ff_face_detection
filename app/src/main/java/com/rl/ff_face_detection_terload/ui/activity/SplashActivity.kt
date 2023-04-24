@@ -13,7 +13,8 @@ import org.jetbrains.anko.startActivity
 class SplashActivity : BaseActivity(), SplashContract.View {
     companion object {
         const val DELAY = 2000L
-        const val NO_DELAY = 500L
+        const val NO_DELAY = 0L
+//        const val NO_DELAY = 500L
     }
 
     override fun getLayoutResID() = R.layout.activity_splash

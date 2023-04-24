@@ -105,7 +105,7 @@ class LoginActivity : BaseActivity(), LoginContract.View {
     }
 
     override fun onStartLogin() {
-        showProgress("正在登录中")
+        showProgress()
     }
 
     override fun onLoggedInSuccess() {

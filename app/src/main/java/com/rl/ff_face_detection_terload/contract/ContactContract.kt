@@ -5,7 +5,7 @@ import com.hyphenate.exceptions.HyphenateException
 /**
  * @author 杨景
  * @description:
- * @date :2021/1/3 0:05
+ * @date :2023/1/3 0:05
  */
 interface ContactContract {
     interface Presenter : BasePresenter{

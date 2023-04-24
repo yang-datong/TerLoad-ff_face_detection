@@ -5,7 +5,7 @@ import android.content.Context
 /**
  * @author 杨景
  * @description:
- * @date :2021/1/4 17:25
+ * @date :2023/1/4 17:25
  */
 interface AddFriendContract {
     interface Presenter : BasePresenter{
