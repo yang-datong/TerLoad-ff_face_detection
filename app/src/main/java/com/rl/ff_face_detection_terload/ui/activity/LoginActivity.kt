@@ -41,7 +41,7 @@ class LoginActivity : BaseActivity(), LoginContract.View {
     }
 
     override fun inits() {
-        cb_remember_login.isChecked = defaultSharedPreferences.getBoolean("isAuto", false)
+        cb_remember_login.isChecked = defaultSharedPreferences.getBoolean("isAuto", true)
         username.setText(defaultSharedPreferences.getString("username", ""))
         login.setOnClickListener {
             hideSoftKeyboard()//隐藏软键盘
@@ -122,7 +122,6 @@ class LoginActivity : BaseActivity(), LoginContract.View {
         else
             toast("登录失败: $mes")
     }
-    //TODO 密码更改提交到服务器
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

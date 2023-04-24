@@ -114,8 +114,8 @@ dependencies {
     implementation 'com.scwang.smart:refresh-layout-kernel:2.0.1'      //核心必须依赖
     implementation 'com.scwang.smart:refresh-header-radar:2.0.1'       //雷达刷新头
     implementation 'com.scwang.smart:refresh-footer-ball:2.0.1'        //球脉冲加载
-    //litepal数据库
-    implementation 'org.litepal.guolindev:core:3.2.2'
+    //litepal数据库    //待删除
+//    implementation 'org.litepal.guolindev:core:3.2.2'
     //侧滑删除、置顶
     implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
     //QMUI一些UI控件的样式   //用处不大

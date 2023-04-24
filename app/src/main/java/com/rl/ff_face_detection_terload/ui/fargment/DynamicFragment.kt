@@ -4,17 +4,18 @@ import android.content.ContextWrapper
 import android.util.Log
 import androidx.core.view.isGone
 import com.google.android.material.snackbar.Snackbar
-import com.hyphenate.EMCallBack
 import com.hyphenate.chat.EMClient
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.database.DataOperation
+import com.rl.ff_face_detection_terload.extensions.logout
 import com.rl.ff_face_detection_terload.extensions.restartApp
-import com.rl.ff_face_detection_terload.ui.activity.LoginActivity
 import com.rl.ff_face_detection_terload.ui.activity.UpdateInfoActivity
 import com.rl.ff_face_detection_terload.ui.activity.UploadFaceActivity
 import kotlinx.android.synthetic.main.fragment_dynamic.*
-import org.jetbrains.anko.*
-import kotlin.apply
+import org.jetbrains.anko.defaultSharedPreferences
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.runOnUiThread
+import org.jetbrains.anko.startActivity
 
 
 /**
@@ -49,7 +50,7 @@ class DynamicFragment : BaseFragment() {
         bt_logout.setOnClickListener {
             showBottomDialog("退出后将接受不到信息！", "退出登录", requireContext().getColor(R.color.wechat_red)) {
                 showProgress()
-                logout()
+                logout(requireActivity()) { dismissProgress() }
             }
         }
         bt_upload.setOnClickListener {
@@ -114,22 +115,5 @@ class DynamicFragment : BaseFragment() {
         bt_update_info.setOnClickListener {
             requireActivity().startActivity<UpdateInfoActivity>()
         }
-    }
-
-    private fun logout() {
-        EMClient.getInstance().logout(true, object : EMCallBack {
-            override fun onSuccess() {
-                dismissProgress()
-                context?.startActivity<LoginActivity>()
-                activity?.finish()
-            }
-
-            override fun onProgress(progress: Int, status: String?) {
-            }
-
-            override fun onError(code: Int, error: String?) {
-                context?.toast("退出异常")
-            }
-        })
     }
 }

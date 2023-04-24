@@ -1,18 +1,22 @@
 package com.rl.ff_face_detection_terload.extensions
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.hyphenate.EMCallBack
 import com.hyphenate.EMValueCallBack
 import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMUserInfo
 import com.rl.ff_face_detection_terload.database.DB
 import com.rl.ff_face_detection_terload.database.User
 import com.rl.ff_face_detection_terload.database.UserStatusAndCheckTime
+import com.rl.ff_face_detection_terload.ui.activity.LoginActivity
 import com.rl.ff_face_detection_terload.ui.activity.SplashActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.defaultSharedPreferences
+import org.jetbrains.anko.toast
 import org.json.JSONObject
 import java.io.*
 import java.text.SimpleDateFormat
@@ -105,7 +109,7 @@ fun formatTimestamp(timestamp: Long): String {
 
 fun userObjToEMUserObj(user: User): EMUserInfo {
     return EMUserInfo().apply {
-//                user.password  //TODO
+        userId = user.username
         nickname = user.name
         email = user.email
         phoneNumber = user.phone
@@ -236,4 +240,26 @@ fun restartApp(context: Context) {
             Intent.FLAG_ACTIVITY_NEW_TASK)
     context.startActivity(intent)
     exitProcess(0)
+}
+
+
+fun logout(activity: Activity, dismissProgress: () -> Unit) {
+    EMClient.getInstance().logout(true, object : EMCallBack {
+        override fun onSuccess() {
+            dismissProgress()
+            // 结束所有Activity并打开LoginActivity
+            val intent = Intent(activity, LoginActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            activity.startActivity(intent)
+            activity.finish()
+        }
+
+        override fun onProgress(progress: Int, status: String?) {
+        }
+
+        override fun onError(code: Int, error: String?) {
+            activity.toast("退出异常")
+        }
+    })
 }

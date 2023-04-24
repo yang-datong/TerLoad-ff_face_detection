@@ -34,7 +34,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:name="com.rl.ff_face_detection_terload.app.MyApplication"
+        android:name="com.rl.ff_face_detection_terload.app.App"
         android:allowBackup="true"
         android:icon="@mipmap/atom"
         android:label="@string/app_name"

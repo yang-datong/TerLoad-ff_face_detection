@@ -22,10 +22,12 @@ import com.rl.ff_face_detection_terload.ui.activity.ChatActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.litepal.LitePal
 
-class MyApplication : Application() {
-    private val TAG = "MyApplication"
+class App : Application() {
+    companion object {
+        private const val TAG = "MyApplication"
+    }
+
     private var isBackground = true
 
     override fun onCreate() {
@@ -39,7 +41,7 @@ class MyApplication : Application() {
         emc.chatManager().addMessageListener(msgListener)
 
 //        Bmob.initialize(applicationContext, "c063550ad7c3587f4fae8ff7f68deef1");
-        LitePal.initialize(applicationContext)
+//        LitePal.initialize(applicationContext)
 
         registerActivityLifecycleCallbacks(mCallbacks)
 //        setDefaultUser() //比较暴力，一般跑一次就可以了
@@ -130,7 +132,7 @@ class MyApplication : Application() {
     private fun setDefaultUser() {
         GlobalScope.launch {
             val names = arrayOf("Atomu", "LiangZhaoyang", "WuYiming", "ZhangXiangyu", "ChenWeijie", "LiuJiahui", "SunQianying", "WangJianfeng", "ZhouXingyu", "HuangYifan", "LiMinghui", "DengYuhan", "TangZhengyang", "LinQingyang", "GaoXiaodong", "HuQianwen", "JinXinyi", "FengYunlong", "CaoXinran", "LiJiaming", "ZhouYifei", "WuYufei", "ChenJianyu", "XuYuhang", "ZhangXinyi", "WangMengjie", "LiuXiaowei", "HuangZhihao", "YangKaiwen", "ShenZhihui", "GuoYaqi", "TangXueqin", "DengYuting", "JiangYingjie", "HuShanshan", "YaoZhijun", "FanXiaojing", "MeiXiaochen", "CaiMengxuan")
-            val userDao = DB.getInstance(this@MyApplication).userDao()
+            val userDao = DB.getInstance(this@App).userDao()
             val emc = EMClient.getInstance()
             emc.login("root", "123", object : EMCallBack {
                 override fun onSuccess() {}

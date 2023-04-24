@@ -55,7 +55,8 @@ abstract class BaseFragment : Fragment() {
     open fun inits() {}
 
     open fun showProgress() {
-        dialog.show()
+        if (!dialog.isShowing)
+            dialog.show()
     }
 
     open fun showBottomDialog(msg: String?, bt_tips: String?, onConfirm: () -> Unit) {
@@ -81,7 +82,8 @@ abstract class BaseFragment : Fragment() {
                 onConfirm()
                 dismiss()
             }
-            show()
+            if (!bottomDialog.isShowing)
+                show()
         }
     }
 

@@ -107,7 +107,8 @@ abstract class BaseActivity : AppCompatActivity() {
                 onConfirm()
                 dismiss()
             }
-            show()
+            if (!isShowing)
+                show()
         }
     }
 
