@@ -2,12 +2,8 @@ package com.rl.ff_face_detection_terload.ui.activity
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.Navigation
-import androidx.navigation.ui.NavigationUI
-import com.google.android.material.bottomnavigation.BottomNavigationItemView
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView
+import androidx.fragment.app.Fragment
 import com.hyphenate.EMConnectionListener
 import com.hyphenate.EMError
 import com.hyphenate.chat.EMClient
@@ -15,25 +11,106 @@ import com.hyphenate.chat.EMMessage
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.R.layout.activity_main
 import com.rl.ff_face_detection_terload.adapter.MessageListenerAdapter
+import com.rl.ff_face_detection_terload.ui.fargment.ContactFragment
+import com.rl.ff_face_detection_terload.ui.fargment.ConversationFragment
+import com.rl.ff_face_detection_terload.ui.fargment.DynamicFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.angle_numver.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.alert
-import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.yesButton
 
 
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        private const val TAG = "MainActivity"
+    }
+
+    private val homeFragment by lazy { ConversationFragment() }
+    private val dashboardFragment by lazy { ContactFragment() }
+    private val notificationsFragment by lazy { DynamicFragment() }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(activity_main)
+        initBottomNavigationView()
+        EMClient.getInstance().chatManager().addMessageListener(msgListener)
+        EMClient.getInstance().addConnectionListener(connectionListener)
+    }
+
+    private fun initBottomNavigationView() {
+        supportFragmentManager.beginTransaction().apply {
+            add(R.id.fragment_container, homeFragment)
+            add(R.id.fragment_container, dashboardFragment)
+            add(R.id.fragment_container, notificationsFragment)
+            hide(dashboardFragment)
+            hide(notificationsFragment)
+            commit()
+        }
+
+        bottomNavigationView.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.conversationFragment -> {
+                    loadFragment(homeFragment)
+                    true
+                }
+                R.id.contactFragment -> {
+                    loadFragment(dashboardFragment)
+                    true
+                }
+                R.id.dynamicFragment -> {
+                    loadFragment(notificationsFragment)
+                    true
+                }
+                else -> false
+            }
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        angleNumber()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EMClient.getInstance().chatManager().removeMessageListener(msgListener);
+    }
+
+
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().apply {
+            hide(homeFragment)
+            hide(dashboardFragment)
+            hide(notificationsFragment)
+            show(fragment)
+            commit()
+        }
+    }
+
+    private fun angleNumber() {
+        GlobalScope.launch {
+            val messageNum = EMClient.getInstance().chatManager().unreadMessageCount
+            runOnUiThread {
+                if (messageNum > 0)
+                    bottomNavigationView.getOrCreateBadge(R.id.conversationFragment).number = messageNum
+                else
+                    bottomNavigationView.removeBadge(R.id.conversationFragment)
+            }
+        }
+    }
+
     private val msgListener = object : MessageListenerAdapter() {
         override fun onMessageReceived(messages: MutableList<EMMessage>?) {
-            runOnUiThread { angleNumber() }
+            angleNumber()
         }
     }
     private val connectionListener = object : EMConnectionListener {
         override fun onConnected() {
-            Log.i("TAG", "onConnected: 服务已连接")
+            Log.d(TAG, "onConnected: 服务已连接")
         }
 
         override fun onDisconnected(errorCode: Int) { //当服务器状态断开连接时
@@ -44,71 +121,9 @@ class MainActivity : AppCompatActivity() {
                         finish()
                     }
                 }
+                Log.e(TAG, "onDisconnected:${errorCode}")
             }
 
         }
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(activity_main)
-        init()
-        EMClient.getInstance().chatManager().addMessageListener(msgListener)//消息监听
-        EMClient.getInstance().addConnectionListener(connectionListener)
-    }
-
-    private fun init() {
-        val findNavController = Navigation.findNavController(this, R.id.fragment)
-//        val build = AppBarConfiguration.Builder(bottomNavigationView.menu).build()      //建立构造者
-//        NavigationUI.setupActionBarWithNavController(this, findNavController, build)//设置返回按钮
-        NavigationUI.setupWithNavController(bottomNavigationView, findNavController) //设置联动
-        if (defaultSharedPreferences.getString("username", "") != "root") {
-            val menu = bottomNavigationView.menu
-            menu.findItem(R.id.conversationFragment).title = getString(R.string.page_one)
-            menu.findItem(R.id.contactFragment).title = getString(R.string.page_two)
-            menu.findItem(R.id.dynamicFragment).title = getString(R.string.page_three)
-            menu.findItem(R.id.contactFragment).icon = getDrawable(R.drawable.kaoqing_log)
-        }
-        angleNumber()//添加角标 // 放在resume中试试 没用，还是UI控件问题，UI控件无法刷新
-
-//        bottomNavigationView.setOnNavigationItemSelectedListener {
-//            // 避免B返回到A重复创建
-//            val popBackStack = findNavController.popBackStack(it.itemId, false)
-//            if (popBackStack) {
-//                // 已创建
-//                return@setOnNavigationItemSelectedListener popBackStack
-//            } else {
-//                // 未创建
-//                return@setOnNavigationItemSelectedListener NavigationUI.onNavDestinationSelected(
-//                        it, findNavController)
-//            }
-//        }
-    }
-
-    private fun angleNumber() {
-        val menuView = bottomNavigationView.getChildAt(0) as BottomNavigationMenuView
-        val view = menuView.getChildAt(0)
-        val inflate = layoutInflater.inflate(R.layout.angle_numver, null)
-        val bottomNavigationItemView = view as BottomNavigationItemView
-        bottomNavigationItemView.addView(inflate)
-        GlobalScope.launch {
-            val messageNum = EMClient.getInstance().chatManager().unreadMessageCount.toString()
-            runOnUiThread {
-                if (messageNum.toInt() > 0)
-                    inflate.textView10.apply {
-                        text = messageNum
-                        visibility = View.VISIBLE
-                    }
-                else
-                    inflate.textView10.visibility = View.GONE
-            }
-        }
-    }
-
-
-    override fun onDestroy() {
-        super.onDestroy()
-        EMClient.getInstance().chatManager().removeMessageListener(msgListener);
-    }
-
 }

@@ -53,6 +53,7 @@ class ContactFragment : BaseFragment(), ContactContract.View {
     val presenter by lazy { ContactPresenter(this) }
 
     override fun inits() {
+        Log.d("ContactFragment", "inits: ")
         tv_title.text = getString(R.string.page_two_root)
         img_ret.isGone = true
         username = requireContext().defaultSharedPreferences.getString("username", "")

@@ -63,11 +63,10 @@ class MyApplication : Application() {
     private val msgListener = object : MessageListenerAdapter() {
         override fun onMessageReceived(messages: MutableList<EMMessage>?) {
             if (isBackground) {
-//                playMediaPlayer()//播放音频
+                playMediaPlayer()//播放音频
                 showNotification(messages)//显示通知栏
-            } else {
-                playVibrator() //震动
             }
+            playVibrator() //震动
         }
     }
 
@@ -157,12 +156,12 @@ class MyApplication : Application() {
                 try {
                     emc.createAccount(names[i], "111")
                 } catch (e: HyphenateException) {
-                    Log.i("setDefaultUser", "注册失败: " + e.message)
+                    Log.d("setDefaultUser", "注册失败: " + e.message)
                 }
                 try {
                     emc.contactManager().addContact(names[i], "Initialization Contact")
                 } catch (e: HyphenateException) {
-                    Log.i("setDefaultUser", "添加用户失败: " + e.message)
+                    Log.e("setDefaultUser", "添加用户失败: " + e.message)
                 }
             }
             emc.logout(true)
@@ -185,7 +184,7 @@ class MyApplication : Application() {
                         }
                     })
                 } catch (e: HyphenateException) {
-                    Log.i("setDefaultUser", "同意好友失败: " + e.message)
+                    Log.e("setDefaultUser", "同意好友失败: " + e.message)
                 }
             }
 

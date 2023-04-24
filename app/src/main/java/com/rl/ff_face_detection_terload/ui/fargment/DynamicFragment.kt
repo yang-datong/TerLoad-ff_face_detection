@@ -2,6 +2,7 @@ package com.rl.ff_face_detection_terload.ui.fargment
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isGone
 import com.google.android.material.snackbar.Snackbar
@@ -32,6 +33,7 @@ class DynamicFragment : BaseFragment() {
     }
 
     override fun inits() {
+        Log.d("DynamicFragment", "inits: ")
         initView()
     }
 

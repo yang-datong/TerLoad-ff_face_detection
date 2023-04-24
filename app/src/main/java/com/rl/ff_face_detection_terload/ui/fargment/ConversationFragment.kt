@@ -1,5 +1,6 @@
 package com.rl.ff_face_detection_terload.ui.fargment
 
+import android.util.Log
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +31,29 @@ class ConversationFragment : BaseFragment(), ConversationContract.View {
     //TODO 第二次登录会报连接错误
     val presenter by lazy { ConversationPresenter(this) }
 
+    override fun inits() {
+        Log.d("ConversationFragment", "inits: ")
+        tv_title.text = getString(R.string.page_one_root)
+        if (requireContext().defaultSharedPreferences.getString("username", "") != "root") {
+            tv_title.text = getString(R.string.page_one)
+        }
+        img_ret.isGone = true
+        recyclerview.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+            adapter = ConversationListAdapter(context, presenter.conversations)
+            ItemTouchHelper(callback).attachToRecyclerView(this)
+        }
+
+        smartrefresh.setOnRefreshListener {
+            it.finishRefresh(1000)
+            presenter.onConversations()
+            onUpdate()
+        }
+        presenter.onConversations()
+        EMClient.getInstance().chatManager().addMessageListener(msgListener)
+    }
+
     private val msgListener = object : MessageListenerAdapter() {
         override fun onMessageReceived(messages: MutableList<EMMessage>?) {
             presenter.onConversations()
@@ -53,29 +77,6 @@ class ConversationFragment : BaseFragment(), ConversationContract.View {
         }
 
         override fun isLongPressDragEnabled() = true   // 拖动排序动画
-    }
-
-
-    override fun inits() {
-        tv_title.text = getString(R.string.page_one_root)
-        if (requireContext().defaultSharedPreferences.getString("username", "") != "root") {
-            tv_title.text = getString(R.string.page_one)
-        }
-        img_ret.isGone = true
-        recyclerview.apply {
-            setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(context)
-            adapter = ConversationListAdapter(context, presenter.conversations)
-            ItemTouchHelper(callback).attachToRecyclerView(this)
-        }
-
-        smartrefresh.setOnRefreshListener {
-            it.finishRefresh(1000)
-            presenter.onConversations()
-            onUpdate()
-        }
-        presenter.onConversations()
-        EMClient.getInstance().chatManager().addMessageListener(msgListener)
     }
 
 
