@@ -2,6 +2,19 @@
 # 
 
 
+## 运行环境
+
+考虑依赖库文件较大不能放在github需要手动下载:
+
+下载依赖库文件: https://drive.google.com/file/d/1gazdboqeN86m4XUn-yR2MQEooD-cPzF0/view?usp=share_link
+
+解压缩到jniLibs目录下
+
+打开项目执行build->Refresh Linked C++ Project 编译
+
+即可运行App
+
+
 ## App设计
 
 ```mermaid
