@@ -6,13 +6,21 @@
 
 考虑依赖库文件较大不能放在github需要手动下载:
 
-下载依赖库文件: https://drive.google.com/file/d/1gazdboqeN86m4XUn-yR2MQEooD-cPzF0/view?usp=share_link
+1. 下载依赖库文件
 
-解压缩到jniLibs目录下
+https://drive.google.com/file/d/1gazdboqeN86m4XUn-yR2MQEooD-cPzF0/view?usp=share_link
 
-打开项目执行build->Refresh Linked C++ Project 编译
+2. 解压缩到jniLibs目录下
 
-即可运行App
+```bash
+unzip ./terload_ff_detection_arm64-v8a.zip -d ./app/src/main/jniLibs/
+```
+
+3. 打开项目在Android Studio 
+
+执行`build->Refresh Linked C++ Project 编译`
+
+4. 运行App
 
 
 ## App设计

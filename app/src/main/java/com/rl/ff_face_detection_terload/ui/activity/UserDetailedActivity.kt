@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.util.Log
-import android.view.View
 import androidx.core.view.isInvisible
 import com.hyphenate.chat.EMClient
 import com.rl.ff_face_detection_terload.R
@@ -68,7 +67,7 @@ class UserDetailedActivity : BaseActivity() {
         }
         bt_delete_friend.setOnClickListener {
             showBottomDialog("同时会屏蔽对方的临时对话，不再接收此人的消息，是否继续?", "确认删除", R.color.wechat_red) {
-                deleteFriend(username, it)
+                deleteFriend(username)
                 dismissBottomDialog()
             }
         }
@@ -124,7 +123,7 @@ class UserDetailedActivity : BaseActivity() {
         }
     }
 
-    private fun deleteFriend(username: String, view: View) {
+    private fun deleteFriend(username: String) {
         doAsync {
             EMClient.getInstance().contactManager().deleteContact(username)
 //            uiThread { Snackbar.make(view, "删除成功", Snackbar.LENGTH_LONG).show() }
