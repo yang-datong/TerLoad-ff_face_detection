@@ -8,13 +8,17 @@
 
 1. 下载依赖库文件
 
-https://drive.google.com/file/d/1gazdboqeN86m4XUn-yR2MQEooD-cPzF0/view?usp=share_link
+```bash
+$ ./download_Google_Drive.sh
+```
+>https://drive.google.com/file/d/1gazdboqeN86m4XUn-yR2MQEooD-cPzF0/view?usp=share_link
 
 2. 解压缩到jniLibs目录下
 
 ```bash
-unzip ./terload_ff_detection_arm64-v8a.zip -d ./app/src/main/jniLibs/
+$ unzip ./terload_ff_detection_arm64-v8a.zip -d ./app/src/main/jniLibs/
 ```
+>wget\curl + unzip command line tool
 
 3. 打开项目在Android Studio 
 
