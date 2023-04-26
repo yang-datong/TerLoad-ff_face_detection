@@ -9,6 +9,7 @@ import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.database.DataOperation
 import com.rl.ff_face_detection_terload.extensions.logout
 import com.rl.ff_face_detection_terload.extensions.restartApp
+import com.rl.ff_face_detection_terload.extensions.uploadFileGitee
 import com.rl.ff_face_detection_terload.ui.activity.UpdateInfoActivity
 import com.rl.ff_face_detection_terload.ui.activity.UploadFaceActivity
 import kotlinx.android.synthetic.main.fragment_dynamic.*
@@ -16,6 +17,7 @@ import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.runOnUiThread
 import org.jetbrains.anko.startActivity
+import java.io.File
 
 
 /**
@@ -37,9 +39,8 @@ class DynamicFragment : BaseFragment() {
         Log.d("DynamicFragment", "inits: ")
         initView()
 
-        //TODO 写好了文件上传下载工具函数
 //        uploadFile("${requireActivity().filesDir}/1.png", TAG, requireContext(), { uuid ->
-//            downloadFile(uuid, imageView7, TAG, requireContext(), { showProgress() }, { dismissProgress() })
+////            downloadFile(uuid, imageView7, TAG, requireContext(), { showProgress() }, { dismissProgress() })
 //        }, {
 //            showProgress()
 //        }, { dismissProgress() })

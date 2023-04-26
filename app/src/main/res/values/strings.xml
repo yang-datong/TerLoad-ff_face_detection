@@ -31,6 +31,7 @@
     <string name="email">邮箱：%s</string>
     <string name="phone">手机：%s</string>
     <string name="username">Username: @%s</string>
+    <string name="audit_status">人脸模型审核状态：%s</string>
 
 
 </resources>

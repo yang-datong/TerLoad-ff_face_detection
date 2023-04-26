@@ -11,10 +11,7 @@ import com.hyphenate.chat.EMClient
 import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.database.DB
 import com.rl.ff_face_detection_terload.database.User
-import com.rl.ff_face_detection_terload.extensions.isValidPassword
-import com.rl.ff_face_detection_terload.extensions.logout
-import com.rl.ff_face_detection_terload.extensions.updateCommonUserData
-import com.rl.ff_face_detection_terload.extensions.userObjToEMUserObj
+import com.rl.ff_face_detection_terload.extensions.*
 import com.rl.ff_face_detection_terload.network.Api
 import com.rl.ff_face_detection_terload.network.ApiService
 import kotlinx.android.synthetic.main.activity_update_info.*
@@ -113,7 +110,7 @@ class UpdateInfoActivity : BaseActivity() {
             val requestBody: MutableMap<String?, String?> = HashMap()
             requestBody["newpassword"] = newPassword
             val call: Call<ResponseBody?>? = apiService.updatePassword(
-                    "Bearer YWMtbfRn6uKwEe2GJEFppWaE_2PD2rdcAz8QsxFDvusmk8E0KLNYrxlOIotxj40nACBuAgMAAAGHs8Wx2AAPoABZ68C3-cSVkEnZN0-oQiTvGqt4PI2xwamTGOR3oSfpeA",
+                    "Bearer $EM_TOKEN",
                     userName, requestBody)
 
             call?.enqueue(object : Callback<ResponseBody?> {

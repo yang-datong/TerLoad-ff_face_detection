@@ -31,6 +31,4 @@ interface ApiService {
 //            @Header("share-secret") share_secret: String, //option 文件访问密钥。若上传文件时限制了访问，下载该文件时则需要该访问密钥。成功上传文件后，从 文件上传 的响应 body 中获取该密钥。
             @Path("file_uuid") file_uuid: String  //服务器为文件生成的 UUID
     ): Call<ResponseBody?>?
-
-
 }

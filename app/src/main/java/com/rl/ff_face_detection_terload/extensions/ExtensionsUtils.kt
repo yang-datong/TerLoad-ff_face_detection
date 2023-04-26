@@ -16,6 +16,7 @@ import com.rl.ff_face_detection_terload.database.User
 import com.rl.ff_face_detection_terload.database.UserStatusAndCheckTime
 import com.rl.ff_face_detection_terload.network.Api
 import com.rl.ff_face_detection_terload.network.ApiService
+import com.rl.ff_face_detection_terload.network.GiteeService
 import com.rl.ff_face_detection_terload.ui.activity.LoginActivity
 import com.rl.ff_face_detection_terload.ui.activity.SplashActivity
 import kotlinx.coroutines.GlobalScope
@@ -31,14 +32,42 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.*
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 import kotlin.system.exitProcess
+/*
+//qq邮箱
+//client_id="YXA6cJJw9ALSRs6Ymebs2ca3sw"
+//client_secret="YXA6cqfVaP35KhldO6WmaupXqpFimUY"
+const val EM_APP_KEY = "1107210101040542#demo"
+const val EM_host = "a1.easemob.com"
+const val EM_org_name = "1107210101040542"
+const val EM_app_name = "demo"
+const val EM_TOKEN = "YWMtbfRn6uKwEe2GJEFppWaE_2PD2rdcAz8QsxFDvusmk8E0KLNYrxlOIotxj40nACBuAgMAAAGHs8Wx2AAPoABZ68C3-cSVkEnZN0-oQiTvGqt4PI2xwamTGOR3oSfpeA"
+*/
 
+//网易邮箱
+//通过调用接口获取 执行脚本： requestURL.sh -> getToken函数
+//client_id="YXA6NCizWK8ZTiKLcY-NJwAgbg"
+//client_secret="YXA6Dzj9HhxCT376B-IgZAU9ACrL8wA"
+
+const val EM_APP_KEY = "1135230423163966#demo"
+const val EM_host = "a1.easemob.com"
+const val EM_org_name = "1135230423163966"
+const val EM_app_name = "demo"
+const val EM_TOKEN = "YWMto5mpyOQ7Ee2xXuOTAiPZuWPD2rdcAz8QsxFDvusmk8E0KLNYrxlOIotxj40nACBuAgMAAAGHveO9cwAPoACpF8CYz90N75E4s5kqKQPpCQlwjWt8d8RlhKjnOHFiJQ"
+
+const val GITEE_TOKEN = "ae8ce1c62668312fad8987f9d868c7e4"
 
 fun String.isValidUserName() = this.matches(Regex("^[a-zA-Z]\\w{2,15}$"))
 fun String.isValidPassword() = this.matches(Regex("^.{3,20}$"))
@@ -283,7 +312,7 @@ fun downloadFile(file_uuid: String, imageView: ImageView, TAG: String, context: 
     GlobalScope.launch {
         val apiService: ApiService = Api.retrofit.create(ApiService::class.java)
         val call: Call<ResponseBody?>? = apiService.downloadFile(
-                "Bearer YWMtbfRn6uKwEe2GJEFppWaE_2PD2rdcAz8QsxFDvusmk8E0KLNYrxlOIotxj40nACBuAgMAAAGHs8Wx2AAPoABZ68C3-cSVkEnZN0-oQiTvGqt4PI2xwamTGOR3oSfpeA",
+                "Bearer $EM_TOKEN",
                 file_uuid)//"cc0696a0-e2e7-11ed-88b6-f98a29f3b73f"
 
         call?.enqueue(object : Callback<ResponseBody?> {
@@ -321,7 +350,7 @@ fun uploadFile(filePath: String, TAG: String, context: Context, success: (uuid: 
         val filePart = MultipartBody.Part.createFormData("file", filePath, requestBody)
 
         val call: Call<ResponseBody?>? = apiService.uploadFile(
-                "Bearer YWMtbfRn6uKwEe2GJEFppWaE_2PD2rdcAz8QsxFDvusmk8E0KLNYrxlOIotxj40nACBuAgMAAAGHs8Wx2AAPoABZ68C3-cSVkEnZN0-oQiTvGqt4PI2xwamTGOR3oSfpeA",
+                "Bearer $EM_TOKEN",
                 filePart)
 
         call?.enqueue(object : Callback<ResponseBody?> {
@@ -354,4 +383,53 @@ fun uploadFile(filePath: String, TAG: String, context: Context, success: (uuid: 
             }
         })
     }
+}
+
+
+inline fun fileToBase64(file: File): String {
+    val bytes = Files.readAllBytes(file.toPath())
+    return Base64.getEncoder().encodeToString(bytes)
+}
+
+fun uploadFileGitee(imageFile: File, TAG: String, success: (code: Int) -> Unit) {
+    if (!imageFile.exists()) {
+        Log.e(TAG, "uploadFileGitee: 文件${imageFile.absolutePath} 不存在")
+        return
+    }
+    val owner = "yang-datong"
+    val repo = "pwn_16"
+    val path = imageFile.name
+    val accessToken = GITEE_TOKEN
+    val contentType = "application/json;charset=UTF-8"
+    val content = fileToBase64(imageFile)
+    val message = "upload file " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
+
+    val apiService: GiteeService = Retrofit.Builder()
+            .baseUrl("https://gitee.com/api/v5/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(GiteeService::class.java)
+
+    val requestBody = mapOf("access_token" to accessToken, "content" to content, "message" to message)
+
+    val call: Call<ResponseBody?>? = apiService.uploadFile(owner, repo, path, contentType, requestBody)
+    call?.enqueue(object : Callback<ResponseBody?> {
+        override fun onResponse(call: Call<ResponseBody?>?, response: Response<ResponseBody?>?) {
+            when {
+                response?.code() == 400 -> {
+                    Log.e(TAG, "onResponse: 仓库已经存在文件:${path}")
+                }
+                response?.code() == 201 -> {
+                    Log.d(TAG, "uploadFileGitee $path 成功->{${response?.body()?.string()}}")
+                }
+                else -> Log.e(TAG, "onResponse: ${response?.code()} , ${call?.request()?.headers},${response?.body()?.string()}")
+            }
+            success(response?.code() ?: 404)
+        }
+
+        override fun onFailure(call: Call<ResponseBody?>?, t: Throwable?) {
+            // 处理请求失败
+            Log.e(TAG, "onFailure:", t)
+        }
+    })
 }

@@ -20,11 +20,13 @@ import com.rl.ff_face_detection_terload.database.User
 import com.rl.ff_face_detection_terload.database.UserStatusAndCheckTime
 import com.rl.ff_face_detection_terload.extensions.checkIsCurrentDay
 import com.rl.ff_face_detection_terload.extensions.formatTimestamp
+import com.rl.ff_face_detection_terload.extensions.uploadFileGitee
 import com.rl.ff_face_detection_terload.extensions.userObjToEMUserObj
 import com.rl.ff_face_detection_terload.presenter.ContactPresenter
 import com.rl.ff_face_detection_terload.ui.activity.AddFriendActivity
 import com.rl.ff_face_detection_terload.ui.activity.FaceRecognizeActivity
 import com.rl.ff_face_detection_terload.ui.activity.UploadFaceActivity
+import com.rl.ff_face_detection_terload.ui.activity.UserDetailedActivity
 import com.rl.ff_face_detection_terload.widget.SlideBar
 import kotlinx.android.synthetic.main.fragment_contact.*
 import kotlinx.android.synthetic.main.title_bar.*
@@ -47,9 +49,11 @@ class ContactFragment : BaseFragment(), ContactContract.View {
 
     companion object {
         const val TAG = "ContactFragment"
-        const val REQUEST_CODE = 0x111
+        const val RECOGNITION_REQUEST_CODE = 0x111
+        const val COLLETION_REQUEST_CODE = 0x222
     }
 
+    private var serverFaceSourceImageCount = 0
     private var username: String? = null
     val presenter by lazy { ContactPresenter(this) }
 
@@ -84,7 +88,7 @@ class ContactFragment : BaseFragment(), ContactContract.View {
         card_recognition.setOnClickListener {
             val faceModelTotal = getFaceModelTotal()
             if (faceModelTotal[0] == faceModelTotal[1])
-                startActivityForResult(Intent(requireActivity(), FaceRecognizeActivity::class.java), REQUEST_CODE)
+                startActivityForResult(Intent(requireActivity(), FaceRecognizeActivity::class.java), RECOGNITION_REQUEST_CODE)
             else
                 showBottomDialog("当前没有足够的人脸模型，请先进行人脸采集，当前模型: (${faceModelTotal[1]}/${faceModelTotal[0]})", "好的") {}
         }
@@ -93,11 +97,18 @@ class ContactFragment : BaseFragment(), ContactContract.View {
             val takePictureTAG = getFaceModelTAG()
             if (isCompleteFaceCollection()) {
                 showBottomDialog("当前已有可用的人脸识别模型，是否继续采集？", "继续") {
-                    requireActivity().startActivity<UploadFaceActivity>("takePictureTAG" to takePictureTAG)
+                    val intent = Intent(requireActivity(), UploadFaceActivity::class.java).apply {
+                        putExtra("takePictureTAG", takePictureTAG)
+                    }
+                    startActivityForResult(intent, COLLETION_REQUEST_CODE)
                     dismissBottomDialog()
                 }
-            } else
-                requireActivity().startActivity<UploadFaceActivity>("takePictureTAG" to takePictureTAG)
+            } else {
+                val intent = Intent(requireActivity(), UploadFaceActivity::class.java).apply {
+                    putExtra("takePictureTAG", takePictureTAG)
+                }
+                startActivityForResult(intent, COLLETION_REQUEST_CODE)
+            }
         }
     }
 
@@ -347,9 +358,10 @@ class ContactFragment : BaseFragment(), ContactContract.View {
         }
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == RECOGNITION_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 val faceRecognizeUserName = data?.getStringExtra("faceRecognizeUserName")
                 Log.d(TAG, "onActivityResult -> faceRecognizeUserName:${faceRecognizeUserName}")
@@ -357,6 +369,26 @@ class ContactFragment : BaseFragment(), ContactContract.View {
             } else {
                 Log.e(TAG, "人脸识别失败")
             }
+        }
+        if (requestCode == COLLETION_REQUEST_CODE) {
+            //TODO 考虑到人脸图片是一个敏感数据，不能放在环信、以及gitee中
+//            val path = requireActivity().filesDir.absolutePath
+//            val username = requireActivity().defaultSharedPreferences.getString("username", "")
+//            val faceSourceImage = arrayOf("${path}/${username}-1.jpg", "${path}/${username}-2.jpg", "${path}/${username}-3.jpg")
+//            serverFaceSourceImageCount = 0
+//            for (faceImage in faceSourceImage) {
+//                uploadFileGitee(File(faceImage), TAG) { code ->
+//                    when (code) {
+//                        400 -> {
+//                            serverFaceSourceImageCount++
+//                        }
+//                        200 -> {
+//                            serverFaceSourceImageCount++
+//                        }
+//                    }
+//                }
+//            }
+//            Log.d(TAG, "serverFaceSourceImageCount: $serverFaceSourceImageCount")
         }
     }
 }

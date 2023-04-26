@@ -1,22 +1,18 @@
 #!/bin/bash
 # 将 <YourAppToken> 替换为你在服务端生成的 App Token，<YourPassword> 替换为你设置的新密码
 
-client_id=""
-client_secret=""
+client_id="YXA6cJJw9ALSRs6Ymebs2ca3sw"
+client_secret="YXA6cqfVaP35KhldO6WmaupXqpFimUY"
+baseurl="https://a1.easemob.com/1135230423163966/demo"
 
 getToken(){
-   curl -X POST -H 'Content-Type: application/json' -H 'Accept: application/json' -d '{
-   "grant_type": "client_credentials",
-   "client_id": "YXA6NCizWK8ZTiKLcY-NJwAgbg",
-   "client_secret": "YXA6Dzj9HhxCT376B-IgZAU9ACrL8wA",
-   "ttl": "1024000"
-}' 'http://a1.easemob.com/1135230423163966/demo/token'
+   curl -X POST -H 'Content-Type: application/json' -H 'Accept: application/json' -d "{
+   \"grant_type\": \"client_credentials\",
+   \"client_id\": \"${client_id}\",
+   \"client_secret\": \"${client_secret}\",
+   \"ttl\": \"1024000\"
+}" "${baseurl}/token"
 }
-
-# {"application":"3428b358-af19-4e22-8b71-8f8d2700206e","access_token":"YWMtbfRn6uKwEe2GJEFppWaE_2PD2rdcAz8QsxFDvusmk8E0KLNYrxlOIotxj40nACBuAgMAAAGHs8Wx2AAPoABZ68C3-cSVkEnZN0-oQiTvGqt4PI2xwamTGOR3oSfpeA","expires_in":1024000}
-
-YourAppToken="YWMtbfRn6uKwEe2GJEFppWaE_2PD2rdcAz8QsxFDvusmk8E0KLNYrxlOIotxj40nACBuAgMAAAGHs8Wx2AAPoABZ68C3-cSVkEnZN0-oQiTvGqt4PI2xwamTGOR3oSfpeA"
-baseurl="https://a1.easemob.com/1135230423163966/demo"
 
 updatePassword(){
    username="root"
@@ -38,6 +34,6 @@ uploadFile(){
 }
 #{"path":"/chatfiles","uri":"https://a1.easemob.com/1135230423163966/demo/chatfiles","timestamp":1682372070664,"organization":"1135230423163966","application":"3428b358-af19-4e22-8b71-8f8d2700206e","entities":[{"uuid":"cc0696a0-e2e7-11ed-88b6-f98a29f3b73f","type":"chatfile"}],"action":"post","duration":28,"applicationName":"demo"}
 
-#getToken
+getToken
 #updatePassword
-uploadFile
+#uploadFile

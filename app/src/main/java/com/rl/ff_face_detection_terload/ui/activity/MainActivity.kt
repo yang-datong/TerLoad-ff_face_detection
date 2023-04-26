@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.alert
+import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.yesButton
 
@@ -68,6 +69,15 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> false
             }
+        }
+
+
+        if (defaultSharedPreferences.getString("username", "") != "root") {
+            val menu = bottomNavigationView.menu
+            menu.findItem(R.id.conversationFragment).title = getString(R.string.page_one)
+            menu.findItem(R.id.contactFragment).title = getString(R.string.page_two)
+            menu.findItem(R.id.dynamicFragment).title = getString(R.string.page_three)
+            menu.findItem(R.id.contactFragment).icon = getDrawable(R.drawable.kaoqing_log)
         }
 
 //        if (defaultSharedPreferences.getBoolean("updateTheme", false)) {

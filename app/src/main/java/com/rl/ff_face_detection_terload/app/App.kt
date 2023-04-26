@@ -17,6 +17,7 @@ import com.rl.ff_face_detection_terload.R
 import com.rl.ff_face_detection_terload.adapter.MessageListenerAdapter
 import com.rl.ff_face_detection_terload.database.DB
 import com.rl.ff_face_detection_terload.database.User
+import com.rl.ff_face_detection_terload.extensions.EM_APP_KEY
 import com.rl.ff_face_detection_terload.faceRecognize.FaceRecognize
 import com.rl.ff_face_detection_terload.ui.activity.ChatActivity
 import kotlinx.coroutines.GlobalScope
@@ -33,8 +34,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         val emOptions = EMOptions()
-//        emOptions.appKey = "1107210101040542#demo" //qq邮箱
-        emOptions.appKey = "1135230423163966#demo" //网易邮箱
+        emOptions.appKey = EM_APP_KEY //网易邮箱
         val emc = EMClient.getInstance()
         emc.init(applicationContext, emOptions)
         EMClient.getInstance().setDebugMode(BuildConfig.DEBUG)
@@ -128,7 +128,6 @@ class App : Application() {
         super.onTerminate()
     }
 
-
     private fun setDefaultUser() {
         GlobalScope.launch {
             val names = arrayOf("Atomu", "LiangZhaoyang", "WuYiming", "ZhangXiangyu", "ChenWeijie", "LiuJiahui", "SunQianying", "WangJianfeng", "ZhouXingyu", "HuangYifan", "LiMinghui", "DengYuhan", "TangZhengyang", "LinQingyang", "GaoXiaodong", "HuQianwen", "JinXinyi", "FengYunlong", "CaoXinran", "LiJiaming", "ZhouYifei", "WuYufei", "ChenJianyu", "XuYuhang", "ZhangXinyi", "WangMengjie", "LiuXiaowei", "HuangZhihao", "YangKaiwen", "ShenZhihui", "GuoYaqi", "TangXueqin", "DengYuting", "JiangYingjie", "HuShanshan", "YaoZhijun", "FanXiaojing", "MeiXiaochen", "CaiMengxuan")
@@ -182,6 +181,5 @@ class App : Application() {
         }
 
     }
-
 }
 
