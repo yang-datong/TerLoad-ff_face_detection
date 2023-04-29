@@ -120,4 +120,8 @@ dependencies {
     implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
     //QMUI一些UI控件的样式   //用处不大
 //    implementation 'com.qmuiteam:qmui:1.0.6'
+    //数据导出为Excel格式
+    implementation 'org.apache.poi:poi:4.1.2'
+    implementation 'org.apache.poi:poi-ooxml:4.1.2'
+    implementation 'javax.xml.stream:stax-api:1.0'
 }
