@@ -1,7 +1,10 @@
 package com.rl.ff_face_detection_terload.ui.fargment
 
+import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.ContextWrapper
+import android.content.Intent
+import android.net.Uri
 import android.os.Environment
 import android.util.Log
 import android.view.Gravity
@@ -29,9 +32,7 @@ import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.runOnUiThread
 import org.jetbrains.anko.startActivity
-import java.io.File
-import java.io.FileOutputStream
-import java.io.FileWriter
+import java.io.*
 
 
 /**
@@ -45,6 +46,8 @@ class DynamicFragment : BaseFragment() {
 
     companion object {
         private const val TAG = "DynamicFragment"
+        private const val USER_DATA_CSV_REQUEST_CODE = 0x333
+        private const val USER_DATA_XLSX_REQUEST_CODE = 0x444
     }
 
     override fun getLayoutResID() = R.layout.fragment_dynamic
@@ -80,12 +83,28 @@ class DynamicFragment : BaseFragment() {
         bt_data_backup.setOnClickListener {
             showDataBaseOperationBottomDialog(onCSVClick = {
                 bt_data_backup.isClickable = false
-                val csvFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "users.csv")
-                exportCSVCData(csvFile)
+                // 创建一个保存文件的Intent
+                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+                intent.addCategory(Intent.CATEGORY_OPENABLE)
+                intent.type = "*/*" // 保存任何类型的文件
+                intent.putExtra(Intent.EXTRA_TITLE, "users.csv")
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                startActivityForResult(intent, USER_DATA_CSV_REQUEST_CODE)
+//                val csvFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "users.csv")
+//                exportCSVCData(csvFile)
             }, onEXCELClick = {
                 bt_data_backup.isClickable = false
-                val excelFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "users.xlsx")
-                exportEXCELData(excelFile)
+                // 创建一个保存文件的Intent
+                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+                intent.addCategory(Intent.CATEGORY_OPENABLE)
+                intent.type = "*/*" // 保存任何类型的文件
+                intent.putExtra(Intent.EXTRA_TITLE, "users.xlsx")
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                startActivityForResult(intent, USER_DATA_XLSX_REQUEST_CODE)
+//                val excelFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "users.xlsx")
+//                exportEXCELData(excelFile)
             }, onDataSave = {
                 doAsync {
                     //备份数据库文件
@@ -145,7 +164,7 @@ class DynamicFragment : BaseFragment() {
         }
     }
 
-    private fun exportEXCELData(excelFile: File) {
+    private fun exportEXCELData(excelFile: OutputStream?) {
         GlobalScope.launch {
             val userList: List<User> = DB.getInstance(requireActivity()).userDao().getAllUser()
             requireActivity().runOnUiThread {
@@ -183,37 +202,42 @@ class DynamicFragment : BaseFragment() {
                             createCell(10).setCellValue(user.create_time.toString())
                         }
                     }
-                    val outputStream = FileOutputStream(excelFile)
-                    workbook.write(outputStream)
+                    workbook.write(excelFile)
                     workbook.close()
-                    outputStream.close()
-                    Log.d(TAG, "exportEXCELData: ${excelFile.absolutePath} Done")
+                    Log.d(TAG, "exportEXCELData: Done")
                 }
             }
         }
     }
 
-    private fun exportCSVCData(csvFile: File) {
+    private fun exportCSVCData(csvFile: OutputStream?) {
         GlobalScope.launch {
-            val userList: List<User> = DB.getInstance(requireActivity()).userDao().getAllUser()
-            val writer = FileWriter(csvFile)
-            writer.append("id,username,password,name,email,phone,avatar,status,checkin_time,checkout_time,create_time\n")
-            for (user in userList) {
-                writer.append("${user.id},"
-                        + user.username + ","
-                        + user.password + ","
-                        + user.name + ","
-                        + user.email + ","
-                        + user.phone + ","
-                        + user.avatar + ","
-                        + user.status + ","
-                        + user.checkin_time + ","
-                        + user.checkout_time + ","
-                        + user.create_time + "\n")
+            try {
+                val userList: List<User> = DB.getInstance(requireActivity()).userDao().getAllUser()
+                // 创建一个OutputStreamWriter对象，并指定输出字符集为UTF-8
+                val outputStreamWriter = OutputStreamWriter(csvFile, "UTF-8")
+                // 创建一个BufferedWriter对象，以便在写入文件时使用缓冲区
+                val bufferedWriter = BufferedWriter(outputStreamWriter)
+                bufferedWriter.append("id,username,password,name,email,phone,avatar,status,checkin_time,checkout_time,create_time\n")
+                for (user in userList) {
+                    bufferedWriter.append("${user.id},"
+                            + user.username + ","
+                            + user.password + ","
+                            + user.name + ","
+                            + user.email + ","
+                            + user.phone + ","
+                            + user.avatar + ","
+                            + user.status + ","
+                            + user.checkin_time + ","
+                            + user.checkout_time + ","
+                            + user.create_time + "\n")
+                }
+                bufferedWriter.flush()
+                bufferedWriter.close()
+                Log.d(TAG, "exportCSVCData:  Done")
+            } catch (e: Exception) {
+                Log.e(TAG, "exportCSVCData: ${e.toString()}", e)
             }
-            writer.flush()
-            writer.close()
-            Log.d(TAG, "exportCSVCData: ${csvFile.absolutePath} Done")
         }
     }
 
@@ -251,5 +275,27 @@ class DynamicFragment : BaseFragment() {
     private fun dismissDataBottomDialog() {
         if (dataBaseOperationBottomDialog.isShowing)
             dataBaseOperationBottomDialog.dismiss()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if ((requestCode == USER_DATA_CSV_REQUEST_CODE || requestCode == USER_DATA_XLSX_REQUEST_CODE) && resultCode == RESULT_OK) {
+            val uri: Uri? = data?.data
+            uri?.let {
+                doAsync {
+                    try {
+                        // 使用ContentResolver打开文件并将数据写入其中
+                        val outputStream: OutputStream? = requireActivity().contentResolver.openOutputStream(it)
+                        when (requestCode) {
+                            USER_DATA_CSV_REQUEST_CODE -> exportCSVCData(outputStream)
+                            USER_DATA_XLSX_REQUEST_CODE -> exportEXCELData(outputStream)
+                            else -> Log.e(TAG, "onActivityResult: requestCode = $requestCode")
+                        }
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }
     }
 }
