@@ -2,12 +2,16 @@ package com.rl.ff_face_detection_terload.presenter
 
 import android.content.Context
 import android.util.Log
+import com.hyphenate.EMCallBack
+import com.hyphenate.chat.EMClient
 import com.rl.ff_face_detection_terload.contract.AddFriendContract
 import com.rl.ff_face_detection_terload.emp.AddFriendItem
 import com.rl.ff_face_detection_terload.database.DB
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.runOnUiThread
+import org.jetbrains.anko.toast
 
 
 /**
@@ -34,8 +38,28 @@ class AddFriendPresenter(val view: AddFriendContract.View) : AddFriendContract.P
                     }
                 }
             } else view.onSearchFailed()
-
+            Log.d("AddFriendPresenter", "search: $key")
+            if (key.isNotEmpty())
+                doAsync {
+                    addFriend(key, context)
+                }
         }
+    }
+
+    private fun addFriend(userName: String, context: Context) {
+        EMClient.getInstance().contactManager().aysncAddContact(userName, "收到一条用户请求", object : EMCallBack {
+            override fun onSuccess() {
+                context.applicationContext.runOnUiThread { toast("已发送添加用户申请") }
+                view.onSearchSuccess()
+            }
+
+            override fun onProgress(progress: Int, status: String?) {
+            }
+
+            override fun onError(code: Int, error: String?) {
+                context.applicationContext.runOnUiThread { toast("添加用户失败：${error}") }
+            }
+        })
     }
 
 //    override fun search(key: String) {

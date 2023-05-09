@@ -114,8 +114,10 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
                     view.onLoggedInSuccess()
                 }
             } else {
-                Log.e(TAG, "用户账号添加到数据库错误，数据库添加:已${ret}个")
-                view.onLoggedInFailed("添加数据失败")
+                uiThread {
+                    Log.e(TAG, "用户账号添加到数据库错误，数据库添加:已${ret}个")
+                    view.onLoggedInFailed("添加数据失败")
+                }
             }
         }
     }

@@ -52,7 +52,7 @@ class AddFriendListAdapter(var context: Context, private val addFriendListItems:
     private fun addFriend(userName: String) {
         EMClient.getInstance().contactManager().aysncAddContact(userName, "收到一条用户请求", object : EMCallBack {
             override fun onSuccess() {
-                context.applicationContext.runOnUiThread { toast("添加用户成功") }
+                context.applicationContext.runOnUiThread { toast("已发送添加用户申请") }
             }
 
             override fun onProgress(progress: Int, status: String?) {

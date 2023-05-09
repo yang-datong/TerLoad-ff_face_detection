@@ -41,13 +41,17 @@ class AddFriendActivity : BaseActivity(), AddFriendContract.View {
     }
 
     override fun onSearchSuccess() {
-        dismissProgress()
-        recyclerview.adapter?.notifyDataSetChanged()
+        runOnUiThread {
+            dismissProgress()
+            recyclerview.adapter?.notifyDataSetChanged()
+        }
 //        toast("搜索成功")
     }
 
     override fun onSearchFailed() {
-        dismissProgress()
-        toast("搜索失败，没有该用户")
+        runOnUiThread {
+            dismissProgress()
+            toast("搜索失败，没有该用户")
+        }
     }
 }
