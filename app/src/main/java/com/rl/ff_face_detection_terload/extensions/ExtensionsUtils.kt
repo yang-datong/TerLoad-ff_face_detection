@@ -65,7 +65,7 @@ const val EM_APP_KEY = "1135230423163966#demo"
 const val EM_host = "a1.easemob.com"
 const val EM_org_name = "1135230423163966"
 const val EM_app_name = "demo"
-const val EM_TOKEN = "YWMto5mpyOQ7Ee2xXuOTAiPZuWPD2rdcAz8QsxFDvusmk8E0KLNYrxlOIotxj40nACBuAgMAAAGHveO9cwAPoACpF8CYz90N75E4s5kqKQPpCQlwjWt8d8RlhKjnOHFiJQ"
+const val EM_TOKEN = "YWMtwYAiaO8JEe2NF8GoLhWqK2PD2rdcAz8QsxFDvusmk8E0KLNYrxlOIotxj40nACBuAgMAAAGIBLPDWQAPoAD3gEb1t0iLNgZOMVIJCjTXIetCM9XZsqr2-4uwaFbrZQ"
 
 const val GITEE_TOKEN = "ae8ce1c62668312fad8987f9d868c7e4"
 

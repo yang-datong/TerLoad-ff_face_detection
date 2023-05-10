@@ -1,8 +1,8 @@
 #!/bin/bash
 # 将 <YourAppToken> 替换为你在服务端生成的 App Token，<YourPassword> 替换为你设置的新密码
 
-client_id="YXA6cJJw9ALSRs6Ymebs2ca3sw"
-client_secret="YXA6cqfVaP35KhldO6WmaupXqpFimUY"
+client_id="YXA6NCizWK8ZTiKLcY-NJwAgbg"
+client_secret="YXA6Dzj9HhxCT376B-IgZAU9ACrL8wA"
 baseurl="https://a1.easemob.com/1135230423163966/demo"
 
 getToken(){

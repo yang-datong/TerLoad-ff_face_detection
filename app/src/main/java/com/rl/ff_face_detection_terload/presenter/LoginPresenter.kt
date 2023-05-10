@@ -106,7 +106,7 @@ class LoginPresenter(val view: LoginContract.View) : LoginContract.Presenter {
             }
 
             //完成数据库操作
-            if (ret == 1L) {
+            if (ret >= 1L) {
                 Log.d(TAG, "saveIntoDataBase-> onSuccess: $user")
                 val userId = userDao.getIdByUsername(username)
                 uiThread {
